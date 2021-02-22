@@ -1,3 +1,5 @@
+import main.view.View;
+
 /**
  * Starting point for our program. The View model will be instantiated
  * from here.
@@ -10,7 +12,7 @@ public class Driver {
 
     public static void main(String[] args){
 
-        System.out.println("Hello World!");
+        View viewAssembly = new View();
 
     }
 
