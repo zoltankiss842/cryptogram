@@ -1,4 +1,4 @@
-package players;
+package main.players;
 
 import java.util.*;
 import java.io.File;
