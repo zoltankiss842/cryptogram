@@ -12,7 +12,7 @@ public class Driver {
 
     public static void main(String[] args){
 
-        View View = new View();
+        View view = new View();
 
     }
 
