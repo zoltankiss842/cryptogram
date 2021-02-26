@@ -6,6 +6,11 @@ ensure a timestamped copy of code at the point of submission for each iteration.
 
 ![image](resources/README/basis.png)
 
+## Handling merge conflicts
+
+I have made a quick video about how to handle conflicts and how to rebase branches:
+[Handle conflicts](https://drive.google.com/file/d/13ji-xoE88SMhPHNP4D1VkwHOimDWb4Gx/view?usp=sharing)
+
 ## How to maintain the directory system
 
 1. We sort classes into packages. In directory `src`, we create a `main` and a `test` package.

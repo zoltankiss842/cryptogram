@@ -19,18 +19,15 @@ public class Frame {
         label.setVerticalAlignment(JLabel.CENTER);
 
         frame.add(label, BorderLayout.CENTER);
+        frame.add(label, BorderLayout.CENTER);
         frame.setPreferredSize(new Dimension(600, 400));
         frame.setLocationRelativeTo(null);
 
         frame.pack();
         frame.setVisible(true);
+
+
     }
 
-    public JFrame getFrame() {
-        return frame;
-    }
 
-    public void setFrame(JFrame frame) {
-        this.frame = frame;
-    }
 }
