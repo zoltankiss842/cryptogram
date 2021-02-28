@@ -1,0 +1,20 @@
+public class LetterCryptogram extends Cryptogram {
+	
+	private CryptogramAlphabet;
+	
+	public Cryptogram() {
+		
+	}
+	
+    public Cryptogram(file String) {
+		
+	}
+		
+
+	public int getPlainLetter(char cyrptoLetter){
+		
+	  return 0;
+	}
+
+
+}
