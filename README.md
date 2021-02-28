@@ -1,3 +1,7 @@
+# Using IntelliJ
+
+[Video here](https://drive.google.com/file/d/1b2KHySTOD7iJb-kPtCLpwOhHFoUwxQMM/view?usp=sharing)
+
 # Iteration 1
 
 After class diagrams have been submitted, a sample solution will be released. This **must be used as the basis** for your implementation. All .java files, including
