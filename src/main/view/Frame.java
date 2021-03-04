@@ -5,29 +5,34 @@ import java.awt.*;
 
 public class Frame {
 
+    public final int FRAME_WIDTH = 600;
+    public final int FRAME_HEIGHT = 400;
+
+    public final String FRAME_TITLE = "Cryptogrammer";
+
     private JFrame frame;
+    private WordHolder wordHolder;
+    private ButtonHolder buttonHolder;
 
     public Frame(){
-        frame = new JFrame("Cryptogrammer");
+        wordHolder = new WordHolder();
+        buttonHolder = new ButtonHolder();
+
+        frame = new JFrame(FRAME_TITLE);
 
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JLabel label = new JLabel("Hello World!");
+        // Adding the two main component to the frame
+        frame.add(wordHolder.getHolder(), BorderLayout.CENTER);
+        frame.add(buttonHolder.getHolder(), BorderLayout.PAGE_END);
 
-        label.setHorizontalAlignment(JLabel.CENTER);
-        label.setVerticalAlignment(JLabel.CENTER);
-
-        frame.add(label, BorderLayout.CENTER);
-        frame.add(label, BorderLayout.CENTER);
-        frame.setPreferredSize(new Dimension(600, 400));
+        frame.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
         frame.setLocationRelativeTo(null);
 
         frame.pack();
         frame.setVisible(true);
 
-
     }
-
 
 }
