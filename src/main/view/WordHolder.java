@@ -4,7 +4,6 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 public class WordHolder {
 
@@ -12,39 +11,68 @@ public class WordHolder {
     private JPanel holder;
     private JScrollPane holderScrollPane;
 
-    public WordHolder() {
+    private JFrame frame;
+
+    public WordHolder(JFrame frame) {
+        this.words = new ArrayList<>();
+        this.frame = frame;
+
         initHolder();
         initScrollPane();
 
-        this.words = new ArrayList<>();
-    }
 
-    private void initScrollPane() {
-        this.holderScrollPane = new JScrollPane();
-        holderScrollPane.setLayout(new FlowLayout(FlowLayout.CENTER, 10,10));
-
-        addToPanel();
     }
 
     private void initHolder() {
         this.holder = new JPanel();
-        holder.setBorder(new LineBorder(new Color(0,255,0), 5));
+//        holder.setBorder(new LineBorder(new Color(0,255,0), 5));
+        holder.setLayout(new WrapLayout());
+    }
+
+    private void initScrollPane() {
+        this.holderScrollPane = new JScrollPane(holder);
+        holderScrollPane.setHorizontalScrollBar(null);
+        holderScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+    }
+
+    public void displayNewSentence(String encrypted){
+
+        if(words != null){
+            words.clear();
+        }
+
+        String[] tokens = encrypted.split(" ");
+        for(int i = 0; i < tokens.length; ++i){
+            Word newWord = new Word(tokens[i]);
+            words.add(newWord);
+        }
+
+        addToPanel();
     }
 
     public void addToPanel(){
         for(Word word: words){
-            holderScrollPane.add(word.getWord());
+            holder.add(word.getWord());
         }
+
+        holder.add(new JLabel());
     }
 
-    public void displayNewSentence(String encrypted){
-        String[] tokens = encrypted.split(" ");
-        for(int i = 0; i < tokens.length; ++i){
+    public boolean checkAnswer(String solution){
+        int i = 0;
+        String[] tokens = solution.split(" ");
+        for(Word word : words){
+            if(!word.getTextFromInputs().equals(tokens[i])){
+                return false;
+            }
 
+            i++;
         }
+
+        return true;
     }
 
-    public JPanel getHolder() {
-        return holder;
+    public JScrollPane getHolder() {
+        return holderScrollPane;
     }
 }
