@@ -1,40 +1,37 @@
 package main.view;
-
+import main.Cryptogram;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 public class Frame implements ActionListener {
-    JTextArea ta;
     JTextField textbox;
-    JButton b1,b2,b3,b4;
-    JButton play, login;
-    JPanel controlp, main;
+    JButton b1,b2,b3,b4,play,login;
+    JPanel controlp, main, phrase;
     JFrame f;
-    JScrollPane sp;
     public Frame(){
         f = new JFrame("Cryptogrammer");
 
         f.getContentPane().setBackground(Color.blue);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //f.setLocationRelativeTo(null);
         Container con = f.getContentPane();
         con.setLayout(new BorderLayout());
 
         controlp = new JPanel();
         main = new JPanel();
+        phrase = new JPanel();
 
-        ta = new JTextArea(10,20);
-        sp = new JScrollPane(ta);
+        for(int i=0;i<Cryptogram.phrase.length();i++){
+            if(Cryptogram.phrase.charAt(i)=='3'){
+                phrase.add(new JPanel(new BorderLayout(5,5)));
+            }else{
+                phrase.add(new JTextField(1));
+            }
+
+        }
 
         textbox = new JTextField(20);
         textbox.getDocument().addDocumentListener(new DocumentListener(){
@@ -52,13 +49,8 @@ public class Frame implements ActionListener {
             }
 
             private void updateLabel(DocumentEvent e) {
-                java.awt.EventQueue.invokeLater(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        ta.append(textbox.getText());
-                        textbox.setText("");
-                    }
+                EventQueue.invokeLater(() -> {
+                    textbox.setText("");
                 });
             }
         });
@@ -82,6 +74,7 @@ public class Frame implements ActionListener {
 
         con.add(controlp, BorderLayout.PAGE_END);
         con.add(main, BorderLayout.CENTER);
+        con.add(phrase, BorderLayout.WEST);
 
 
         f.setVisible(true);
@@ -101,38 +94,31 @@ public class Frame implements ActionListener {
         if(e.getSource()==play){
             FlowLayout flow = new FlowLayout(FlowLayout.LEFT);
             main.setLayout(flow);
-            main.add(sp);
             main.add(textbox);
             main.add(b1);
             main.add(b2);
             main.add(b3);
             main.add(b4);
+            f.add(phrase);
             f.pack();
         }
         if(e.getSource()==login){
-            //GridLayout grid = new GridLayout(2,3);
-            //main.setLayout(grid);
-            main.remove(ta);
             main.remove(b1);
             main.remove(b2);
             main.remove(b3);
             main.remove(b4);
-            //main.validate();
-            //main.updateUI();
+            f.remove(phrase);
             f.pack();
         }
         if(e.getSource()==b1){
         }
         if(e.getSource()==b2){
-            ta.append("testtest");
-            ta.replaceRange("test",1,4);
             main.updateUI();
         }
         if(e.getSource()==b3){
 
         }
         if(e.getSource()==b4){
-            ta.setText("");
             textbox.setText("");
         }
     }
