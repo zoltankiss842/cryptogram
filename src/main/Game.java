@@ -29,7 +29,7 @@ public class Game {
     public Game(Player p){
 
     }
-    public Object getHint(){
+    public char getHint(){
         if(currentPhrase.equals("")){
             System.out.println("Empty phrase");
         }else{
@@ -46,7 +46,7 @@ public class Game {
             System.out.println("Here the hint");
             return(phrasechars.get(rand.nextInt(set.size())));
         }
-        return NULL;
+        return null;
     }
 
     public Player loadPlayer(Player p){
@@ -134,14 +134,27 @@ public class Game {
         return false;
     }
 
-    public void generateCryptogram(){
-
+    public boolean generateCryptogram(){
+        File f = new File("phrases.txt");
+        Scanner mys;
+        try{
+            mys = new Scanner(f);
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+            return false;
+        }
+        ArrayList<String> phrases = new ArrayList<>();
+        Random rand = new Random();
+        while(mys.hasNextLine()){
+            phrases.add(mys.nextLine());
+        }
+        String chosenphrase = ArrayList.get(rand.nextInt(ArrayList.size()));
     }
 
     public void showSolution(){
         if(currentPlayer!=NULL){
-            Cryptogram c = playerGameMapping.get(currentPlayer);
-            show(c.phrase);
+            /*Cryptogram c = playerGameMapping.get(currentPlayer);
+            show(c.phrase);*/
         }
     }
 }
