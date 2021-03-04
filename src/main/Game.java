@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Random;
 
-import static java.lang.constant.ConstantDescs.NULL;
 
 public class Game {
 
@@ -46,7 +45,8 @@ public class Game {
             System.out.println("Here the hint");
             return(phrasechars.get(rand.nextInt(set.size())));
         }
-        return null;
+
+        return 'c';
     }
 
     public Player loadPlayer(Player p){
@@ -148,11 +148,14 @@ public class Game {
         while(mys.hasNextLine()){
             phrases.add(mys.nextLine());
         }
-        String chosenphrase = ArrayList.get(rand.nextInt(ArrayList.size()));
+
+        //String chosenphrase = ArrayList.get(rand.nextInt(ArrayList.size()));
+
+        return false;
     }
 
     public void showSolution(){
-        if(currentPlayer!=NULL){
+        if(currentPlayer!=null){
             /*Cryptogram c = playerGameMapping.get(currentPlayer);
             show(c.phrase);*/
         }
