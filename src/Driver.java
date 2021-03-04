@@ -1,5 +1,4 @@
-import main.Cryptogram;
-import main.view.View;
+import main.view.NewPlayerFrame;
 
 /**
  * Starting point for our program. The View model will be instantiated
@@ -11,9 +10,10 @@ import main.view.View;
 
 public class Driver {
 
-    public static void main(String[]args){
+    public static void main(String[] args){
 
-        View view = new View();
+        NewPlayerFrame frame = new NewPlayerFrame();
 
     }
+
 }

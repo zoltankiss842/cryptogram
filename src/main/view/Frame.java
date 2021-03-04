@@ -1,125 +1,46 @@
 package main.view;
-import main.Cryptogram;
+
+import main.players.Player;
+
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class Frame implements ActionListener {
-    JTextField textbox;
-    JButton b1,b2,b3,b4,play,login;
-    JPanel controlp, main, phrase;
-    JFrame f;
-    public Frame(){
-        f = new JFrame("Cryptogrammer");
+public class Frame {
 
-        f.getContentPane().setBackground(Color.blue);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Container con = f.getContentPane();
-        con.setLayout(new BorderLayout());
+    public static final int FRAME_WIDTH = 852;
+    public static final int FRAME_HEIGHT = 480;
 
-        controlp = new JPanel();
-        main = new JPanel();
-        phrase = new JPanel();
+    public final String FRAME_TITLE = "Cryptogrammer";
 
-        for(int i=0;i<Cryptogram.phrase.length();i++){
-            if(Cryptogram.phrase.charAt(i)=='3'){
-                phrase.add(new JPanel(new BorderLayout(5,5)));
-            }else{
-                phrase.add(new JTextField(1));
-            }
+    private JFrame frame;
+    private SolutionPanel solutionPanel;
+    private WordHolder wordHolder;
+    private ButtonHolder buttonHolder;
+    private Player player;
 
-        }
+    public Frame(String name){
+        frame = new JFrame(FRAME_TITLE);
 
-        textbox = new JTextField(20);
-        textbox.getDocument().addDocumentListener(new DocumentListener(){
-            @Override
-            public void changedUpdate(DocumentEvent e){
+        player = new Player(name);
 
-            }
-            @Override
-            public void insertUpdate(DocumentEvent e){
-                updateLabel(e);
-            }
-            @Override
-            public void removeUpdate(DocumentEvent e){
+        frame.setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 
-            }
+        wordHolder = new WordHolder(frame);
+        buttonHolder = new ButtonHolder(player.getUsername());
+        solutionPanel = new SolutionPanel("This is a very long sentence that will be displayed so we will see what is going to happen");
 
-            private void updateLabel(DocumentEvent e) {
-                EventQueue.invokeLater(() -> {
-                    textbox.setText("");
-                });
-            }
-        });
+        wordHolder.displayNewSentence("This is a very long sentence that will be displayed so we will see what is going to happen");
 
-        b1 = new JButton("Check");
-        b2 = new JButton("Hint");
-        b3 = new JButton("HelloButton3");
-        b4 = new JButton("Reset");
-        b1.addActionListener(this);
-        b2.addActionListener(this);
-        b3.addActionListener(this);
-        b4.addActionListener(this);
+        // Adding the two main component to the frame
+        frame.add(solutionPanel.getHolder(), BorderLayout.PAGE_START);
+        frame.add(wordHolder.getHolder(), BorderLayout.CENTER);
+        frame.add(buttonHolder.getHolder(), BorderLayout.PAGE_END);
 
-        play = new JButton("play");
-        login = new JButton("Login");
-        play.addActionListener(this);
-        login.addActionListener(this);
-
-        controlp.add(play);
-        controlp.add(login);
-
-        con.add(controlp, BorderLayout.PAGE_END);
-        con.add(main, BorderLayout.CENTER);
-        con.add(phrase, BorderLayout.WEST);
-
-
-        f.setVisible(true);
-        f.setSize(new Dimension(300,300));
-
-        Dimension windowSize = f.getSize();
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        Point centerPoint = ge.getCenterPoint();
-
-        int dx = centerPoint.x - windowSize.width/2;
-        int dy = centerPoint.y - windowSize.height/2;
-        f.setLocation(dx,dy);
+        frame.pack();
+        frame.setVisible(true);
 
     }
 
-    public void actionPerformed(ActionEvent e){
-        if(e.getSource()==play){
-            FlowLayout flow = new FlowLayout(FlowLayout.LEFT);
-            main.setLayout(flow);
-            main.add(textbox);
-            main.add(b1);
-            main.add(b2);
-            main.add(b3);
-            main.add(b4);
-            f.add(phrase);
-            f.pack();
-        }
-        if(e.getSource()==login){
-            main.remove(b1);
-            main.remove(b2);
-            main.remove(b3);
-            main.remove(b4);
-            f.remove(phrase);
-            f.pack();
-        }
-        if(e.getSource()==b1){
-        }
-        if(e.getSource()==b2){
-            main.updateUI();
-        }
-        if(e.getSource()==b3){
-
-        }
-        if(e.getSource()==b4){
-            textbox.setText("");
-        }
-    }
 }
