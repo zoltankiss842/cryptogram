@@ -1,5 +1,6 @@
-package main;
+package main.game;
 
+import main.cryptogram.Cryptogram;
 import main.players.Player;
 import main.players.Players;
 

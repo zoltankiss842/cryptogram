@@ -1,4 +1,4 @@
-package cryptogram;
+package main.cryptogram;
 
 public  class Cryptogram {
 protected String phrase;
