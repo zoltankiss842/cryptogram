@@ -43,6 +43,12 @@ public class ButtonHolder {
         });
 
         submit = new JButton("Submit");
+        submit.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                gameController.checkAnswer();
+            }
+        });
 
         reset = new JButton("Reset");
 

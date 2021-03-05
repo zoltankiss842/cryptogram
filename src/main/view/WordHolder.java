@@ -65,7 +65,6 @@ public class WordHolder {
             if(!word.getTextFromInputs().equals(tokens[i])){
                 return false;
             }
-
             i++;
         }
 

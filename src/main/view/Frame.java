@@ -38,7 +38,6 @@ public class Frame {
 
         frame.pack();
         frame.setVisible(true);
-
     }
 
     public void displayNewGame(Cryptogram cryptogram){
@@ -65,4 +64,11 @@ public class Frame {
         frame.pack();
     }
 
+    public WordHolder getWordHolder() {
+        return wordHolder;
+    }
+
+    public void setWordHolder(WordHolder wordHolder) {
+        this.wordHolder = wordHolder;
+    }
 }
