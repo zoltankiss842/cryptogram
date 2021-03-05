@@ -7,6 +7,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * This is the first UI component that is shown to
+ * the user. Here the user enters their username and
+ * then clicks on the "Play" button.
+ */
 public class NewPlayerFrame {
 
     private JFrame playerFrame;
@@ -46,6 +51,7 @@ public class NewPlayerFrame {
 
         play = new JButton("Play");
 
+        // Here we check if the entered name is empty, if not we show the game frame
         play.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -84,7 +90,5 @@ public class NewPlayerFrame {
     private void initNewGame(String name) {
         newGame = new Game(name);
     }
-
-
 
 }

@@ -2,6 +2,10 @@ package main.view;
 
 import javax.swing.*;
 
+/**
+ * This class is for to display the solution on the
+ * top of the frame.
+ */
 public class SolutionPanel {
 
     private JPanel holder;

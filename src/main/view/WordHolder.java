@@ -5,6 +5,9 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * This class represents a list of words.
+ */
 public class WordHolder {
 
     private ArrayList<Word> words;
@@ -19,8 +22,6 @@ public class WordHolder {
 
         initHolder();
         initScrollPane();
-
-
     }
 
     private void initHolder() {
@@ -35,8 +36,14 @@ public class WordHolder {
         holderScrollPane.getVerticalScrollBar().setUnitIncrement(16);
     }
 
+    /**
+     * This is where we convert the String sentence into a visible
+     * user interface.
+     * @param encrypted     the encrypted sentence to be converted
+     */
     public void displayNewSentence(String encrypted){
 
+        // We reset the words
         if(words != null){
             words.clear();
         }
@@ -50,7 +57,10 @@ public class WordHolder {
         addToPanel();
     }
 
-    public void addToPanel(){
+    /**
+     * Adding the words to the panel, making it available to show
+     */
+    private void addToPanel(){
         for(Word word: words){
             holder.add(word.getWord());
         }
@@ -58,6 +68,11 @@ public class WordHolder {
         holder.add(new JLabel());
     }
 
+    /**
+     * Here we check the user input is the same as the parameter solution
+     * @param solution          the solution it should be matched to
+     * @return                  whether the input matches the solution
+     */
     public boolean checkAnswer(String solution){
         int i = 0;
         String[] tokens = solution.split(" ");

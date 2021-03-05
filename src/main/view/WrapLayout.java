@@ -9,6 +9,10 @@ import java.awt.*;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+/**
+ * A rewritten class for FlowLayout, this helps
+ * to dynamically align the Words on the screen
+ */
 public class WrapLayout extends FlowLayout
 {
     private Dimension preferredLayoutSize;
