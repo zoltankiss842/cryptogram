@@ -15,11 +15,10 @@ import java.util.Random;
 
 public class Game {
 
-    HashMap<Player, Cryptogram> playerGameMapping;
-    Player currentPlayer;
-    ArrayList<String> entered;
-    String currentPhrase;
-
+    private HashMap<Player, Cryptogram> playerGameMapping;
+    private Player currentPlayer;
+    private ArrayList<String> entered;
+    private String currentPhrase;
     private Frame gameGui;
 
     public Game(String userName) {
@@ -92,6 +91,7 @@ public class Game {
         Cryptogram c = new Cryptogram();
         c.setPhrase(toDisplay);
         c.setSolution(toDisplay);
+        currentPhrase = toDisplay;
 
         gameGui.displayNewGame(c);
     }
@@ -192,5 +192,53 @@ public class Game {
             /*Cryptogram c = playerGameMapping.get(currentPlayer);
             show(c.phrase);*/
         }
+    }
+
+    public HashMap<Player, Cryptogram> getPlayerGameMapping() {
+        return playerGameMapping;
+    }
+
+    public void setPlayerGameMapping(HashMap<Player, Cryptogram> playerGameMapping) {
+        this.playerGameMapping = playerGameMapping;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    public ArrayList<String> getEntered() {
+        return entered;
+    }
+
+    public void setEntered(ArrayList<String> entered) {
+        this.entered = entered;
+    }
+
+    public String getCurrentPhrase() {
+        return currentPhrase;
+    }
+
+    public void setCurrentPhrase(String currentPhrase) {
+        this.currentPhrase = currentPhrase;
+    }
+
+    public Frame getGameGui() {
+        return gameGui;
+    }
+
+    public void setGameGui(Frame gameGui) {
+        this.gameGui = gameGui;
+    }
+
+    public void checkAnswer(){
+        if(gameGui.getWordHolder().checkAnswer(currentPhrase)){
+            System.out.println("Correct!");
+        }else{
+            System.out.println("Wrong. :c");
+        };
     }
 }
