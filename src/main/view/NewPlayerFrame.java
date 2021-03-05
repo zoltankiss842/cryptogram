@@ -21,20 +21,24 @@ public class NewPlayerFrame {
     public NewPlayerFrame() {
         initFrame();
         initComponents();
+
+        playerFrame.pack();
+        playerFrame.setVisible(true);
     }
 
     private void initFrame() {
         playerFrame = new JFrame("New Player");
-        playerFrame.setPreferredSize(new Dimension(800,100));
-        playerFrame.setMinimumSize(new Dimension(800,100));
-        playerFrame.setLayout(new FlowLayout(FlowLayout.CENTER));
-        playerFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        playerFrame.setPreferredSize(new Dimension(500,100));
+        playerFrame.setMinimumSize(new Dimension(500,100));
+        playerFrame.setLayout(new BorderLayout());
+        playerFrame.setResizable(false);
+        playerFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         playerFrame.setLocationRelativeTo(null);
-
-        playerFrame.setVisible(true);
     }
 
     private void initComponents() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
         prompt = new JLabel("Please enter your name: ");
 
         playerName = new JTextField();
@@ -47,9 +51,16 @@ public class NewPlayerFrame {
             public void actionPerformed(ActionEvent e) {
                 name = playerName.getText();
 
-                playerFrame.setVisible(false);
+                if(name.isEmpty() || name.isBlank() || name == null){
+                    JOptionPane.showMessageDialog(playerFrame, "Name cannot be empty", "Name error", JOptionPane.ERROR_MESSAGE);
+                }
+                else{
+                    playerFrame.setVisible(false);
 
-                initNewGame(name);
+                    initNewGame(name);
+                }
+
+
             }
         });
 
@@ -62,10 +73,12 @@ public class NewPlayerFrame {
             }
         });
 
-        playerFrame.add(prompt);
-        playerFrame.add(playerName);
-        playerFrame.add(play);
-        playerFrame.add(exit);
+        panel.add(prompt);
+        panel.add(playerName);
+        panel.add(play);
+        panel.add(exit);
+
+        playerFrame.add(panel, BorderLayout.CENTER);
     }
 
     private void initNewGame(String name) {

@@ -7,6 +7,11 @@ import main.players.Player;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * This class if the main frame for the game itself
+ * this class handles the display of the UI, which
+ * the user will see most of the time.
+ */
 public class Frame {
 
     public static final int FRAME_WIDTH = 852;
@@ -22,53 +27,77 @@ public class Frame {
     private Game gameController;
 
     public Frame(String name, Game gameController){
-
         this.gameController = gameController;
 
+        initFrame(name);
+        //displayNewGame(gameController.getPlayerGameMapping().get(gameController.getCurrentPlayer()));
+
+
+        centerFrame();
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    /**
+     * We initializes the frame itself
+     * @param name      username
+     */
+    private void initFrame(String name) {
         frame = new JFrame(FRAME_TITLE);
 
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+        centerFrame();
 
+        // Here we add the buttons on the bottom of the frame
         buttonHolder = new ButtonHolder(name, gameController);
-
-        // Adding the two main component to the frame
         frame.add(buttonHolder.getHolder(), BorderLayout.PAGE_END);
 
-        frame.pack();
-        frame.setVisible(true);
     }
 
+    /**
+     * Here we display a new set of encrypted
+     * sentences, first by removing the old sentence,
+     * and then adding the new set.
+     * @param cryptogram    Cryptogram to be displayed
+     */
     public void displayNewGame(Cryptogram cryptogram){
 
+        // Resetting the components to display new sentences
         try{
             frame.remove(solutionPanel.getHolder());
             frame.remove(wordHolder.getHolder());
+            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+            frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
         }
         catch (NullPointerException e){
-            System.err.print("Components were already null, cannot remove them from Frame.");
+            System.err.println("Components were already null, cannot remove them from Frame.");
         }
 
         wordHolder = null;
         solutionPanel = null;
 
+        // Adding new encrypted sentence to the frame
         wordHolder = new WordHolder(frame);
         wordHolder.displayNewSentence(cryptogram.getPhrase());
 
+        // Adding the solution sentence to the frame
         solutionPanel = new SolutionPanel(cryptogram.getSolution());
 
         frame.add(solutionPanel.getHolder(), BorderLayout.PAGE_START);
         frame.add(wordHolder.getHolder(), BorderLayout.CENTER);
 
+        centerFrame();
         frame.pack();
+    }
+
+    private void centerFrame(){
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
     }
 
     public WordHolder getWordHolder() {
         return wordHolder;
-    }
-
-    public void setWordHolder(WordHolder wordHolder) {
-        this.wordHolder = wordHolder;
     }
 }

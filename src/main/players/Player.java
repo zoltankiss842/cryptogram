@@ -11,6 +11,10 @@ public class Player {
 
     public Player(String playername) {
         username = playername;
+        accuracy = 0;
+        totalGuesses = 0;
+        cryptogramsPlayed = 0;
+        cryptogramsCompleted = 0;
     }
 
     public String getUsername() {
@@ -31,7 +35,6 @@ public class Player {
 
     public void incrementCryptogramsCompleted() {
         cryptogramsCompleted++;
-
     }
 
     public void incrementCryptogramsPlayed() {
