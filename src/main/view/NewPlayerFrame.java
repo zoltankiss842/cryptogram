@@ -1,28 +1,26 @@
 package main.view;
 
+import main.game.Game;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.Flow;
 
 public class NewPlayerFrame {
 
     private JFrame playerFrame;
-    private Frame gameFrame;
     private JLabel prompt;
     private JTextField playerName;
     private String name;
     private JButton play;
     private JButton exit;
 
+    private Game newGame;
+
     public NewPlayerFrame() {
         initFrame();
         initComponents();
-    }
-
-    private void initGameFrame(String name) {
-        gameFrame = new Frame(name);
     }
 
     private void initFrame() {
@@ -51,7 +49,7 @@ public class NewPlayerFrame {
 
                 playerFrame.setVisible(false);
 
-                initGameFrame(name);
+                initNewGame(name);
             }
         });
 
@@ -68,6 +66,10 @@ public class NewPlayerFrame {
         playerFrame.add(playerName);
         playerFrame.add(play);
         playerFrame.add(exit);
+    }
+
+    private void initNewGame(String name) {
+        newGame = new Game(name);
     }
 
 

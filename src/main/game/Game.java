@@ -3,6 +3,7 @@ package main.game;
 import main.cryptogram.Cryptogram;
 import main.players.Player;
 import main.players.Players;
+import main.view.Frame;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,16 +20,30 @@ public class Game {
     ArrayList<String> entered;
     String currentPhrase;
 
+    private Frame gameGui;
+
+    public Game(String userName) {
+        currentPlayer = new Player(userName);
+        entered = new ArrayList<>();
+        currentPhrase = "";
+        gameGui = new Frame(currentPlayer.getUsername(), this);
+        playGame();
+    }
+
     public Game(Player p, String cryptType){
         currentPlayer = loadPlayer(p);
         playGame();
         entered = new ArrayList<>();
         currentPhrase = "";
+        gameGui = new Frame(currentPlayer.getUsername(), this);
     }
 
     public Game(Player p){
 
     }
+
+
+
     public char getHint(){
         if(currentPhrase.equals("")){
             System.out.println("Empty phrase");
@@ -61,7 +76,24 @@ public class Game {
     }
 
     public void playGame(){
-        //Driver.main(playerGameMapping.get(currentPlayer));
+        //gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
+
+        ArrayList<String> tempSentences = new ArrayList<>();
+        tempSentences.add("This is a very long sentence that will be displayed so we will see what is going to happen");
+        tempSentences.add("He was so preoccupied with whether or not he could that he failed to stop to consider if he should");
+        tempSentences.add("Pair your designer cowboy hat with scuba gear for a memorable occasion");
+        tempSentences.add("For oil spots on the floor, nothing beats parking a motorbike in the lounge");
+        tempSentences.add("He said he was not there yesterday however many people saw him there");
+
+        Random rnd = new Random();
+
+        String toDisplay = tempSentences.get(rnd.nextInt(5));
+
+        Cryptogram c = new Cryptogram();
+        c.setPhrase(toDisplay);
+        c.setSolution(toDisplay);
+
+        gameGui.displayNewGame(c);
     }
 
     public boolean enterLetter(String l){

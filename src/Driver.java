@@ -1,3 +1,4 @@
+import main.players.Player;
 import main.view.NewPlayerFrame;
 
 /**
