@@ -43,7 +43,7 @@ public class WordHolder {
 
         String[] tokens = encrypted.split(" ");
         for(int i = 0; i < tokens.length; ++i){
-            Word newWord = new Word(tokens[i]);
+            Word newWord = new Word(tokens[i], this);
             words.add(newWord);
         }
 
@@ -74,5 +74,9 @@ public class WordHolder {
 
     public JScrollPane getHolder() {
         return holderScrollPane;
+    }
+
+    public ArrayList<Word> getWords() {
+        return words;
     }
 }

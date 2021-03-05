@@ -9,8 +9,10 @@ public class Word {
 
     private JPanel word;
     private ArrayList<LetterInput> letters;
+    private WordHolder wordHolder;
 
-    public Word(String word){
+    public Word(String word, WordHolder wordHolder){
+        this.wordHolder = wordHolder;
         initWord();
         createLetters(word);
         addToPanel();
@@ -19,7 +21,7 @@ public class Word {
     private void createLetters(String word) {
         letters = new ArrayList<>();
         for(char c : word.toCharArray()){
-            LetterInput newLetter = new LetterInput(String.valueOf(c));
+            LetterInput newLetter = new LetterInput(String.valueOf(c), this);
             letters.add(newLetter);
         }
     }
@@ -59,5 +61,18 @@ public class Word {
         }
 
         return stringBuilder.toString();
+    }
+
+    public void updateLetterLabel(String original, String inputLetter){
+        for(Word words : wordHolder.getWords()){
+            for(LetterInput input : words.getLetters()){
+                if(original.equals(input.getOriginalLetter())){
+                    input.updateLetterLabel(inputLetter);
+                    input.updateInputFieldValue(inputLetter);
+                }
+            }
+        }
+
+
     }
 }
