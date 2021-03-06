@@ -6,6 +6,7 @@ public class Player {
     private String username;
     private int accuracy;
     private int totalGuesses;
+    private int totalCorrectGuesses;
     private int cryptogramsPlayed;
     private int cryptogramsCompleted;
 
@@ -13,6 +14,7 @@ public class Player {
         username = playername;
         accuracy = 0;
         totalGuesses = 0;
+        totalCorrectGuesses = 0;
         cryptogramsPlayed = 0;
         cryptogramsCompleted = 0;
     }
@@ -33,6 +35,14 @@ public class Player {
         return accuracy;
     }
 
+    public void incrementTotalGuesses() {
+        totalGuesses++;
+    }
+
+    public void incrementTotalCorrectGuesses() {
+        totalCorrectGuesses++;
+    }
+
     public void incrementCryptogramsCompleted() {
         cryptogramsCompleted++;
     }
@@ -49,4 +59,11 @@ public class Player {
         return cryptogramsPlayed;
     }
 
+    public int getTotalGuesses() {
+        return totalGuesses;
+    }
+
+    public int getTotalCorrectGuesses() {
+        return totalCorrectGuesses;
+    }
 }

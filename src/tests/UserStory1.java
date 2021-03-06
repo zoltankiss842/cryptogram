@@ -6,23 +6,31 @@ import main.cryptogram.NumberCryptogram;
 import main.game.Game;
 import main.players.Player;
 import org.junit.*;
+import org.junit.rules.ExpectedException;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import static org.junit.Assert.*;
 
 /* As a player I want to be able to generate a cryptogram so I can play it */
 public class UserStory1 {
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     private final String PLAYERNAME = "test";
+    private final String SOLUTION = "This is a test sentence that needs to be solved";
 
     private Player player;
-    private LetterCryptogram letterCryptogram;
-    private NumberCryptogram numberCryptogram;
+    private ArrayList<String> sentences;
     private Game game;
 
     @Before
     public void setUp(){
         player = new Player(PLAYERNAME);
-        letterCryptogram = new LetterCryptogram();
-        numberCryptogram = new NumberCryptogram();
-        game = new Game(player);
+        sentences = new ArrayList<>();
+        sentences.add(SOLUTION);
     }
 
     /*
@@ -32,8 +40,27 @@ public class UserStory1 {
         - Then cryptogram based on a phrase where each plain letter from the phrase is mapped to a single cryptogram letter value
      */
     @Test
-    public void letterCryptoTest(){
+    public void letterCryptoTest() throws Exception {
+        game = new Game(player, LetterCryptogram.TYPE, sentences,false);
 
+        // Checking if the player-crypto mapping, stores the encypted solution
+        Assert.assertNotEquals(game.getPlayerGameMapping().get(player).getPhrase(), SOLUTION.toLowerCase());
+
+        LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
+
+        // Checking that the LetterCryptogram phrase is the encypted sentence
+        Assert.assertNotEquals(letter.getPhrase(), SOLUTION.toLowerCase());
+
+        // Checking that the LetterCryptogram solution is the solution
+        Assert.assertEquals(letter.getSolution(), SOLUTION.toLowerCase());
+
+        // Checking for each encypted letter that is a letter and there is only one instance of it
+        HashSet<Character> set = new HashSet<>();
+        for(int i = 'a'; i <= 'z'; ++i){
+            char encryptLetter = letter.getPlainLetter((char) i);
+            Assert.assertTrue(encryptLetter >= 'a' && encryptLetter <= 'z');
+            Assert.assertTrue(set.add(Character.valueOf(encryptLetter)));
+        }
     }
 
     /*
@@ -43,8 +70,27 @@ public class UserStory1 {
         - Then cryptogram based on a phrase where each plain letter from the phrase is mapped to a single cryptogram number from 1-26
      */
     @Test
-    public void numberCryptoTest(){
+    public void numberCryptoTest() throws Exception {
+        game = new Game(player, NumberCryptogram.TYPE, sentences,false);
 
+        // Checking if the player-crypto mapping, stores the encrypted solution
+        Assert.assertNotEquals(game.getPlayerGameMapping().get(player).getPhrase(), SOLUTION.toLowerCase());
+
+        NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
+
+        // Checking that the NumberCryptogram phrase is the encrypted sentence
+        Assert.assertNotEquals(number.getPhrase(), SOLUTION.toLowerCase());
+
+        // Checking that the NumberCryptogram solution is the solution
+        Assert.assertEquals(number.getSolution(), SOLUTION.toLowerCase());
+
+        // Checking for each encrypted letter that is a number and there is only one instance of it
+        HashSet<Character> set = new HashSet<>();
+        for(int i = 1; i < 27; ++i){
+            char plainLetter = number.getPlainLetter(i);
+            Assert.assertTrue(plainLetter >= 'a' && plainLetter <= 'z');
+            Assert.assertTrue(set.add(Character.valueOf(plainLetter)));
+        }
     }
 
     /*
@@ -53,9 +99,9 @@ public class UserStory1 {
         - When the player requests a cryptogram
         - Then an error message is shown and the game exits
      */
-    @Test
-    public void noPhrasesTest(){
-
+    @Test(expected = Exception.class)
+    public void noPhrasesTest() throws Exception{
+        game = new Game(player, NumberCryptogram.TYPE, new ArrayList<String>(), false);
     }
 
     @After
