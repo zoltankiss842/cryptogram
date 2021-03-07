@@ -7,6 +7,7 @@ import main.exceptions.*;
 import main.players.Player;
 import main.players.Players;
 import main.view.Frame;
+import main.view.GameCompletedMessagePane;
 import main.view.OverWriteOptionPane;
 
 import java.io.File;
@@ -102,13 +103,10 @@ public class Game {
     }
 
     public void playGame(){
-        //gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
-
         gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
     }
 
-    public void enterLetter(String oldLetter, String newLetter) throws Exception{
-
+    public void enterLetter(String cryptoLetter, String newLetter) throws Exception{
         Cryptogram c = playerGameMapping.get(currentPlayer);
 
         if(c == null){
@@ -117,7 +115,7 @@ public class Game {
 
         if(c instanceof NumberCryptogram){
             try{
-                int number = Integer.parseInt(oldLetter);
+                int number = Integer.parseInt(cryptoLetter);
 
                 if(number<=0 || number>26){
                     throw new NumberFormatException("Number is out of bounds!");
@@ -132,28 +130,34 @@ public class Game {
         }
         else{
 
-            if(!isLetterUsedLetter(oldLetter)){
+            char cryptoChar = cryptoLetter.charAt(0);
+            Character plainLetterAtCryptoChar = inputFromUserLetter.get(cryptoChar);
+
+            char newChar = newLetter.charAt(0);
+
+
+            if(!isLetterUsedLetter(cryptoChar)){
                 throw new NoSuchCryptogramLetter("This cryptogram letter is not used in this sentence");
             }
 
-            if(inputFromUserLetter.get(oldLetter.charAt(0)) != null && inputFromUserLetter.get(oldLetter.charAt(0)) != newLetter.charAt(0)){
+            if(plainLetterAtCryptoChar != null && plainLetterAtCryptoChar != newChar){
                 if(gameGui != null){
                     OverWriteOptionPane pane = new OverWriteOptionPane(gameGui.getFrame(),
-                            String.valueOf(inputFromUserLetter.get(oldLetter.charAt(0)).charValue()),
-                            String.valueOf(newLetter.charAt(0)));
+                            String.valueOf(plainLetterAtCryptoChar.charValue()),
+                            String.valueOf(newChar));
 
                     if(pane.getResult()){
-                        inputFromUserLetter.put(oldLetter.charAt(0), newLetter.charAt(0));
+                        inputFromUserLetter.put(cryptoChar, newChar);
 
                         String phrase = playerGameMapping.get(currentPlayer).getPhrase();
-                        phrase = phrase.replace(oldLetter.charAt(0), newLetter.charAt(0));
+                        phrase = phrase.replace(cryptoChar, newLetter.charAt(0));
                         playerGameMapping.get(currentPlayer).setPhrase(phrase);
 
                         currentPlayer.incrementTotalGuesses();
 
                         if(c instanceof LetterCryptogram){
                             LetterCryptogram letter = (LetterCryptogram)c;
-                            Character original = (Character) letter.getCryptogramAlphabet().get(oldLetter.charAt(0));
+                            Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
                             char temp = (Character) original;
 
                             if(temp == newLetter.charAt(0)){
@@ -165,25 +169,25 @@ public class Game {
                 else{
                     Scanner sc = new Scanner(System.in);
 
-                    System.out.println("Mapping from " + oldLetter + " to " + newLetter + " is already present.");
+                    System.out.println("Mapping from " + cryptoChar + " to " + newChar + " is already present.");
                     System.out.println("Would you like to replace it? Y/N");
                     String answer = sc.nextLine();
 
                     if(answer.equals("Y")){
-                        inputFromUserLetter.put(oldLetter.charAt(0), newLetter.charAt(0));
+                        inputFromUserLetter.put(cryptoChar, newChar);
 
                         String phrase = playerGameMapping.get(currentPlayer).getPhrase();
-                        phrase = phrase.replace(oldLetter.charAt(0), newLetter.charAt(0));
+                        phrase = phrase.replace(cryptoChar, newChar);
                         playerGameMapping.get(currentPlayer).setPhrase(phrase);
 
                         currentPlayer.incrementTotalGuesses();
 
                         if(c instanceof LetterCryptogram){
                             LetterCryptogram letter = (LetterCryptogram)c;
-                            Character original = (Character) letter.getCryptogramAlphabet().get(oldLetter.charAt(0));
+                            Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
                             char temp = (Character) original;
 
-                            if(temp == newLetter.charAt(0)){
+                            if(temp == newChar){
                                 currentPlayer.incrementTotalCorrectGuesses();
                             }
                         }
@@ -194,42 +198,45 @@ public class Game {
             else{
 
                 for(Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()){
-                    if(entry.getValue() != null && entry.getValue().equals(newLetter.charAt(0))){
+                    if(entry.getValue() != null && entry.getValue().equals(newChar)){
                         throw new PlainLetterAlreadyInUse("Plain letter already in use, try again...");
                     }
                 }
 
-                inputFromUserLetter.put(oldLetter.charAt(0), newLetter.charAt(0));
+                inputFromUserLetter.put(cryptoChar, newChar);
 
                 String phrase = playerGameMapping.get(currentPlayer).getPhrase();
-                phrase = phrase.replace(oldLetter.charAt(0), newLetter.charAt(0));
+                phrase = phrase.replace(cryptoChar, newChar);
                 playerGameMapping.get(currentPlayer).setPhrase(phrase);
 
                 currentPlayer.incrementTotalGuesses();
 
                 if(c instanceof LetterCryptogram){
                     LetterCryptogram letter = (LetterCryptogram)c;
-                    Character original = (Character) letter.getCryptogramAlphabet().get(oldLetter.charAt(0));
+                    Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
                     char temp = (Character) original;
 
-                    if(temp == newLetter.charAt(0)){
+                    if(temp == newChar){
                         currentPlayer.incrementTotalCorrectGuesses();
                     }
                 }
             }
 
             if(isEverythingMappedLetter()){
-                if(checkAnswer()){
-                    System.out.println("You have successfully completed the cryptogram!");
+                boolean success = checkAnswer();
+                if(success){
                     currentPlayer.incrementCryptogramsCompleted();  // This is the successful completion
                     currentPlayer.incrementCryptogramsPlayed();
+                    GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
                 }
                 else{
-                    System.out.println("Better luck next time...");
                     currentPlayer.incrementCryptogramsPlayed();
+                    GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
                 }
 
                 playerGameMapping.put(currentPlayer, null);
+                inputFromUserNumber = null;
+                inputFromUserLetter = null;
             }
 
         }
@@ -565,8 +572,8 @@ public class Game {
         return inputFromUserLetter;
     }
 
-    private boolean isLetterUsedLetter(String letter){
-        return inputFromUserLetter.containsKey(letter.charAt(0));
+    private boolean isLetterUsedLetter(char letter){
+        return inputFromUserLetter.containsKey(letter);
     }
 
     private boolean isLetterUsedNumber(int number){
