@@ -256,12 +256,16 @@ public class Game {
     }
 
     private void enterLetter(int number, String newLetter) throws Exception {
+        int key = number;
+        Character plainLetterAtCryptoChar = inputFromUserNumber.get(key);
+
+        char newChar = newLetter.charAt(0);
 
         if(!isLetterUsedNumber(number)){
             throw new NoSuchCryptogramLetter("This letter is not used in this sentence");
         }
 
-        if(inputFromUserNumber.get(number) != null){
+        if(plainLetterAtCryptoChar != null && plainLetterAtCryptoChar != newChar){
 
             if(gameGui != null){
                 OverWriteOptionPane pane = new OverWriteOptionPane(gameGui.getFrame(),
@@ -270,6 +274,11 @@ public class Game {
 
                 if(pane.getResult()){
 
+                    for(Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()){
+                        if(entry.getValue() != null && entry.getValue().equals(newLetter.charAt(0))){
+                            throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
+                        }
+                    }
                     overwrite = true;
 
                     inputFromUserNumber.put(number, newLetter.charAt(0));
@@ -319,6 +328,8 @@ public class Game {
                     throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
                 }
             }
+
+            overwrite = true;
 
             inputFromUserNumber.put(number, newLetter.charAt(0));
 
@@ -380,14 +391,24 @@ public class Game {
         }
         else if(c instanceof NumberCryptogram){
             boolean found = false;
-            for(Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()){
-                if(entry.getValue() != null && entry.getValue().equals(letter.charAt(0))){
-                    inputFromUserNumber.put(entry.getKey(), null);
-                    found = true;
-                }
+            int key = -1;
+            try{
+                key = Integer.parseInt(letter);
             }
+            catch (NumberFormatException e){
+                e.printStackTrace();
+            }
+            if(inputFromUserNumber.containsKey(key)){
+                Character before = inputFromUserNumber.get(key);
 
-            if(!found){
+                if(before == null){
+                    return;
+                }
+
+                inputFromUserNumber.put(key, null);
+
+            }
+            else{
                 throw new NoSuchPlainLetter("No such letter was mapped");
             }
         }
