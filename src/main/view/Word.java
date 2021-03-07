@@ -98,8 +98,6 @@ public class Word {
      * This method updates both the letter label and the input fields value.
      * After the user enters a letter in one of the text fields, it goes through every word
      * and letter, and if the letter is the same as where the user inputted, then it substitutes it.
-     * @param original          the original letter that was at there place
-     * @param inputLetter       the new letter the will replace both the label and input field
      */
     public void clearLetterLabel(){
         for(Word words : wordHolder.getWords()){

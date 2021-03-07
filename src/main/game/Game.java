@@ -43,7 +43,7 @@ public class Game {
     private boolean overwrite = false;
 
     public Game(String userName) throws Exception {
-        this(new Player(userName), NumberCryptogram.TYPE, new ArrayList<String>(), true);
+        this(new Player(userName), LetterCryptogram.TYPE, new ArrayList<String>(), true);
         playGame();
     }
     
@@ -249,15 +249,25 @@ public class Game {
 
             if(isEverythingMappedLetter()){
                 boolean success = checkAnswer();
-                lockFields();
+
+                if(gameGui != null){
+                    lockFields();
+                }
+
                 if(success){
                     currentPlayer.incrementCryptogramsCompleted();  // This is the successful completion
                     currentPlayer.incrementCryptogramsPlayed();
-                    GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
+                    if(gameGui != null){
+                        GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
+                    }
                 }
                 else{
                     currentPlayer.incrementCryptogramsPlayed();
-                    GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
+
+                    if(gameGui != null){
+                        GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
+                    }
+
                 }
 
                 playerGameMapping.put(currentPlayer, null);
@@ -362,16 +372,24 @@ public class Game {
         }
 
         if(isEverythingMappedNumber()){
-            lockFields();
 
-            if(checkAnswer()){
-                System.out.println("You have successfully completed the cryptogram!");
+            if(gameGui != null){
+                lockFields();
+            }
+
+            boolean success = checkAnswer();
+            if(success){
                 currentPlayer.incrementCryptogramsCompleted();  // This is the successful completion
                 currentPlayer.incrementCryptogramsPlayed();
+                if(gameGui != null){
+                    GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
+                }
             }
             else{
-                System.out.println("Better luck next time...");
                 currentPlayer.incrementCryptogramsPlayed();
+                if(gameGui != null){
+                    GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
+                }
             }
 
             playerGameMapping.put(currentPlayer, null);
@@ -587,7 +605,7 @@ public class Game {
         if(cryptogram instanceof LetterCryptogram){
             inputFromUserLetter = new HashMap<>();
             for(char c : cryptogram.getPhrase().toCharArray()){
-                if(c != ' '){
+                if(c != ' ' && c != '!'){
                     inputFromUserLetter.put(c, null);
                 }
             }

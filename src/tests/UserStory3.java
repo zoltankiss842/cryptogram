@@ -45,7 +45,7 @@ public class UserStory3 {
         // Collecting individual letters from the encrypted phrase
         HashSet<Character> set = new HashSet<>();
         for(char c : letter.getPhrase().toCharArray()){
-            if(c != ' ') {
+            if(c != ' ' && c != '!') {
                 set.add(c);
             }
         }
@@ -57,8 +57,8 @@ public class UserStory3 {
             list.add((Character) iterator.next());
         }
 
-        game.enterLetter(String.valueOf(list.get(0)), "b");
-        game.undoLetter("b");
+        game.enterLetter(String.valueOf(list.get(0)), String.valueOf(list.get(0)));
+        game.undoLetter(String.valueOf(list.get(0)));
 
         // Checking if the total guesses updated
         Assert.assertTrue(player.getTotalGuesses() == 1);
@@ -79,7 +79,9 @@ public class UserStory3 {
         // Collecting individual numbers from the encrypted phrase
         HashSet<Integer> set = new HashSet<>();
         for(Object c : number.getSolutionInIntegerFormat().toArray()){
-            set.add((Integer) c);
+            if((Integer) c != 0) {
+                set.add((Integer)c);
+            }
         }
 
         ArrayList<Integer> list = new ArrayList<>();
@@ -90,7 +92,7 @@ public class UserStory3 {
         }
 
         game.enterLetter(String.valueOf(list.get(0)), "k");
-        game.undoLetter("k");
+        game.undoLetter(String.valueOf(list.get(0)));
 
         // Checking if the total guesses updated
         Assert.assertTrue(player.getTotalGuesses() == 1);
@@ -111,7 +113,7 @@ public class UserStory3 {
         // Collecting individual letters from the encrypted phrase
         HashSet<Character> set = new HashSet<>();
         for(char c : letter.getPhrase().toCharArray()){
-            if(c != ' ') {
+            if(c != ' ' && c != '!') {
                 set.add(c);
             }
         }

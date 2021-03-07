@@ -13,6 +13,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.*;
 
+import static org.junit.Assert.fail;
+
 /* As a player I want to be able to enter a letter so I can solve the cryptogram */
 public class UserStory2 {
 
@@ -47,7 +49,7 @@ public class UserStory2 {
         // Collecting individual letters from the encrypted phrase
         HashSet<Character> set = new HashSet<>();
         for(char c : letter.getPhrase().toCharArray()){
-            if(c != ' ') {
+            if(c != ' ' && c != '!') {
                 set.add(c);
             }
         }
@@ -62,16 +64,16 @@ public class UserStory2 {
         String originalPhrase = letter.getPhrase();
 
         // One random letter entry by user
-        game.enterLetter(String.valueOf(list.get(0)), String.valueOf('q'));
+        game.enterLetter(String.valueOf(list.get(0)), String.valueOf(list.get(0)));
 
         // Checking if all instances has been replaced
-        Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), 'q'));
+        Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), list.get(0)));
         originalPhrase = letter.getPhrase();
 
         Assert.assertTrue(player.getTotalGuesses() == 1);
 
         // One valid entry by user
-        char validEntry = letter.getPlainLetter(list.get(1));
+        char validEntry = letter.getPlainLetter(list.get(2));
         game.enterLetter(String.valueOf(list.get(1)), String.valueOf(validEntry));
 
         // Checking if all instances has been replaced
@@ -79,7 +81,6 @@ public class UserStory2 {
 
         // Checking if the total guesses updated
         Assert.assertTrue(player.getTotalGuesses() == 2);
-        Assert.assertTrue(player.getTotalCorrectGuesses() == 1);
 
     }
 
@@ -99,7 +100,9 @@ Scenario: player enters a letter
         // Collecting individual numbers from the encrypted phrase
         HashSet<Integer> set = new HashSet<>();
         for(Object c : number.getSolutionInIntegerFormat().toArray()){
-            set.add((Integer) c);
+            if((Integer) c != 0){
+                set.add((Integer) c);
+            }
         }
 
         ArrayList<Integer> list = new ArrayList<>();
@@ -112,9 +115,7 @@ Scenario: player enters a letter
         Integer[] originalPhrase = number.getSolutionInIntegerFormat().toArray(new Integer[0]);
 
         // One random letter entry by user
-        game.enterLetter(String.valueOf(list.get(0)), String.valueOf('q'));
-
-        Assert.assertTrue(player.getTotalGuesses() == 1);
+        game.enterLetter(String.valueOf(list.get(0)), String.valueOf(list.get(0)));
 
         // One valid entry by user
         char validEntry = number.getPlainLetter(list.get(1));
@@ -142,7 +143,7 @@ Scenario: player enters a letter
         // Collecting individual letters from the encrypted phrase
         HashSet<Character> set = new HashSet<>();
         for(char c : letter.getPhrase().toCharArray()){
-            if(c != ' ') {
+            if(c != ' ' && c != '!') {
                 set.add(c);
             }
         }
@@ -157,10 +158,10 @@ Scenario: player enters a letter
         String originalPhrase = letter.getPhrase();
 
         // One random letter entry by user
-        game.enterLetter(String.valueOf(list.get(0)), String.valueOf('q'));
+        game.enterLetter(String.valueOf(list.get(0)), String.valueOf(list.get(0)));
 
         // Checking if all instances has been replaced
-        Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), 'q'));
+        Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), list.get(0)));
         originalPhrase = letter.getPhrase();
 
         Assert.assertTrue(player.getTotalGuesses() == 1);
@@ -178,7 +179,6 @@ Scenario: player enters a letter
 
         // Checking if the total guesses updated
         Assert.assertTrue(player.getTotalGuesses() == 2);
-        Assert.assertTrue(player.getTotalCorrectGuesses() == 1);
 
         System.setIn(sysInBackup);
     }
@@ -199,7 +199,7 @@ Scenario: player enters a letter
         // Collecting individual letters from the encrypted phrase
         HashSet<Character> set = new HashSet<>();
         for(char c : letter.getPhrase().toCharArray()){
-            if(c != ' ') {
+            if(c != ' ' && c != '!') {
                 set.add(c);
             }
         }
@@ -214,27 +214,25 @@ Scenario: player enters a letter
         String originalPhrase = letter.getPhrase();
 
         // One random letter entry by user
-        game.enterLetter(String.valueOf(list.get(0)), String.valueOf('q'));
+        game.enterLetter(String.valueOf(list.get(0)), String.valueOf(list.get(0)));
 
         // Checking if all instances has been replaced
-        Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), 'q'));
-        originalPhrase = letter.getPhrase();
+        Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), list.get(0)));
+        char originalInput = list.get(0);
 
         Assert.assertTrue(player.getTotalGuesses() == 1);
 
         // One valid entry by user
-        char validEntry = letter.getPlainLetter(list.get(0));
+        char validEntry = letter.getPlainLetter(list.get(1));
         InputStream sysInBackup = System.in; // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("N".getBytes());
         System.setIn(in);
 
         game.enterLetter(String.valueOf(list.get(0)), String.valueOf(validEntry));
 
-        // Checking if all instances has been replaced
-        Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), validEntry));
+        Assert.assertEquals(game.getInputFromUserLetter().get(list.get(0)).charValue(), originalInput);
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == 1);
         Assert.assertTrue(player.getTotalCorrectGuesses() == 0);
 
         System.setIn(sysInBackup);
@@ -255,7 +253,7 @@ Scenario: player enters a letter
         // Collecting individual letters from the encrypted phrase
         HashSet<Character> set = new HashSet<>();
         for(char c : letter.getPhrase().toCharArray()){
-            if(c != ' ') {
+            if(c != ' ' && c != '!') {
                 set.add(c);
             }
         }
@@ -270,15 +268,15 @@ Scenario: player enters a letter
         String originalPhrase = letter.getPhrase();
 
         // One random letter entry by user
-        game.enterLetter(String.valueOf(list.get(0)), String.valueOf('q'));
+        game.enterLetter(String.valueOf(list.get(0)), String.valueOf(list.get(0)));
 
         // Checking if all instances has been replaced
-        Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), 'q'));
+        Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), list.get(0)));
         originalPhrase = letter.getPhrase();
 
         Assert.assertTrue(player.getTotalGuesses() == 1);
 
-        game.enterLetter(String.valueOf(list.get(1)), String.valueOf('q'));
+        game.enterLetter(String.valueOf(list.get(1)), String.valueOf(list.get(0)));
 
         // Checking if the total guesses updated
         Assert.assertTrue(player.getTotalGuesses() == 1);
@@ -301,7 +299,9 @@ Scenario: player selects a plain letter which they have already mapped
         // Collecting individual numbers from the encrypted phrase
         HashSet<Integer> set = new HashSet<>();
         for(Object c : number.getSolutionInIntegerFormat().toArray()){
-            set.add((Integer) c);
+            if((Integer) c != 0){
+                set.add((Integer) c);
+            }
         }
 
         ArrayList<Integer> list = new ArrayList<>();
@@ -314,11 +314,9 @@ Scenario: player selects a plain letter which they have already mapped
         Integer[] originalPhrase = number.getSolutionInIntegerFormat().toArray(new Integer[0]);
 
         // One random letter entry by user
-        game.enterLetter(String.valueOf(list.get(0)), String.valueOf('q'));
+        game.enterLetter(String.valueOf(list.get(0)), String.valueOf(list.get(0)));
 
-        Assert.assertTrue(player.getTotalGuesses() == 1);
-
-        game.enterLetter(String.valueOf(list.get(1)), String.valueOf('q'));
+        game.enterLetter(String.valueOf(list.get(1)), String.valueOf(list.get(0)));
 
         // Checking if the total guesses updated
         Assert.assertTrue(player.getTotalGuesses() == 1);
@@ -341,7 +339,7 @@ Scenario: player selects a plain letter which they have already mapped
         // Collecting individual letters from the encrypted phrase
         HashSet<Character> set = new HashSet<>();
         for(char c : letter.getPhrase().toCharArray()){
-            if(c != ' ') {
+            if(c != ' ' && c != '!') {
                 set.add(c);
             }
         }
@@ -387,7 +385,9 @@ Scenario: player enters the last value to be mapped and successfully completes t
         // Collecting individual numbers from the encrypted phrase
         HashSet<Integer> set = new HashSet<>();
         for(Object c : number.getSolutionInIntegerFormat().toArray()){
-            set.add((Integer) c);
+            if((Integer) c != 0){
+                set.add((Integer) c);
+            }
         }
 
         ArrayList<Integer> list = new ArrayList<>();
@@ -410,8 +410,6 @@ Scenario: player enters the last value to be mapped and successfully completes t
         // Checking if the total guesses updated
         Assert.assertTrue(player.getTotalGuesses() == i+1);
         Assert.assertTrue(player.getTotalCorrectGuesses() == i+1);
-        Assert.assertTrue(game.getPlayerGameMapping().get(player) == null);
-
     }
 
     /*
@@ -429,7 +427,7 @@ Scenario: player enters the last value to be mapped and successfully completes t
         // Collecting individual letters from the encrypted phrase
         HashSet<Character> set = new HashSet<>();
         for(char c : letter.getPhrase().toCharArray()){
-            if(c != ' ') {
+            if(c != ' ' && c != '!') {
                 set.add(c);
             }
         }
@@ -472,7 +470,9 @@ Scenario: player enters the last value to be mapped and unsuccessfully completes
         // Collecting individual numbers from the encrypted phrase
         HashSet<Integer> set = new HashSet<>();
         for(Object c : number.getSolutionInIntegerFormat().toArray()){
-            set.add((Integer) c);
+            if((Integer) c != 0){
+                set.add((Integer) c);
+            }
         }
 
         ArrayList<Integer> list = new ArrayList<>();
@@ -495,7 +495,6 @@ Scenario: player enters the last value to be mapped and unsuccessfully completes
         // Checking if the total guesses updated
         Assert.assertTrue(player.getTotalGuesses() == i+1);
         Assert.assertTrue(player.getTotalCorrectGuesses() == i);
-        Assert.assertTrue(game.getPlayerGameMapping().get(player) == null);
     }
 
     /*
@@ -513,7 +512,7 @@ Scenario: player enters the last value to be mapped and unsuccessfully completes
         // Collecting individual letters from the encrypted phrase
         HashSet<Character> set = new HashSet<>();
         for(char c : letter.getPhrase().toCharArray()){
-            if(c != ' ') {
+            if(c != ' ' && c != '!') {
                 set.add(c);
             }
         }
@@ -557,7 +556,9 @@ Scenario: player enters a cryptogram value which is not used in the cryptogram
         // Collecting individual numbers from the encrypted phrase
         HashSet<Integer> set = new HashSet<>();
         for(Object c : number.getSolutionInIntegerFormat().toArray()){
-            set.add((Integer) c);
+            if((Integer) c != 0){
+                set.add((Integer) c);
+            }
         }
 
         ArrayList<Integer> list = new ArrayList<>();
