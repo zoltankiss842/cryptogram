@@ -43,7 +43,7 @@ public class Game {
     private boolean overwrite = false;
 
     public Game(String userName) throws Exception {
-        this(new Player(userName), LetterCryptogram.TYPE, new ArrayList<String>(), true);
+        this(new Player(userName), NumberCryptogram.TYPE, new ArrayList<String>(), true);
         playGame();
     }
     
@@ -249,6 +249,7 @@ public class Game {
 
             if(isEverythingMappedLetter()){
                 boolean success = checkAnswer();
+                lockFields();
                 if(success){
                     currentPlayer.incrementCryptogramsCompleted();  // This is the successful completion
                     currentPlayer.incrementCryptogramsPlayed();
@@ -361,6 +362,8 @@ public class Game {
         }
 
         if(isEverythingMappedNumber()){
+            lockFields();
+
             if(checkAnswer()){
                 System.out.println("You have successfully completed the cryptogram!");
                 currentPlayer.incrementCryptogramsCompleted();  // This is the successful completion
@@ -688,6 +691,12 @@ public class Game {
             for(Word words : gameGui.getWordHolder().getWords()){
                 words.clearLetterLabel();
             }
+        }
+    }
+
+    public void lockFields(){
+        for(Word words : gameGui.getWordHolder().getWords()){
+            words.lockFields();
         }
     }
 }

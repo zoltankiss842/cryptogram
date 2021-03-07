@@ -143,6 +143,22 @@ public class LetterInput {
 
     }
 
+    public void disableField(){
+
+        // This runnable is for prevent threading problems
+        Runnable modify = new Runnable() {
+            @Override
+            public void run() {
+                userGuess.setEnabled(false);
+                userGuess.revalidate();
+                letterInput.revalidate();
+            }
+        };
+
+        SwingUtilities.invokeLater(modify);
+
+    }
+
     private DocumentListener createDocumentListener(){
         DocumentListener dl = new DocumentListener() {
             @Override
@@ -204,10 +220,14 @@ public class LetterInput {
 
 
                 if(game.getPlayerGameMapping().get(game.getCurrentPlayer()) instanceof LetterCryptogram){
-                    System.out.println(game.getInputFromUserLetter().toString());
+                    if(game.getInputFromUserLetter() != null){
+                        System.out.println(game.getInputFromUserLetter().toString());
+                    }
                 }
                 else{
-                    System.out.println(game.getInputFromUserNumber().toString());
+                    if(game.getInputFromUserNumber() != null){
+                        System.out.println(game.getInputFromUserNumber().toString());
+                    }
                 }
 
             }

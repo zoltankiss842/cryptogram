@@ -109,6 +109,14 @@ public class Word {
         }
     }
 
+    public void lockFields(){
+        for(Word words : wordHolder.getWords()){
+            for(LetterInput input : words.getLetters()){
+                input.disableField();
+            }
+        }
+    }
+
     public WordHolder getWordHolder() {
         return wordHolder;
     }
