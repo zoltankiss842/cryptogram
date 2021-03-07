@@ -46,6 +46,7 @@ public class Game {
         this(new Player(userName), NumberCryptogram.TYPE, new ArrayList<String>(), true);
         playGame();
     }
+    
 
     public Game(Player p, String cryptType, boolean createGui) throws Exception {
         try{
@@ -105,6 +106,17 @@ public class Game {
     }
 
     public void playGame(){
+        try{
+            if (playerGameMapping.get(currentPlayer) instanceof LetterCryptogram)
+            generateCryptogram(currentPlayer,LetterCryptogram.TYPE);
+            else
+                generateCryptogram(currentPlayer,NumberCryptogram.TYPE);
+        }
+        catch (Exception e)
+        {
+            System.out.println("shit hit the fan");
+        }
+
         gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
     }
 
@@ -324,6 +336,7 @@ public class Game {
 
         }
         else{
+            overwrite = true;
 
             overwrite = true;
 

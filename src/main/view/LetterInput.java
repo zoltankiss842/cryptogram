@@ -202,7 +202,7 @@ public class LetterInput {
                 }
 
 
-                System.out.println(game.getInputFromUserNumber().toString());
+                System.out.println(game.getInputFromUserNumber().toString());  //TODO change when changing Crypto TYPE
             }
         };
 
