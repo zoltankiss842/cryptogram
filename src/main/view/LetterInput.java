@@ -1,5 +1,6 @@
 package main.view;
 
+import main.cryptogram.LetterCryptogram;
 import main.exceptions.PlainLetterAlreadyInUse;
 import main.game.Game;
 
@@ -202,7 +203,13 @@ public class LetterInput {
                 }
 
 
-                System.out.println(game.getInputFromUserNumber().toString());  //TODO change when changing Crypto TYPE
+                if(game.getPlayerGameMapping().get(game.getCurrentPlayer()) instanceof LetterCryptogram){
+                    System.out.println(game.getInputFromUserLetter().toString());
+                }
+                else{
+                    System.out.println(game.getInputFromUserNumber().toString());
+                }
+
             }
         };
 
