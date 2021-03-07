@@ -13,12 +13,14 @@ public class WordHolder {
     private ArrayList<Word> words;
     private JPanel holder;
     private JScrollPane holderScrollPane;
+    private Frame gameFrame;
 
     private JFrame frame;
 
-    public WordHolder(JFrame frame) {
+    public WordHolder(JFrame frame, Frame gameFrame) {
         this.words = new ArrayList<>();
         this.frame = frame;
+        this.gameFrame = gameFrame;
 
         initHolder();
         initScrollPane();
@@ -92,5 +94,9 @@ public class WordHolder {
 
     public ArrayList<Word> getWords() {
         return words;
+    }
+
+    public Frame getFrame() {
+        return gameFrame;
     }
 }

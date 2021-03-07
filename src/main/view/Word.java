@@ -76,10 +76,13 @@ public class Word {
         for(Word words : wordHolder.getWords()){
             for(LetterInput input : words.getLetters()){
                 if(original.equals(input.getOriginalLetter())){
-                    input.updateLetterLabel(inputLetter);
                     input.updateInputFieldValue(inputLetter);
                 }
             }
         }
+    }
+
+    public WordHolder getWordHolder() {
+        return wordHolder;
     }
 }

@@ -3,9 +3,11 @@ package main.game;
 import main.cryptogram.Cryptogram;
 import main.cryptogram.LetterCryptogram;
 import main.cryptogram.NumberCryptogram;
+import main.exceptions.*;
 import main.players.Player;
 import main.players.Players;
 import main.view.Frame;
+import main.view.OverWriteOptionPane;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,11 +39,8 @@ public class Game {
     private String currentPhrase;
     private Frame gameGui;
 
-    public Game(String userName) {
-        currentPlayer = new Player(userName);
-        entered = new ArrayList<>();
-        currentPhrase = "";
-        gameGui = new Frame(currentPlayer.getUsername(), this);
+    public Game(String userName) throws Exception {
+        this(new Player(userName), LetterCryptogram.TYPE, new ArrayList<String>(), true);
         playGame();
     }
 
@@ -55,7 +54,7 @@ public class Game {
             }
         }
         catch (Exception e){
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             System.exit(0);
         }
 
@@ -65,6 +64,7 @@ public class Game {
     public Game(Player p, String cryptType, ArrayList<String> sentences, boolean createGui) throws Exception {
         this(p, cryptType, createGui);
         this.sentences = sentences;
+        loadSentences();
         generateCryptogram(currentPlayer, cryptType);
 
     }
@@ -104,23 +104,7 @@ public class Game {
     public void playGame(){
         //gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
 
-        ArrayList<String> tempSentences = new ArrayList<>();
-        tempSentences.add("This is a very long sentence that will be displayed so we will see what is going to happen");
-        tempSentences.add("He was so preoccupied with whether or not he could that he failed to stop to consider if he should");
-        tempSentences.add("Pair your designer cowboy hat with scuba gear for a memorable occasion");
-        tempSentences.add("For oil spots on the floor, nothing beats parking a motorbike in the lounge");
-        tempSentences.add("He said he was not there yesterday however many people saw him there");
-
-        Random rnd = new Random();
-
-        String toDisplay = tempSentences.get(rnd.nextInt(5));
-
-        Cryptogram c = new Cryptogram();
-        c.setPhrase(toDisplay);
-        c.setSolution(toDisplay);
-        currentPhrase = toDisplay;
-
-        gameGui.displayNewGame(c);
+        gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
     }
 
     public void enterLetter(String oldLetter, String newLetter) throws Exception{
@@ -128,7 +112,7 @@ public class Game {
         Cryptogram c = playerGameMapping.get(currentPlayer);
 
         if(c == null){
-            throw new Exception("Start a new game to enter a letter!");
+            throw new NoGameBeingPlayed("Start a new game to enter a letter!");
         }
 
         if(c instanceof NumberCryptogram){
@@ -143,47 +127,75 @@ public class Game {
                 }
             }
             catch(NumberFormatException e){
-                e.printStackTrace();
+                System.err.println(e.getMessage());
             }
         }
         else{
 
             if(!isLetterUsedLetter(oldLetter)){
-                throw new Exception("This letter is not used in this sentence");
+                throw new NoSuchCryptogramLetter("This cryptogram letter is not used in this sentence");
             }
 
-            if(inputFromUserLetter.get(oldLetter.charAt(0)) != null){
-                Scanner sc = new Scanner(System.in);
+            if(inputFromUserLetter.get(oldLetter.charAt(0)) != null && inputFromUserLetter.get(oldLetter.charAt(0)) != newLetter.charAt(0)){
+                if(gameGui != null){
+                    OverWriteOptionPane pane = new OverWriteOptionPane(gameGui.getFrame(),
+                            String.valueOf(inputFromUserLetter.get(oldLetter.charAt(0)).charValue()),
+                            String.valueOf(newLetter.charAt(0)));
 
-                System.out.println("Mapping from " + oldLetter + " to " + newLetter + " is already present.");
-                System.out.println("Would you like to replace it? Y/N");
-                String answer = sc.nextLine();
+                    if(pane.getResult()){
+                        inputFromUserLetter.put(oldLetter.charAt(0), newLetter.charAt(0));
 
-                if(answer.equals("Y")){
-                    inputFromUserLetter.put(oldLetter.charAt(0), newLetter.charAt(0));
+                        String phrase = playerGameMapping.get(currentPlayer).getPhrase();
+                        phrase = phrase.replace(oldLetter.charAt(0), newLetter.charAt(0));
+                        playerGameMapping.get(currentPlayer).setPhrase(phrase);
 
-                    String phrase = playerGameMapping.get(currentPlayer).getPhrase();
-                    phrase = phrase.replace(oldLetter.charAt(0), newLetter.charAt(0));
-                    playerGameMapping.get(currentPlayer).setPhrase(phrase);
+                        currentPlayer.incrementTotalGuesses();
 
-                    currentPlayer.incrementTotalGuesses();
+                        if(c instanceof LetterCryptogram){
+                            LetterCryptogram letter = (LetterCryptogram)c;
+                            Character original = (Character) letter.getCryptogramAlphabet().get(oldLetter.charAt(0));
+                            char temp = (Character) original;
 
-                    if(c instanceof LetterCryptogram){
-                        LetterCryptogram letter = (LetterCryptogram)c;
-                        Character original = (Character) letter.getCryptogramAlphabet().get(oldLetter.charAt(0));
-                        char temp = (Character) original;
-
-                        if(temp == newLetter.charAt(0)){
-                            currentPlayer.incrementTotalCorrectGuesses();
+                            if(temp == newLetter.charAt(0)){
+                                currentPlayer.incrementTotalCorrectGuesses();
+                            }
                         }
                     }
                 }
+                else{
+                    Scanner sc = new Scanner(System.in);
+
+                    System.out.println("Mapping from " + oldLetter + " to " + newLetter + " is already present.");
+                    System.out.println("Would you like to replace it? Y/N");
+                    String answer = sc.nextLine();
+
+                    if(answer.equals("Y")){
+                        inputFromUserLetter.put(oldLetter.charAt(0), newLetter.charAt(0));
+
+                        String phrase = playerGameMapping.get(currentPlayer).getPhrase();
+                        phrase = phrase.replace(oldLetter.charAt(0), newLetter.charAt(0));
+                        playerGameMapping.get(currentPlayer).setPhrase(phrase);
+
+                        currentPlayer.incrementTotalGuesses();
+
+                        if(c instanceof LetterCryptogram){
+                            LetterCryptogram letter = (LetterCryptogram)c;
+                            Character original = (Character) letter.getCryptogramAlphabet().get(oldLetter.charAt(0));
+                            char temp = (Character) original;
+
+                            if(temp == newLetter.charAt(0)){
+                                currentPlayer.incrementTotalCorrectGuesses();
+                            }
+                        }
+                    }
+                }
+
             }
             else{
 
                 for(Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()){
                     if(entry.getValue() != null && entry.getValue().equals(newLetter.charAt(0))){
-                        throw new Exception("Plain letter already in use, try again...");
+                        throw new PlainLetterAlreadyInUse("Plain letter already in use, try again...");
                     }
                 }
 
@@ -227,36 +239,61 @@ public class Game {
     private void enterLetter(int number, String newLetter) throws Exception {
 
         if(!isLetterUsedNumber(number)){
-            throw new Exception("This letter is not used in this sentence");
+            throw new NoSuchCryptogramLetter("This letter is not used in this sentence");
         }
 
         if(inputFromUserNumber.get(number) != null){
-            Scanner sc = new Scanner(System.in);
 
-            System.out.println("Mapping from " + number + " to " + newLetter + " is already present.");
-            System.out.println("Would you like to replace it? Y/N");
-            String answer = sc.nextLine();
+            if(gameGui != null){
+                OverWriteOptionPane pane = new OverWriteOptionPane(gameGui.getFrame(),
+                        String.valueOf(inputFromUserNumber.get(number).charValue()),
+                        String.valueOf(newLetter.charAt(0)));
 
-            if(answer.equals("Y")){
-                inputFromUserNumber.put(number, newLetter.charAt(0));
+                if(pane.getResult()){
+                    inputFromUserNumber.put(number, newLetter.charAt(0));
 
-                currentPlayer.incrementTotalGuesses();
+                    currentPlayer.incrementTotalGuesses();
 
-                NumberCryptogram c = (NumberCryptogram) playerGameMapping.get(currentPlayer);
+                    NumberCryptogram c = (NumberCryptogram) playerGameMapping.get(currentPlayer);
 
-                Object original = c.getCryptogramAlphabet().get(number);
-                char temp = (Character) original;
+                    Object original = c.getCryptogramAlphabet().get(number);
+                    char temp = (Character) original;
 
-                if(temp == newLetter.charAt(0)){
-                    currentPlayer.incrementTotalCorrectGuesses();
+                    if(temp == newLetter.charAt(0)){
+                        currentPlayer.incrementTotalCorrectGuesses();
+                    }
                 }
             }
+            else{
+                Scanner sc = new Scanner(System.in);
+
+                System.out.println("Mapping from " + number + " to " + newLetter + " is already present.");
+                System.out.println("Would you like to replace it? Y/N");
+                String answer = sc.nextLine();
+
+                if(answer.equals("Y")){
+                    inputFromUserNumber.put(number, newLetter.charAt(0));
+
+                    currentPlayer.incrementTotalGuesses();
+
+                    NumberCryptogram c = (NumberCryptogram) playerGameMapping.get(currentPlayer);
+
+                    Object original = c.getCryptogramAlphabet().get(number);
+                    char temp = (Character) original;
+
+                    if(temp == newLetter.charAt(0)){
+                        currentPlayer.incrementTotalCorrectGuesses();
+                    }
+                }
+            }
+
+
         }
         else{
 
             for(Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()){
                 if(entry.getValue() != null && entry.getValue().equals(newLetter.charAt(0))){
-                    throw new Exception("Plain letter already in use, try again...");
+                    throw new PlainLetterAlreadyInUse("Plain letter already in use, try again...");
                 }
             }
 
@@ -307,7 +344,7 @@ public class Game {
             }
 
             if(!found){
-                throw new Exception("No such letter was mapped");
+                throw new NoSuchPlainLetter("No such letter was mapped");
             }
         }
         else if(c instanceof NumberCryptogram){
@@ -320,7 +357,7 @@ public class Game {
             }
 
             if(!found){
-                throw new Exception("No such letter was mapped");
+                throw new NoSuchPlainLetter("No such letter was mapped");
             }
         }
 
@@ -387,19 +424,25 @@ public class Game {
     }
 
     public boolean loadSentences(){
-        File f = new File("phrases.txt");
-        Scanner mys;
-        try{
-            mys = new Scanner(f);
-        }catch(FileNotFoundException e){
-            e.printStackTrace();
-            return false;
-        }
-        ArrayList<String> phrases = new ArrayList<>();
-        Random rand = new Random();
-        while(mys.hasNextLine()){
-            phrases.add(mys.nextLine());
-        }
+//        File f = new File("phrases.txt");
+//        Scanner mys;
+//        try{
+//            mys = new Scanner(f);
+//        }catch(FileNotFoundException e){
+//            e.printStackTrace();
+//            return false;
+//        }
+//        ArrayList<String> phrases = new ArrayList<>();
+//        Random rand = new Random();
+//        while(mys.hasNextLine()){
+//            phrases.add(mys.nextLine());
+//        }
+
+        sentences.add("This is a very long sentence that will be displayed so we will see what is going to happen");
+        sentences.add("He was so preoccupied with whether or not he could that he failed to stop to consider if he should");
+        sentences.add("Pair your designer cowboy hat with scuba gear for a memorable occasion");
+        sentences.add("For oil spots on the floor, nothing beats parking a motorbike in the lounge");
+        sentences.add("He said he was not there yesterday however many people saw him there");
 
         //String chosenphrase = ArrayList.get(rand.nextInt(ArrayList.size()));
 
@@ -453,7 +496,7 @@ public class Game {
              solution = sentences.get(rnd.nextInt(sentences.size()));
         }
         else{
-            throw new Exception("There are no sentences, exiting...");
+            throw new NoPhrasesToGenerate("There are no sentences, exiting...");
         }
 
         if(type.equals(LetterCryptogram.TYPE)){
@@ -463,7 +506,7 @@ public class Game {
             cryptogram = new NumberCryptogram(solution);
         }
         else{
-            throw new Exception("No such game type, exiting...");
+            throw new NoSuchGameType("No such game type, exiting...");
         }
 
         playerGameMapping = new HashMap<>();
@@ -516,6 +559,10 @@ public class Game {
         }
 
         return true;
+    }
+
+    public HashMap<Character, Character> getInputFromUserLetter() {
+        return inputFromUserLetter;
     }
 
     private boolean isLetterUsedLetter(String letter){

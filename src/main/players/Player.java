@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Player {
     private String username;
-    private int accuracy;
+    private double accuracy;
     private int totalGuesses;
     private int totalCorrectGuesses;
     private int cryptogramsPlayed;
@@ -27,20 +27,22 @@ public class Player {
         this.username = username;
     }
 
-    public int getAccuracy() {
+    public double getAccuracy() {
         return accuracy;
     }
 
-    public int updateAccuracy() {
-        return accuracy;
+    public void setAccuracy(double accuracy) {
+        this.accuracy = accuracy;
     }
 
     public void incrementTotalGuesses() {
         totalGuesses++;
+        updateAccuracy();
     }
 
     public void incrementTotalCorrectGuesses() {
         totalCorrectGuesses++;
+        updateAccuracy();
     }
 
     public void incrementCryptogramsCompleted() {
@@ -65,5 +67,11 @@ public class Player {
 
     public int getTotalCorrectGuesses() {
         return totalCorrectGuesses;
+    }
+
+    private void updateAccuracy(){
+        if(this.totalGuesses != 0){
+            this.accuracy = (double)this.totalCorrectGuesses / (double)this.totalGuesses;
+        }
     }
 }

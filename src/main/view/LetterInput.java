@@ -1,5 +1,7 @@
 package main.view;
 
+import main.game.Game;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -138,32 +140,13 @@ public class LetterInput {
     private DocumentListener createDocumentListener(){
         DocumentListener dl = new DocumentListener() {
             @Override
-            public void insertUpdate(DocumentEvent e) {
-                String text = userGuess.getText();
-                if(!text.isEmpty() && !text.isBlank()){
-                    updateLetterLabel(text);
-                }
-                else{
-                    updateLetterLabel(originalLetter);
-                }
-            }
+            public void insertUpdate(DocumentEvent e) {}
 
             @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateLetterLabel(originalLetter);
-            }
+            public void removeUpdate(DocumentEvent e) {}
 
             @Override
-            public void changedUpdate(DocumentEvent e) {
-                String text = userGuess.getText();
-                if(!text.isEmpty() && !text.isBlank()){
-                    updateLetterLabel(text);
-                }
-                else{
-                    updateLetterLabel(originalLetter);
-                }
-
-            }
+            public void changedUpdate(DocumentEvent e) {}
         };
 
         return dl;
@@ -179,14 +162,27 @@ public class LetterInput {
             @Override
             public void focusLost(FocusEvent e) {
                 String text = userGuess.getText();
+                Game game = getGameController();
                 if(!text.isEmpty() && !text.isBlank()){
-                    updateLetterLabel(text);
-                    word.updateLetterLabel(originalLetter, text);
+                    try {
+                        game.enterLetter(originalLetter, text);
+                        word.updateLetterLabel(originalLetter, text);
+                    } catch (Exception exception) {
+                        System.err.println(exception.getMessage());
+                    }
+
+
                 }
                 else{
-                    updateLetterLabel(originalLetter);
-                    word.updateLetterLabel(originalLetter, null);
+                    try {
+                        game.undoLetter(originalLetter);
+                        word.updateLetterLabel(originalLetter, null);
+                    } catch (Exception exception) {
+                        System.err.println(exception.getMessage());
+                    }
                 }
+
+                System.out.println(game.getInputFromUserLetter().toString());
             }
         };
 
@@ -203,5 +199,9 @@ public class LetterInput {
 
     public JPanel getLetterInput() {
         return letterInput;
+    }
+
+    private Game getGameController(){
+        return this.word.getWordHolder().getFrame().getGameController();
     }
 }

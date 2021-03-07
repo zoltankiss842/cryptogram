@@ -79,7 +79,7 @@ public class Frame {
         solutionPanel = null;
 
         // Adding new encrypted sentence to the frame
-        wordHolder = new WordHolder(frame);
+        wordHolder = new WordHolder(frame, this);
         wordHolder.displayNewSentence(cryptogram.getPhrase());
 
         // Adding the solution sentence to the frame
@@ -99,5 +99,13 @@ public class Frame {
 
     public WordHolder getWordHolder() {
         return wordHolder;
+    }
+
+    public Game getGameController() {
+        return gameController;
+    }
+
+    public JFrame getFrame() {
+        return frame;
     }
 }
