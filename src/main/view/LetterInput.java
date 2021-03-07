@@ -1,6 +1,11 @@
 package main.view;
 
+import main.cryptogram.LetterCryptogram;
+import main.exceptions.PlainLetterAlreadyInUse;
+import main.game.Game;
+
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.MaskFormatter;
@@ -27,6 +32,7 @@ public class LetterInput {
 
     private String originalLetter;          // This stores the original letter, in case the user resets, it can use
                                             // this field to access the old letter.
+    private String previousUserInput;
 
     public LetterInput(String encryptedLetter, Word word){
 
@@ -41,7 +47,7 @@ public class LetterInput {
     private void initLetterInput() {
         this.letterInput = new JPanel();
         letterInput.setLayout(new BoxLayout(letterInput, BoxLayout.Y_AXIS));
-//        letterInput.setBorder(new LineBorder(new Color(0,0,0),1));
+        //letterInput.setBorder(new LineBorder(new Color(0,0,0),1));
     }
 
     private void initEncryptedLetter(String letter) {
@@ -73,6 +79,8 @@ public class LetterInput {
         userGuess.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         userGuess.setMinimumSize(new Dimension(WIDTH, HEIGHT));
         userGuess.setMaximumSize(new Dimension(WIDTH, HEIGHT));
+
+        previousUserInput = userGuess.getText();
 
         userGuess.getDocument().addDocumentListener(createDocumentListener());
 
@@ -135,35 +143,32 @@ public class LetterInput {
 
     }
 
+    public void disableField(){
+
+        // This runnable is for prevent threading problems
+        Runnable modify = new Runnable() {
+            @Override
+            public void run() {
+                userGuess.setEnabled(false);
+                userGuess.revalidate();
+                letterInput.revalidate();
+            }
+        };
+
+        SwingUtilities.invokeLater(modify);
+
+    }
+
     private DocumentListener createDocumentListener(){
         DocumentListener dl = new DocumentListener() {
             @Override
-            public void insertUpdate(DocumentEvent e) {
-                String text = userGuess.getText();
-                if(!text.isEmpty() && !text.isBlank()){
-                    updateLetterLabel(text);
-                }
-                else{
-                    updateLetterLabel(originalLetter);
-                }
-            }
+            public void insertUpdate(DocumentEvent e) {}
 
             @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateLetterLabel(originalLetter);
-            }
+            public void removeUpdate(DocumentEvent e) {}
 
             @Override
-            public void changedUpdate(DocumentEvent e) {
-                String text = userGuess.getText();
-                if(!text.isEmpty() && !text.isBlank()){
-                    updateLetterLabel(text);
-                }
-                else{
-                    updateLetterLabel(originalLetter);
-                }
-
-            }
+            public void changedUpdate(DocumentEvent e) {}
         };
 
         return dl;
@@ -179,14 +184,52 @@ public class LetterInput {
             @Override
             public void focusLost(FocusEvent e) {
                 String text = userGuess.getText();
+                Game game = getGameController();
+                StringBuilder builder = new StringBuilder();
                 if(!text.isEmpty() && !text.isBlank()){
-                    updateLetterLabel(text);
-                    word.updateLetterLabel(originalLetter, text);
+                    try {
+                        game.enterLetter(originalLetter, text);
+                        if(game.isOverwrite()){
+                            word.updateLetterLabel(originalLetter, text);
+                            game.setOverwrite(false);
+                            previousUserInput = text;
+                        }
+                        else{
+                            word.updateLetterLabel(originalLetter, previousUserInput);
+                        }
+                    } catch (Exception exception) {
+                        word.updateLetterLabel(originalLetter, previousUserInput);
+                        if(exception instanceof PlainLetterAlreadyInUse){
+                            PlainLetterInUseMessagePane pane = new PlainLetterInUseMessagePane(
+                                    word.getWordHolder().getFrame().getFrame(),
+                                    exception.getMessage());
+                        }
+                        System.err.println(exception.getMessage());
+                    }
+
+
                 }
                 else{
-                    updateLetterLabel(originalLetter);
-                    word.updateLetterLabel(originalLetter, null);
+                    try {
+                        game.undoLetter(originalLetter);
+                        word.updateLetterLabel(originalLetter, null);
+                    } catch (Exception exception) {
+                        System.err.println(exception.getMessage());
+                    }
                 }
+
+
+                if(game.getPlayerGameMapping().get(game.getCurrentPlayer()) instanceof LetterCryptogram){
+                    if(game.getInputFromUserLetter() != null){
+                        System.out.println(game.getInputFromUserLetter().toString());
+                    }
+                }
+                else{
+                    if(game.getInputFromUserNumber() != null){
+                        System.out.println(game.getInputFromUserNumber().toString());
+                    }
+                }
+
             }
         };
 
@@ -203,5 +246,9 @@ public class LetterInput {
 
     public JPanel getLetterInput() {
         return letterInput;
+    }
+
+    private Game getGameController(){
+        return this.word.getWordHolder().getFrame().getGameController();
     }
 }

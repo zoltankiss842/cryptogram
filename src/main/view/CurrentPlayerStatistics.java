@@ -17,6 +17,8 @@ public class CurrentPlayerStatistics {
     private JPanel statsHolder;
     private JLabel playerName;
     private JLabel playerAccuracy;
+    private JLabel playerTotalGuesses;
+    private JLabel playerTotalCorrectGuesses;
     private JLabel playerGamePlayed;
     private JLabel playerGameCompleted;
 
@@ -57,7 +59,13 @@ public class CurrentPlayerStatistics {
         playerName = new JLabel(player.getUsername());
 
         JLabel playerAccuracyLabel = new JLabel("Accuracy:");
-        playerAccuracy = new JLabel(String.valueOf(player.getAccuracy()));
+        playerAccuracy = new JLabel(String.format("%.2f", player.getAccuracy()));
+
+        JLabel playerTotalGuessesLabel = new JLabel("Total guesses:");
+        playerTotalGuesses = new JLabel(String.valueOf(player.getTotalGuesses()));
+
+        JLabel playerTotalCorrectGuessesLabel = new JLabel("Total correct guesses:");
+        playerTotalCorrectGuesses = new JLabel(String.valueOf(player.getTotalCorrectGuesses()));
 
         JLabel playerGamePlayedLabel = new JLabel("Games played:");
         playerGamePlayed = new JLabel(String.valueOf(player.getNumCryptogramsPlayed()));
@@ -69,6 +77,10 @@ public class CurrentPlayerStatistics {
         dataHolder.add(playerName);
         dataHolder.add(playerAccuracyLabel);
         dataHolder.add(playerAccuracy);
+        dataHolder.add(playerTotalGuessesLabel);
+        dataHolder.add(playerTotalGuesses);
+        dataHolder.add(playerTotalCorrectGuessesLabel);
+        dataHolder.add(playerTotalCorrectGuesses);
         dataHolder.add(playerGamePlayedLabel);
         dataHolder.add(playerGamePlayed);
         dataHolder.add(playerGameCompletedLabel);

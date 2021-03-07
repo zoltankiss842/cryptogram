@@ -1,9 +1,12 @@
 package main.cryptogram;
 
-public  class Cryptogram {
-protected String phrase;
-protected String solution;
-protected String cryptogramAlphabet;
+import java.util.HashMap;
+
+public class Cryptogram {
+
+    protected String phrase;
+    protected String solution;
+    protected HashMap<Object, Object> cryptogramAlphabet;
 
     public String getPhrase() {
         return phrase;
@@ -21,11 +24,11 @@ protected String cryptogramAlphabet;
         this.phrase = phrase;
     }
 
-    public String getCryptogramAlphabet() {
+    public HashMap<Object, Object> getCryptogramAlphabet() {
         return cryptogramAlphabet;
     }
 
-    public void setCryptogramAlphabet(String cryptogramAlphabet) {
+    public void setCryptogramAlphabet(HashMap<Object, Object> cryptogramAlphabet) {
         this.cryptogramAlphabet = cryptogramAlphabet;
     }
 }

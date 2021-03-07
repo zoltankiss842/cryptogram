@@ -2,6 +2,7 @@ package main.view;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -26,13 +27,24 @@ public class Word {
         word = new JPanel();
         word.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         word.setBorder(new EmptyBorder(10,10,10,10));
+        //word.setBorder(new LineBorder(new Color(0,128,0), 1));
     }
 
-    private void createLetters(String word) {
+    private void createLetters(String word) {                       //TODO: Ezt kell átírni
         letters = new ArrayList<>();
+        StringBuilder builder = new StringBuilder();
         for(char c : word.toCharArray()){
-            LetterInput newLetter = new LetterInput(String.valueOf(c), this);
-            letters.add(newLetter);
+            if (c!='!') {
+                builder.append(c);
+                //LetterInput newLetter = new LetterInput(String.valueOf(c), this);
+                //letters.add(newLetter);
+            }
+            if(c=='!')
+            {
+                LetterInput newLetter = new LetterInput(builder.toString(), this);
+                letters.add(newLetter);
+                builder=new StringBuilder();
+            }
         }
     }
 
@@ -76,10 +88,34 @@ public class Word {
         for(Word words : wordHolder.getWords()){
             for(LetterInput input : words.getLetters()){
                 if(original.equals(input.getOriginalLetter())){
-                    input.updateLetterLabel(inputLetter);
                     input.updateInputFieldValue(inputLetter);
                 }
             }
         }
+    }
+
+    /**
+     * This method updates both the letter label and the input fields value.
+     * After the user enters a letter in one of the text fields, it goes through every word
+     * and letter, and if the letter is the same as where the user inputted, then it substitutes it.
+     */
+    public void clearLetterLabel(){
+        for(Word words : wordHolder.getWords()){
+            for(LetterInput input : words.getLetters()){
+                input.updateInputFieldValue(null);
+            }
+        }
+    }
+
+    public void lockFields(){
+        for(Word words : wordHolder.getWords()){
+            for(LetterInput input : words.getLetters()){
+                input.disableField();
+            }
+        }
+    }
+
+    public WordHolder getWordHolder() {
+        return wordHolder;
     }
 }

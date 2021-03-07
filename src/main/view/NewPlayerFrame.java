@@ -1,6 +1,8 @@
 package main.view;
 
+import main.cryptogram.LetterCryptogram;
 import main.game.Game;
+import main.players.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -63,7 +65,11 @@ public class NewPlayerFrame {
                 else{
                     playerFrame.setVisible(false);
 
-                    initNewGame(name);
+                    try {
+                        initNewGame(name);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
                 }
 
 
@@ -87,7 +93,7 @@ public class NewPlayerFrame {
         playerFrame.add(panel, BorderLayout.CENTER);
     }
 
-    private void initNewGame(String name) {
+    private void initNewGame(String name) throws Exception {
         newGame = new Game(name);
     }
 

@@ -13,12 +13,14 @@ public class WordHolder {
     private ArrayList<Word> words;
     private JPanel holder;
     private JScrollPane holderScrollPane;
+    private Frame gameFrame;
 
     private JFrame frame;
 
-    public WordHolder(JFrame frame) {
+    public WordHolder(JFrame frame, Frame gameFrame) {
         this.words = new ArrayList<>();
         this.frame = frame;
+        this.gameFrame = gameFrame;
 
         initHolder();
         initScrollPane();
@@ -48,7 +50,7 @@ public class WordHolder {
             words.clear();
         }
 
-        String[] tokens = encrypted.split(" ");
+        String[] tokens = encrypted.split(" ");               //TODO: Stringet máshogy kell szabdalni
         for(int i = 0; i < tokens.length; ++i){
             Word newWord = new Word(tokens[i], this);
             words.add(newWord);
@@ -92,5 +94,9 @@ public class WordHolder {
 
     public ArrayList<Word> getWords() {
         return words;
+    }
+
+    public Frame getFrame() {
+        return gameFrame;
     }
 }
