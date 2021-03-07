@@ -158,7 +158,7 @@ public class UserStory3 {
         }
 
         game.enterLetter(String.valueOf(list.get(0)), "k");
-        game.undoLetter("x");
+        game.undoLetter(String.valueOf(0));
 
         // Checking if the total guesses updated
         Assert.assertTrue(player.getTotalGuesses() == 1);
