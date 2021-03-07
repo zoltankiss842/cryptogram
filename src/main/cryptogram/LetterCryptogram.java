@@ -67,6 +67,7 @@ public class LetterCryptogram extends Cryptogram {
                 char result = getEncyptedLetter(solution.charAt(i));
                 if(result != '#'){
                     builder.append(result);
+                    builder.append('!');
                 }
                 else{
                     builder.append(' ');

@@ -28,11 +28,21 @@ public class Word {
         word.setBorder(new EmptyBorder(10,10,10,10));
     }
 
-    private void createLetters(String word) {
+    private void createLetters(String word) {                       //TODO: Ezt kell átírni
         letters = new ArrayList<>();
+        StringBuilder builder = new StringBuilder();
         for(char c : word.toCharArray()){
-            LetterInput newLetter = new LetterInput(String.valueOf(c), this);
-            letters.add(newLetter);
+            if (c!='!') {
+                builder.append(c);
+                LetterInput newLetter = new LetterInput(String.valueOf(c), this);
+                letters.add(newLetter);
+            }
+            if(c=='!')
+            {
+                LetterInput newLetter = new LetterInput(builder.toString(), this);
+                letters.add(newLetter);
+                builder=new StringBuilder();
+            }
         }
     }
 

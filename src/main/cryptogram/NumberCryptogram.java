@@ -73,6 +73,7 @@ public class NumberCryptogram extends Cryptogram{
                 solutionInIntegerFormat.add(result);
                 if(result != 0){
                     builder.append(result);
+                    builder.append('!');
                 }
                 builder.append(' ');
             }
@@ -95,4 +96,23 @@ public class NumberCryptogram extends Cryptogram{
     public ArrayList<Integer> getSolutionInIntegerFormat() {
         return solutionInIntegerFormat;
     }
+
+    private void setPhrase()
+    {
+        super.setPhrase("");
+        for (int i = 0; i < solutionInIntegerFormat.size(); i++) {
+
+            if(solutionInIntegerFormat.get(i)==0)
+            {
+                phrase.concat("#");
+            }
+            else
+            {
+                phrase.concat(solutionInIntegerFormat.get(i).toString()+"!");
+            }
+
+        }
+    }
+
 }
+

@@ -50,7 +50,7 @@ public class WordHolder {
             words.clear();
         }
 
-        String[] tokens = encrypted.split(" ");
+        String[] tokens = encrypted.split(" ");               //TODO: Stringet máshogy kell szabdalni
         for(int i = 0; i < tokens.length; ++i){
             Word newWord = new Word(tokens[i], this);
             words.add(newWord);

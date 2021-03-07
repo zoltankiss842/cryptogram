@@ -41,7 +41,7 @@ public class Game {
     private Frame gameGui;
 
     public Game(String userName) throws Exception {
-        this(new Player(userName), LetterCryptogram.TYPE, new ArrayList<String>(), true);
+        this(new Player(userName), NumberCryptogram.TYPE, new ArrayList<String>(), true);
         playGame();
     }
 
