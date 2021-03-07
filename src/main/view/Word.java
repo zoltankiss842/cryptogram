@@ -34,8 +34,8 @@ public class Word {
         for(char c : word.toCharArray()){
             if (c!='!') {
                 builder.append(c);
-                LetterInput newLetter = new LetterInput(String.valueOf(c), this);
-                letters.add(newLetter);
+                //LetterInput newLetter = new LetterInput(String.valueOf(c), this);
+                //letters.add(newLetter);
             }
             if(c=='!')
             {

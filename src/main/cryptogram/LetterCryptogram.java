@@ -68,6 +68,7 @@ public class LetterCryptogram extends Cryptogram {
                 if(result != '#'){
                     builder.append(result);
                     builder.append('!');
+
                 }
                 else{
                     builder.append(' ');
