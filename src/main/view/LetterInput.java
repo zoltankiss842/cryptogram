@@ -46,7 +46,7 @@ public class LetterInput {
     private void initLetterInput() {
         this.letterInput = new JPanel();
         letterInput.setLayout(new BoxLayout(letterInput, BoxLayout.Y_AXIS));
-        letterInput.setBorder(new LineBorder(new Color(0,0,0),1));
+        //letterInput.setBorder(new LineBorder(new Color(0,0,0),1));
     }
 
     private void initEncryptedLetter(String letter) {

@@ -9,6 +9,7 @@ import main.players.Players;
 import main.view.Frame;
 import main.view.GameCompletedMessagePane;
 import main.view.OverWriteOptionPane;
+import main.view.Word;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -274,12 +275,13 @@ public class Game {
 
                 if(pane.getResult()){
 
+                    overwrite = true;
+
                     for(Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()){
-                        if(entry.getValue() != null && entry.getValue().equals(newLetter.charAt(0))){
+                        if(entry.getValue() != null && entry.getValue().equals(newLetter.charAt(0)) && entry.getKey() != key){
                             throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
                         }
                     }
-                    overwrite = true;
 
                     inputFromUserNumber.put(number, newLetter.charAt(0));
 
@@ -323,13 +325,13 @@ public class Game {
         }
         else{
 
+            overwrite = true;
+
             for(Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()){
-                if(entry.getValue() != null && entry.getValue().equals(newLetter.charAt(0))){
+                if(entry.getValue() != null && entry.getValue().equals(newLetter.charAt(0)) && entry.getKey() != key){
                     throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
                 }
             }
-
-            overwrite = true;
 
             inputFromUserNumber.put(number, newLetter.charAt(0));
 
@@ -357,6 +359,8 @@ public class Game {
             }
 
             playerGameMapping.put(currentPlayer, null);
+            inputFromUserNumber = null;
+            inputFromUserLetter = null;
         }
 
     }
@@ -635,5 +639,28 @@ public class Game {
 
     public HashMap<Integer, Character> getInputFromUserNumber() {
         return inputFromUserNumber;
+    }
+
+    public void resetMappings(){
+        Cryptogram c = playerGameMapping.get(currentPlayer);
+
+        if(c instanceof LetterCryptogram){
+            for(Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()){
+                inputFromUserLetter.put(entry.getKey(), null);
+            }
+
+            for(Word words : gameGui.getWordHolder().getWords()){
+                words.clearLetterLabel();
+            }
+        }
+        else if(c instanceof NumberCryptogram){
+            for(Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()){
+                inputFromUserNumber.put(entry.getKey(), null);
+            }
+
+            for(Word words : gameGui.getWordHolder().getWords()){
+                words.clearLetterLabel();
+            }
+        }
     }
 }

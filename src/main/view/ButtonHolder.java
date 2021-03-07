@@ -60,19 +60,25 @@ public class ButtonHolder {
         });
 
         // Clicking on the "Submit" button returns a boolean either if its correct or not
-        submit = new JButton("Submit");
-        submit.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                gameController.checkAnswer();
-            }
-        });
+//        submit = new JButton("Submit");
+//        submit.addActionListener(new ActionListener(){
+//            @Override
+//            public void actionPerformed(ActionEvent e){
+//                gameController.checkAnswer();
+//            }
+//        });
 
         // Clicking on the "Reset" button clears every input field
         reset = new JButton("Reset");
+        reset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameController.resetMappings();
+            }
+        });
 
         holder.add(newGame);
-        holder.add(submit);
+//        holder.add(submit);
         holder.add(reset);
     }
 
