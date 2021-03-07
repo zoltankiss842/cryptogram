@@ -6,15 +6,19 @@ public class LetterCryptogram extends Cryptogram {
 
     public final static String TYPE = "LETTER";
 
-    /*
-        Key: mapped letter
-        Value: original letter
+    public HashMap<Character, Character> getLetterCryptogramAlphabet() {
+        return letterCryptogramAlphabet;
+    }
 
-        m -> a
-        q -> b
-        t -> c
-        ...
-     */
+    /*
+            Key: mapped letter
+            Value: original letter
+
+            m -> a
+            q -> b
+            t -> c
+            ...
+         */
     private HashMap<Character, Character> letterCryptogramAlphabet;
 
     public LetterCryptogram(String solution) {
@@ -93,7 +97,5 @@ public class LetterCryptogram extends Cryptogram {
         return '#';
     }
 
-    public HashMap<Character, Character> getLetterCryptogramAlphabet() {
-        return letterCryptogramAlphabet;
-    }
+
 }

@@ -74,24 +74,19 @@ public class UserStory1 {
     public void numberCryptoTest() throws Exception {
         game = new Game(player, NumberCryptogram.TYPE, sentences,false);
 
-        // Checking if the player-crypto mapping, stores the encrypted solution
-        Assert.assertNotEquals(game.getPlayerGameMapping().get(player).getPhrase(), SOLUTION.toLowerCase());
 
-        NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
-
-        // Checking that the NumberCryptogram phrase is the encrypted sentence
-        Assert.assertNotEquals(number.getPhrase(), SOLUTION.toLowerCase());
-
-        // Checking that the NumberCryptogram solution is the solution
-        Assert.assertEquals(number.getSolution(), SOLUTION.toLowerCase());
+        HashSet<Character> set = new HashSet<>();
+        NumberCryptogram number = new NumberCryptogram(SOLUTION);
+        Assert.assertEquals(number.getSolution(),SOLUTION.toLowerCase());
+        //Checking if the solution's letters have been mapped to letters of the alphabet and that they are unique
+        HashMap<Integer, Character> cryptoMapping=number.getNumberCryptogramAlphabet();
+        for(Map.Entry<Integer, Character> entry : cryptoMapping.entrySet()){
+            Assert.assertTrue(set.add(cryptoMapping.get(entry.getKey())));
+        }
 
         // Checking for each encrypted letter that is a number and there is only one instance of it
-        HashSet<Character> set = new HashSet<>();
-        for(int i = 1; i < 27; ++i){
-            char plainLetter = number.getPlainLetter(i);
-            Assert.assertTrue(plainLetter >= 'a' && plainLetter <= 'z');
-            Assert.assertTrue(set.add(Character.valueOf(plainLetter)));
-        }
+
+
     }
 
     /*

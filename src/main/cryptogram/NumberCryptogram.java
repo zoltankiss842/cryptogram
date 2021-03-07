@@ -59,6 +59,10 @@ public class NumberCryptogram extends Cryptogram{
         return array;
     }
 
+    public HashMap<Integer, Character> getNumberCryptogramAlphabet() {
+        return numberCryptogramAlphabet;
+    }
+
     private String solutionToPhrase(String solution){
 
         solutionInIntegerFormat = new ArrayList<>();
