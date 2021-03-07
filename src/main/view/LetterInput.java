@@ -4,6 +4,7 @@ import main.exceptions.PlainLetterAlreadyInUse;
 import main.game.Game;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.MaskFormatter;
@@ -45,7 +46,7 @@ public class LetterInput {
     private void initLetterInput() {
         this.letterInput = new JPanel();
         letterInput.setLayout(new BoxLayout(letterInput, BoxLayout.Y_AXIS));
-//        letterInput.setBorder(new LineBorder(new Color(0,0,0),1));
+        letterInput.setBorder(new LineBorder(new Color(0,0,0),1));
     }
 
     private void initEncryptedLetter(String letter) {
@@ -201,7 +202,7 @@ public class LetterInput {
                 }
 
 
-                System.out.println(game.getInputFromUserLetter().toString());
+                System.out.println(game.getInputFromUserNumber().toString());
             }
         };
 

@@ -611,4 +611,8 @@ public class Game {
     public boolean isOverwrite() {
         return overwrite;
     }
+
+    public HashMap<Integer, Character> getInputFromUserNumber() {
+        return inputFromUserNumber;
+    }
 }

@@ -76,6 +76,8 @@ public class NumberCryptogram extends Cryptogram{
                     builder.append('!');
 
                 }
+            }
+            else{
                 builder.append(' ');
             }
 
