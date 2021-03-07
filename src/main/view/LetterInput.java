@@ -163,10 +163,14 @@ public class LetterInput {
             public void focusLost(FocusEvent e) {
                 String text = userGuess.getText();
                 Game game = getGameController();
+                StringBuilder builder = new StringBuilder();
                 if(!text.isEmpty() && !text.isBlank()){
                     try {
                         game.enterLetter(originalLetter, text);
-                        word.updateLetterLabel(originalLetter, text);
+                        if(game.isOverwrite()){
+                            word.updateLetterLabel(originalLetter, text);
+                            game.setOverwrite(false);
+                        }
                     } catch (Exception exception) {
                         System.err.println(exception.getMessage());
                     }
@@ -181,6 +185,7 @@ public class LetterInput {
                         System.err.println(exception.getMessage());
                     }
                 }
+
 
                 System.out.println(game.getInputFromUserLetter().toString());
             }

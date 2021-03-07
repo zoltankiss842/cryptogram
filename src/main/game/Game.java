@@ -39,6 +39,7 @@ public class Game {
     private ArrayList<String> sentences;
     private String currentPhrase;
     private Frame gameGui;
+    private boolean overwrite = false;
 
     public Game(String userName) throws Exception {
         this(new Player(userName), LetterCryptogram.TYPE, new ArrayList<String>(), true);
@@ -147,6 +148,9 @@ public class Game {
                             String.valueOf(newChar));
 
                     if(pane.getResult()){
+
+                        overwrite = true;
+
                         inputFromUserLetter.put(cryptoChar, newChar);
 
                         String phrase = playerGameMapping.get(currentPlayer).getPhrase();
@@ -257,6 +261,9 @@ public class Game {
                         String.valueOf(newLetter.charAt(0)));
 
                 if(pane.getResult()){
+
+                    overwrite = true;
+
                     inputFromUserNumber.put(number, newLetter.charAt(0));
 
                     currentPlayer.incrementTotalGuesses();
@@ -279,6 +286,7 @@ public class Game {
                 String answer = sc.nextLine();
 
                 if(answer.equals("Y")){
+
                     inputFromUserNumber.put(number, newLetter.charAt(0));
 
                     currentPlayer.incrementTotalGuesses();
@@ -337,20 +345,23 @@ public class Game {
     public void undoLetter(String letter) throws Exception {
         Cryptogram c = playerGameMapping.get(currentPlayer);
 
+        if(letter.isEmpty() || letter.isBlank() || letter.equals(" ")){
+            return;
+        }
+
         if(c instanceof LetterCryptogram){
             boolean found = false;
-            for(Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()){
-                if(entry.getValue() != null && entry.getValue().equals(letter.charAt(0))){
-                    inputFromUserLetter.put(entry.getKey(), null);
-                    found = true;
+            char key = letter.charAt(0);
 
-                    String phrase = c.getPhrase();
-                    phrase = phrase.replace(letter.charAt(0), entry.getKey());
-                    c.setPhrase(phrase);
-                }
+            if(inputFromUserLetter.containsKey(key)){
+                char before = inputFromUserLetter.get(key);
+                inputFromUserLetter.put(key, null);
+
+                String phrase = c.getPhrase();
+                phrase = phrase.replace(before, key);
+                c.setPhrase(phrase);
             }
-
-            if(!found){
+            else{
                 throw new NoSuchPlainLetter("No such letter was mapped");
             }
         }
@@ -578,5 +589,13 @@ public class Game {
 
     private boolean isLetterUsedNumber(int number){
         return inputFromUserNumber.containsKey(number);
+    }
+
+    public void setOverwrite(boolean overwrite) {
+        this.overwrite = overwrite;
+    }
+
+    public boolean isOverwrite() {
+        return overwrite;
     }
 }
