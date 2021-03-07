@@ -43,7 +43,7 @@ public class Game {
     private boolean overwrite = false;
 
     public Game(String userName) throws Exception {
-        this(new Player(userName), NumberCryptogram.TYPE, new ArrayList<String>(), true);
+        this(new Player(userName), LetterCryptogram.TYPE, new ArrayList<String>(), true);
         playGame();
     }
     
@@ -612,7 +612,14 @@ public class Game {
 
     private boolean isEverythingMappedNumber(){
         for(Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()){
-            if(entry.getValue() == null){
+
+            Character temp = entry.getValue();
+
+            if(temp.charValue() == '!'){
+                continue;
+            }
+
+            if(temp == null){
                 return false;
             }
         }
@@ -622,7 +629,14 @@ public class Game {
 
     private boolean isEverythingMappedLetter(){
         for(Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()){
-            if(entry.getValue() == null){
+
+            Character temp = entry.getValue();
+
+            if(temp.charValue() == '!'){
+                continue;
+            }
+
+            if(temp == null){
                 return false;
             }
         }
