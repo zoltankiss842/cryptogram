@@ -110,8 +110,9 @@ public class Game {
         try{
             if (playerGameMapping.get(currentPlayer) instanceof LetterCryptogram)
             generateCryptogram(currentPlayer,LetterCryptogram.TYPE);
-            else
-                generateCryptogram(currentPlayer,NumberCryptogram.TYPE);
+            else if (playerGameMapping.get(currentPlayer) instanceof NumberCryptogram)
+            {generateCryptogram(currentPlayer,NumberCryptogram.TYPE);
+            }
         }
         catch (Exception e)
         {
