@@ -93,4 +93,7 @@ public class LetterCryptogram extends Cryptogram {
         return '#';
     }
 
+    public HashMap<Character, Character> getLetterCryptogramAlphabet() {
+        return letterCryptogramAlphabet;
+    }
 }

@@ -9,7 +9,9 @@ import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -41,25 +43,24 @@ public class UserStory1 {
      */
     @Test
     public void letterCryptoTest() throws Exception {
-        game = new Game(player, LetterCryptogram.TYPE, sentences,false);
+        LetterCryptogram letter =new LetterCryptogram(SOLUTION);
+        // Checking if the solution is the sentence that was given is the solution to the cryptogram
+        Assert.assertEquals(letter.getSolution(),SOLUTION.toLowerCase());
+        //Checking if the solution's letters have been mapped to letters of the alphabet and that they are unique
 
-        // Checking if the player-crypto mapping, stores the encypted solution
-        Assert.assertNotEquals(game.getPlayerGameMapping().get(player).getPhrase(), SOLUTION.toLowerCase());
 
-        LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
-
-        // Checking that the LetterCryptogram phrase is the encypted sentence
-        Assert.assertNotEquals(letter.getPhrase(), SOLUTION.toLowerCase());
-
-        // Checking that the LetterCryptogram solution is the solution
-        Assert.assertEquals(letter.getSolution(), SOLUTION.toLowerCase());
-
-        // Checking for each encypted letter that is a letter and there is only one instance of it
         HashSet<Character> set = new HashSet<>();
-        for(int i = 'a'; i <= 'z'; ++i){
-            char encryptLetter = letter.getPlainLetter((char) i);
-            Assert.assertTrue(encryptLetter >= 'a' && encryptLetter <= 'z');
-            Assert.assertTrue(set.add(Character.valueOf(encryptLetter)));
+        HashMap<Character, Character> cryptoMapping=letter.getLetterCryptogramAlphabet();
+
+        for (int i = 0; i < SOLUTION.length(); i++) {
+            if (SOLUTION.toLowerCase().charAt(i) != ' '){
+                Assert.assertNotNull(cryptoMapping.get(SOLUTION.toLowerCase().charAt(i)));
+
+            }
+        }
+        //checking if mapping is unique
+        for(Map.Entry<Character, Character> entry : cryptoMapping.entrySet()){
+            Assert.assertTrue(set.add(cryptoMapping.get(entry.getKey())));
         }
     }
 
@@ -101,7 +102,7 @@ public class UserStory1 {
      */
     @Test(expected = Exception.class)
     public void noPhrasesTest() throws Exception{
-        game = new Game(player, NumberCryptogram.TYPE, new ArrayList<String>(), false);
+        game = new Game(player, NumberCryptogram.TYPE, null, false);
     }
 
     @After

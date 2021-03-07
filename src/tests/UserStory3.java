@@ -157,11 +157,15 @@ public class UserStory3 {
             list.add((Integer) iterator.next());
         }
 
-        game.enterLetter(String.valueOf(list.get(0)), "k");
-        game.undoLetter(String.valueOf(0));
+        int i;
+        for(i = 1; i < 27; i++){
+            if(!list.contains(i)){
+                break;
+            }
+        }
 
-        // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == 1);
+        game.enterLetter(String.valueOf(list.get(0)), "k");
+        game.undoLetter(String.valueOf(i));
     }
 
     @After

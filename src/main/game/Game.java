@@ -56,6 +56,7 @@ public class Game {
             if(createGui){
                 gameGui = new Frame(currentPlayer.getUsername(), this);
             }
+
         }
         catch (Exception e){
             System.err.println(e.getMessage());
@@ -513,7 +514,7 @@ public class Game {
         return false;
     }
 
-    public boolean loadSentences(){
+    public boolean loadSentences() throws Exception {
 //        File f = new File("phrases.txt");
 //        Scanner mys;
 //        try{
@@ -527,6 +528,10 @@ public class Game {
 //        while(mys.hasNextLine()){
 //            phrases.add(mys.nextLine());
 //        }
+
+        if(sentences == null){
+            throw new Exception("No sentences");
+        }
 
         sentences.add("This is a very long sentence that will be displayed so we will see what is going to happen");
         sentences.add("He was so preoccupied with whether or not he could that he failed to stop to consider if he should");
