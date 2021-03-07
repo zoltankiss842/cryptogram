@@ -615,7 +615,7 @@ public class Game {
 
             Character temp = entry.getValue();
 
-            if(temp.charValue() == '!'){
+            if(temp != null && temp.charValue() == '!'){
                 continue;
             }
 
@@ -632,7 +632,7 @@ public class Game {
 
             Character temp = entry.getValue();
 
-            if(temp.charValue() == '!'){
+            if(temp != null && temp.charValue() == '!'){
                 continue;
             }
 
