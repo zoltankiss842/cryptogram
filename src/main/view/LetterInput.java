@@ -1,5 +1,6 @@
 package main.view;
 
+import main.exceptions.PlainLetterAlreadyInUse;
 import main.game.Game;
 
 import javax.swing.*;
@@ -29,6 +30,7 @@ public class LetterInput {
 
     private String originalLetter;          // This stores the original letter, in case the user resets, it can use
                                             // this field to access the old letter.
+    private String previousUserInput;
 
     public LetterInput(String encryptedLetter, Word word){
 
@@ -75,6 +77,8 @@ public class LetterInput {
         userGuess.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         userGuess.setMinimumSize(new Dimension(WIDTH, HEIGHT));
         userGuess.setMaximumSize(new Dimension(WIDTH, HEIGHT));
+
+        previousUserInput = userGuess.getText();
 
         userGuess.getDocument().addDocumentListener(createDocumentListener());
 
@@ -170,8 +174,18 @@ public class LetterInput {
                         if(game.isOverwrite()){
                             word.updateLetterLabel(originalLetter, text);
                             game.setOverwrite(false);
+                            previousUserInput = text;
+                        }
+                        else{
+                            word.updateLetterLabel(originalLetter, previousUserInput);
                         }
                     } catch (Exception exception) {
+                        word.updateLetterLabel(originalLetter, previousUserInput);
+                        if(exception instanceof PlainLetterAlreadyInUse){
+                            PlainLetterInUseMessagePane pane = new PlainLetterInUseMessagePane(
+                                    word.getWordHolder().getFrame().getFrame(),
+                                    exception.getMessage());
+                        }
                         System.err.println(exception.getMessage());
                     }
 

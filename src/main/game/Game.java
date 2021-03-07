@@ -149,6 +149,12 @@ public class Game {
 
                     if(pane.getResult()){
 
+                        for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
+                            if (entry.getValue() != null && entry.getValue().equals(newChar) && entry.getKey() != cryptoChar) {
+                                throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
+                            }
+                        }
+
                         overwrite = true;
 
                         inputFromUserLetter.put(cryptoChar, newChar);
@@ -201,29 +207,31 @@ public class Game {
             }
             else{
 
-                for(Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()){
-                    if(entry.getValue() != null && entry.getValue().equals(newChar)){
-                        throw new PlainLetterAlreadyInUse("Plain letter already in use, try again...");
+                overwrite = true;
+
+                for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
+                    if (entry.getValue() != null && entry.getValue().equals(newChar) && entry.getKey() != cryptoChar) {
+                        throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
                     }
                 }
 
-                inputFromUserLetter.put(cryptoChar, newChar);
+                    inputFromUserLetter.put(cryptoChar, newChar);
 
-                String phrase = playerGameMapping.get(currentPlayer).getPhrase();
-                phrase = phrase.replace(cryptoChar, newChar);
-                playerGameMapping.get(currentPlayer).setPhrase(phrase);
+                    String phrase = playerGameMapping.get(currentPlayer).getPhrase();
+                    phrase = phrase.replace(cryptoChar, newChar);
+                    playerGameMapping.get(currentPlayer).setPhrase(phrase);
 
-                currentPlayer.incrementTotalGuesses();
+                    currentPlayer.incrementTotalGuesses();
 
-                if(c instanceof LetterCryptogram){
-                    LetterCryptogram letter = (LetterCryptogram)c;
-                    Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
-                    char temp = (Character) original;
+                    if(c instanceof LetterCryptogram){
+                        LetterCryptogram letter = (LetterCryptogram)c;
+                        Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
+                        char temp = (Character) original;
 
-                    if(temp == newChar){
-                        currentPlayer.incrementTotalCorrectGuesses();
+                        if(temp == newChar){
+                            currentPlayer.incrementTotalCorrectGuesses();
+                        }
                     }
-                }
             }
 
             if(isEverythingMappedLetter()){
@@ -308,7 +316,7 @@ public class Game {
 
             for(Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()){
                 if(entry.getValue() != null && entry.getValue().equals(newLetter.charAt(0))){
-                    throw new PlainLetterAlreadyInUse("Plain letter already in use, try again...");
+                    throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
                 }
             }
 
@@ -345,7 +353,7 @@ public class Game {
     public void undoLetter(String letter) throws Exception {
         Cryptogram c = playerGameMapping.get(currentPlayer);
 
-        if(letter.isEmpty() || letter.isBlank() || letter.equals(" ")){
+        if(letter.isEmpty() || letter.isBlank() || letter.equals(" ") || letter == null){
             return;
         }
 
@@ -354,7 +362,12 @@ public class Game {
             char key = letter.charAt(0);
 
             if(inputFromUserLetter.containsKey(key)){
-                char before = inputFromUserLetter.get(key);
+                Character before = inputFromUserLetter.get(key);
+
+                if(before == null){
+                    return;
+                }
+
                 inputFromUserLetter.put(key, null);
 
                 String phrase = c.getPhrase();
