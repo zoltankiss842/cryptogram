@@ -2,7 +2,7 @@ package main.cryptogram;
 
 import java.util.HashMap;
 
-public  class Cryptogram {
+public class Cryptogram {
 
     protected String phrase;
     protected String solution;

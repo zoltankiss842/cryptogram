@@ -9,4 +9,6 @@ public class PlainLetterAlreadyInUse extends Exception{
     public PlainLetterAlreadyInUse(String message) {
         super(message);
     }
+
+
 }
