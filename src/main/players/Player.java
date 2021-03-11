@@ -1,7 +1,5 @@
 package main.players;
 
-import java.util.*;
-
 public class Player {
     private String username;
     private double accuracy;
