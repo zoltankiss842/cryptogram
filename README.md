@@ -1,3 +1,7 @@
+# How to check and see TODOs
+
+![image](resources/README/todos.png)
+
 # Using IntelliJ
 
 [Video here](https://drive.google.com/file/d/1b2KHySTOD7iJb-kPtCLpwOhHFoUwxQMM/view?usp=sharing)
