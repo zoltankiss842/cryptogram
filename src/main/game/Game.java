@@ -11,6 +11,7 @@ import main.view.GameCompletedMessagePane;
 import main.view.OverWriteOptionPane;
 import main.view.Word;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -184,11 +185,12 @@ public class Game {
 
             gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
         }
-        catch (Exception e) // TODO #1: Catch exact exception instead of generic one, and handle them accordingly
+        catch (NoSentencesToGenerateFrom | NoSuchGameType e)
         {
-            System.out.println("shit hit the fan");
+            System.out.println("No cryptogram exists to play");
         }
     }
+
 
     /**
      * This method manages user input. Steps for this method:
@@ -243,47 +245,29 @@ public class Game {
 
                 // if we are showing the GUI we show a gui prompt
                 if(gameGui != null){
-                    // TODO #2: create void method for this OverWriteOptionPane, named showOverWriteOptionPane()
-
-                    OverWriteOptionPane pane = new OverWriteOptionPane(gameGui.getFrame(),
-                            String.valueOf(plainLetterAtCryptoChar.charValue()),
-                            String.valueOf(newChar)); // show GUI prompt
+                    OverWriteOptionPane pane = showOverWriteOptionPane(plainLetterAtCryptoChar, newChar);
 
                     if(pane.getResult()){
 
-                        // TODO #3: create void method for this plain letter search, named checkIfPlainAlreadyInUse()
                         // check if plain letter is already used somewhere
-                        for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
-                            if (entry.getValue() != null && entry.getValue().equals(newChar) && entry.getKey() != cryptoChar) {
-                                throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
-                            }
-                        }
+                        checkIfPlainAlreadyInUse(cryptoChar, newChar);
 
                         overwrite = true;   // this is needed in the View classes, this indicates if it can be overwritten
 
                         inputFromUserLetter.put(cryptoChar, newChar);   // we put the new value at key
 
-                        // TODO #5: create void method for this part, named updatePhrase()
                         // We update the phrase at the Crypto class
-                        String phrase = playerGameMapping.get(currentPlayer).getPhrase();
-                        phrase = phrase.replace(cryptoChar, newLetter.charAt(0));
-                        playerGameMapping.get(currentPlayer).setPhrase(phrase);
+                        updatePhrase(cryptoChar, newLetter.charAt(0), playerGameMapping.get(currentPlayer));
 
                         currentPlayer.incrementTotalGuesses();  // We increment the total number of guesses
 
-                        // TODO #4: remove this if, it is not needed as we are
-                        //  already established we are in a letter cryptogram, also put the below code
-                        //  in a void method named incrementCorrectGuesses()
-                        // We only increment the number of total correct guesses if the guess is correct
-                        if(c instanceof LetterCryptogram){
                             LetterCryptogram letter = (LetterCryptogram)c;
                             Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
                             char temp = (Character) original;
 
                             if(temp == newLetter.charAt(0)){
-                                currentPlayer.incrementTotalCorrectGuesses();
+                                incrementCorrectGuesses();
                             }
-                        }
                     }
                 }
                 // else we show a terminal prompt
@@ -297,25 +281,18 @@ public class Game {
                     if(answer.equals("Y")){
                         inputFromUserLetter.put(cryptoChar, newChar);
 
-                        // TODO #5: create void method for this part, named updatePhrase()
-                        String phrase = playerGameMapping.get(currentPlayer).getPhrase();
-                        phrase = phrase.replace(cryptoChar, newChar);
-                        playerGameMapping.get(currentPlayer).setPhrase(phrase);
+
+                        updatePhrase(cryptoChar, newChar, playerGameMapping.get(currentPlayer));
 
                         currentPlayer.incrementTotalGuesses();
 
-                        // TODO #4: remove this if, it is not needed as we are
-                        //  already established we are in a letter cryptogram, also put the below code
-                        //  in a void method named incrementCorrectGuesses()
-                        if(c instanceof LetterCryptogram){
                             LetterCryptogram letter = (LetterCryptogram)c;
                             Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
                             char temp = original;
 
                             if(temp == newChar){
-                                currentPlayer.incrementTotalCorrectGuesses();
+                                incrementCorrectGuesses();
                             }
-                        }
                     }
                 }
 
@@ -324,34 +301,21 @@ public class Game {
 
                 overwrite = true;
 
-                // TODO #3: create void method for this plain letter search, named checkIfPlainAlreadyInUse()
-                for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
-                    if (entry.getValue() != null && entry.getValue().equals(newChar) && entry.getKey() != cryptoChar) {
-                        throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
-                    }
-                }
+                checkIfPlainAlreadyInUse(cryptoChar, newChar);
 
                 inputFromUserLetter.put(cryptoChar, newChar);
 
-                // TODO #5: create void method for this part, named updatePhrase()
-                String phrase = playerGameMapping.get(currentPlayer).getPhrase();
-                phrase = phrase.replace(cryptoChar, newChar);
-                playerGameMapping.get(currentPlayer).setPhrase(phrase);
+                updatePhrase(cryptoChar, newChar, playerGameMapping.get(currentPlayer));
 
                 currentPlayer.incrementTotalGuesses();
 
-                // TODO #4: remove this if, it is not needed as we are
-                //  already established we are in a letter cryptogram, also put the below code
-                //  in a void method named incrementCorrectGuesses()
-                if(c instanceof LetterCryptogram){
                     LetterCryptogram letter = (LetterCryptogram)c;
                     Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
                     char temp = (Character) original;
 
                     if(temp == newChar){
-                        currentPlayer.incrementTotalCorrectGuesses();
+                        incrementCorrectGuesses();
                     }
-                }
             }
 
             // If the inputFromUserLetter does not contain any null values, that means the player
@@ -364,23 +328,8 @@ public class Game {
                     lockFields();
                 }
 
-                // TODO #6: create void method for this if-else, named showGameCompletion()
                 // Did the user correctly filled out the fields?
-                if(success){
-                    currentPlayer.incrementCryptogramsCompleted();  // This is the successful completion
-                    currentPlayer.incrementCryptogramsPlayed();
-                    if(gameGui != null){
-                        GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
-                    }
-                }
-                else{
-                    currentPlayer.incrementCryptogramsPlayed();
-
-                    if(gameGui != null){
-                        GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
-                    }
-
-                }
+                showGameCompletion(success);
 
                 // TODO #7: create void method, named resetGameDetails()
                 // We reset the mappings
@@ -391,6 +340,47 @@ public class Game {
 
         }
 
+    }
+
+    private void showGameCompletion(boolean success) {
+        if (success) {
+            currentPlayer.incrementCryptogramsCompleted();  // This is the successful completion
+            currentPlayer.incrementCryptogramsPlayed();
+            if (gameGui != null) {
+                GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
+            }
+        } else {
+            currentPlayer.incrementCryptogramsPlayed();
+
+            if (gameGui != null) {
+                GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
+            }
+
+        }
+    }
+
+    private void updatePhrase(char cryptoChar, char newChar, Cryptogram cryptogram) {
+        String phrase = cryptogram.getPhrase();
+        phrase = phrase.replace(cryptoChar, newChar);
+        cryptogram.setPhrase(phrase);
+    }
+
+    private void incrementCorrectGuesses() {
+        currentPlayer.incrementTotalCorrectGuesses();
+    }
+
+    private OverWriteOptionPane showOverWriteOptionPane(Character plainLetterAtCryptoChar, char newChar) {
+        return new OverWriteOptionPane(gameGui.getFrame(),
+                String.valueOf(plainLetterAtCryptoChar.charValue()),
+                String.valueOf(newChar));
+    }
+
+    private void checkIfPlainAlreadyInUse(char cryptoChar, char newChar) throws PlainLetterAlreadyInUse {
+        for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
+            if (entry.getValue() != null && entry.getValue().equals(newChar) && entry.getKey() != cryptoChar) {
+                throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
+            }
+        }
     }
 
     /**
@@ -417,16 +407,12 @@ public class Game {
         if(plainLetterAtCryptoChar != null && plainLetterAtCryptoChar != newChar){
 
             if(gameGui != null){
-                // TODO #2: create void method for this OverWriteOptionPane, named showOverWriteOptionPane()
-                OverWriteOptionPane pane = new OverWriteOptionPane(gameGui.getFrame(),
-                        String.valueOf(inputFromUserNumber.get(number).charValue()),
-                        String.valueOf(newLetter.charAt(0)));
+                OverWriteOptionPane pane = showOverWriteOptionPane(inputFromUserNumber.get(number), newLetter.charAt(0));
 
                 if(pane.getResult()){
 
                     overwrite = true;
 
-                    // TODO #3: create void method for this plain letter search, named checkIfPlainAlreadyInUse()
                     for(Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()){
                         if(entry.getValue() != null && entry.getValue().equals(newLetter.charAt(0)) && entry.getKey() != key){
                             throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
@@ -437,14 +423,13 @@ public class Game {
 
                     currentPlayer.incrementTotalGuesses();
 
-                    // TODO #4: create void method named incrementCorrectGuesses()
                     NumberCryptogram c = (NumberCryptogram) playerGameMapping.get(currentPlayer);
 
                     Object original = c.getCryptogramAlphabet().get(number);
                     char temp = (Character) original;
 
                     if(temp == newLetter.charAt(0)){
-                        currentPlayer.incrementTotalCorrectGuesses();
+                        incrementCorrectGuesses();
                     }
                 }
             }
@@ -457,21 +442,17 @@ public class Game {
 
                 if(answer.equals("Y")){
 
-
-                    // TODO #3: create void method for this plain letter search, named checkIfPlainAlreadyInUse()
-
                     inputFromUserNumber.put(number, newLetter.charAt(0));
 
                     currentPlayer.incrementTotalGuesses();
 
-                    // TODO #4: create void method named incrementCorrectGuesses()
                     NumberCryptogram c = (NumberCryptogram) playerGameMapping.get(currentPlayer);
 
                     Object original = c.getCryptogramAlphabet().get(number);
                     char temp = (Character) original;
 
                     if(temp == newLetter.charAt(0)){
-                        currentPlayer.incrementTotalCorrectGuesses();
+                        incrementCorrectGuesses();
                     }
                 }
             }
@@ -481,7 +462,6 @@ public class Game {
         else{
             overwrite = true;
 
-            // TODO #3: create void method for this plain letter search, named checkIfPlainAlreadyInUse()
             for(Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()){
                 if(entry.getValue() != null && entry.getValue().equals(newLetter.charAt(0)) && entry.getKey() != key){
                     throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
@@ -492,14 +472,13 @@ public class Game {
 
             currentPlayer.incrementTotalGuesses();
 
-            // TODO #4: create void method named incrementCorrectGuesses()
             NumberCryptogram c = (NumberCryptogram) playerGameMapping.get(currentPlayer);
 
             Object original = c.getCryptogramAlphabet().get(number);
             char temp = (Character) original;
 
             if(temp == newLetter.charAt(0)){
-                currentPlayer.incrementTotalCorrectGuesses();
+                incrementCorrectGuesses();
             }
         }
 
@@ -510,20 +489,7 @@ public class Game {
                 lockFields();
             }
 
-            // TODO #6: create void method for this if-else, named showGameCompletion()
-            if(success){
-                currentPlayer.incrementCryptogramsCompleted();  // This is the successful completion
-                currentPlayer.incrementCryptogramsPlayed();
-                if(gameGui != null){
-                    GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
-                }
-            }
-            else{
-                currentPlayer.incrementCryptogramsPlayed();
-                if(gameGui != null){
-                    GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
-                }
-            }
+            showGameCompletion(success);
 
             // TODO #7: create void method, named resetGameDetails()
             playerGameMapping.put(currentPlayer, null);
@@ -561,9 +527,7 @@ public class Game {
 
                 inputFromUserLetter.put(key, null);              // else we reset the mapping to null
 
-                String phrase = c.getPhrase();                   // we update the phrase
-                phrase = phrase.replace(before, key);
-                c.setPhrase(phrase);
+                updatePhrase(before, key, c);
             }
             else{
                 throw new NoSuchCryptogramLetter("No such letter was mapped");
@@ -770,7 +734,6 @@ public class Game {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -917,4 +880,5 @@ public class Game {
             show(c.phrase);*/
         }
     }
+
 }
