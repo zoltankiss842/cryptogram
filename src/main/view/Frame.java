@@ -30,8 +30,6 @@ public class Frame {
         this.gameController = gameController;
 
         initFrame(name);
-        //displayNewGame(gameController.getPlayerGameMapping().get(gameController.getCurrentPlayer()));
-
 
         centerFrame();
         frame.pack();

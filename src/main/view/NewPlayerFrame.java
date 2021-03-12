@@ -1,8 +1,6 @@
 package main.view;
 
-import main.cryptogram.LetterCryptogram;
 import main.game.Game;
-import main.players.Player;
 
 import javax.swing.*;
 import java.awt.*;
