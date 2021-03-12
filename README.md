@@ -1,3 +1,7 @@
+# Players text file
+
+![image](resources/README/players_text.png)
+
 # How to check and see TODOs
 
 ![image](resources/README/todos.png)
