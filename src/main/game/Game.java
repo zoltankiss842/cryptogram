@@ -413,11 +413,7 @@ public class Game {
 
                     overwrite = true;
 
-                    for(Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()){
-                        if(entry.getValue() != null && entry.getValue().equals(newLetter.charAt(0)) && entry.getKey() != key){
-                            throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
-                        }
-                    }
+                    checkIfPlainAlreadyInUse(newLetter.charAt(0), newChar);
 
                     inputFromUserNumber.put(number, newLetter.charAt(0));
 
@@ -462,11 +458,7 @@ public class Game {
         else{
             overwrite = true;
 
-            for(Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()){
-                if(entry.getValue() != null && entry.getValue().equals(newLetter.charAt(0)) && entry.getKey() != key){
-                    throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
-                }
-            }
+            checkIfPlainAlreadyInUse(newLetter.charAt(0), newChar);
 
             inputFromUserNumber.put(number, newLetter.charAt(0));
 
@@ -507,59 +499,68 @@ public class Game {
     public void undoLetter(String letter) throws NoSuchCryptogramLetter {
         Cryptogram c = playerGameMapping.get(currentPlayer);
 
-        // TODO #8: create boolean method in if condition, named checkLetter()
-        if(letter.isEmpty() || letter.isBlank() || letter.equals(" ")){
-            return; // if the input letter is empty, we do not do anything
-        }
+        checkLetter(letter);
 
         // This has the same methods as the NumberCryptogram
         if(c instanceof LetterCryptogram){
 
-            // TODO #9: create void method, named undoLetterCryptoLetter()
-            char key = letter.charAt(0);                         // we convert the string into a char
+            undoLetterCryptoLetter(letter);
 
-            if(inputFromUserLetter.containsKey(key)){            // if there is such crypto key
-                Character before = inputFromUserLetter.get(key); // we get that user input character
-
-                if(before == null){                              // if the character was null, meaning that the player
-                    return;                                      // has not yet entered anything, we just return
-                }
-
-                inputFromUserLetter.put(key, null);              // else we reset the mapping to null
-
-                updatePhrase(before, key, c);
-            }
-            else{
-                throw new NoSuchCryptogramLetter("No such letter was mapped");
-            }
         }
         else if(c instanceof NumberCryptogram){
 
-            // TODO #9: create void method, named undoNumberCryptoLetter()
-            boolean found = false;
-            int key = -1;
-            try{
-                key = Integer.parseInt(letter);
-            }
-            catch (NumberFormatException e){
-                e.printStackTrace();
-            }
-            if(inputFromUserNumber.containsKey(key)){
-                Character before = inputFromUserNumber.get(key);
-
-                if(before == null){
-                    return;
-                }
-
-                inputFromUserNumber.put(key, null);
-
-            }
-            else{
-                throw new NoSuchCryptogramLetter("No such letter was mapped");
-            }
+            undoNumberCryptoLetter(letter);
         }
+    }
 
+    public boolean checkLetter(String letter) {
+        if(letter.isEmpty() || letter.isBlank() || letter.equals(" ")){
+            return true; // letter is indeed empty so we return true
+        }
+        return false;
+    }
 
+    public void undoLetterCryptoLetter(String letter) throws NoSuchCryptogramLetter {
+        char key = letter.charAt(0);                         // we convert the string into a char
+
+        if(inputFromUserLetter.containsKey(key)){            // if there is such crypto key
+            Character before = inputFromUserLetter.get(key); // we get that user input character
+
+            if(before == null){                              // if the character was null, meaning that the player
+                return;                                      // has not yet entered anything, we just return
+            }
+
+            inputFromUserLetter.put(key, null);              // else we reset the mapping to null
+
+            updatePhrase(before, key, playerGameMapping.get(currentPlayer));
+        }
+        else{
+            throw new NoSuchCryptogramLetter("No such letter was mapped");
+        }
+    }
+
+    public void undoNumberCryptoLetter(String letter) throws NoSuchCryptogramLetter {
+        boolean found = false;
+        int key = -1;
+        try{
+            key = Integer.parseInt(letter);
+        }
+        catch (NumberFormatException e){
+            e.printStackTrace();
+        }
+        if(inputFromUserNumber.containsKey(key)){
+            Character before = inputFromUserNumber.get(key);
+
+            if(before == null){
+                return;
+            }
+
+            inputFromUserNumber.put(key, null);
+
+        }
+        else{
+            throw new NoSuchCryptogramLetter("No such letter was mapped");
+        }
     }
 
     /**
@@ -590,40 +591,37 @@ public class Game {
 
     /**
      * This method will load sentences from a text file.
-     * For now we just generate hard-coded sentences.
-     * TODO #11: create text file with sentences, create a sanitizer and load them
-     *  into the sentences arraylist
      * @return                              result of loading the sentences from file
      * @throws NoSentencesToGenerateFrom    there were no text files
      */
     public boolean loadSentences() throws NoSentencesToGenerateFrom {
-//        File f = new File("phrases.txt");
-//        Scanner mys;
-//        try{
-//            mys = new Scanner(f);
-//        }catch(FileNotFoundException e){
-//            e.printStackTrace();
-//            return false;
-//        }
-//        ArrayList<String> phrases = new ArrayList<>();
-//        Random rand = new Random();
-//        while(mys.hasNextLine()){
-//            phrases.add(mys.nextLine());
-//        }
+        File f = new File("phrases.txt");
+        Scanner mys;
+        try{
+            mys = new Scanner(f);
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+            return false;
+        }
+
+        while(mys.hasNextLine()){
+            sentences.add(mys.nextLine());
+        }
 
         if(sentences == null){
             throw new NoSentencesToGenerateFrom("No sentences");
         }
 
-        sentences.add("This is a very long sentence that will be displayed so we will see what is going to happen");
-        sentences.add("He was so preoccupied with whether or not he could that he failed to stop to consider if he should");
-        sentences.add("Pair your designer cowboy hat with scuba gear for a memorable occasion");
-        sentences.add("For oil spots on the floor, nothing beats parking a motorbike in the lounge");
-        sentences.add("He said he was not there yesterday however many people saw him there");
+//        sentences.add("This is a very long sentence that will be displayed so we will see what is going to happen");
+//        sentences.add("He was so preoccupied with whether or not he could that he failed to stop to consider if he should");
+//        sentences.add("Pair your designer cowboy hat with scuba gear for a memorable occasion");
+//        sentences.add("For oil spots on the floor, nothing beats parking a motorbike in the lounge");
+//        sentences.add("He said he was not there yesterday however many people saw him there");
 
-        //String chosenphrase = ArrayList.get(rand.nextInt(ArrayList.size()));
+         Random rand = new Random();
+         String chosenPhrase = sentences.get(rand.nextInt(sentences.size()));
 
-        return false;
+        return true;
     }
 
 
@@ -675,15 +673,30 @@ public class Game {
         String solution = "";
         Cryptogram cryptogram;
 
-        // TODO #10: create void method for this if-else, named initNewSentence()
+        solution = initNewSentence(rnd);
+
+        cryptogram = initNewCryptogram(type, solution);
+
+        playerGameMapping = new HashMap<>();
+        playerGameMapping.put(player, cryptogram);
+
+        initNewInputMap(cryptogram);
+    }
+
+    private String initNewSentence(Random rnd) throws NoSentencesToGenerateFrom {
+        String solution;
         if(sentences.size()>0){
              solution = sentences.get(rnd.nextInt(sentences.size()));
         }
         else{
             throw new NoSentencesToGenerateFrom("There are no sentences, exiting...");
         }
+        return solution;
+    }
 
-        // TODO #10: create void method for this if-else, named initNewCryptogram()
+
+    private Cryptogram initNewCryptogram(String type, String solution) throws NoSuchGameType {
+        Cryptogram cryptogram;
         if(type.equals(LetterCryptogram.TYPE)){
             cryptogram = new LetterCryptogram(solution);
         }
@@ -693,11 +706,11 @@ public class Game {
         else{
             throw new NoSuchGameType("No such game type, exiting...");
         }
+        return cryptogram;
+    }
 
-        playerGameMapping = new HashMap<>();
-        playerGameMapping.put(player, cryptogram);
 
-        // TODO #10: create void method for this if-else, named initNewInputMap()
+    private void initNewInputMap(Cryptogram cryptogram) {
         if(cryptogram instanceof LetterCryptogram){
             inputFromUserLetter = new HashMap<>();
             for(char c : cryptogram.getPhrase().toCharArray()){
