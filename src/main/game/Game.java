@@ -320,11 +320,11 @@ public class Game {
 
             // If the inputFromUserLetter does not contain any null values, that means the player
             // entered a letter to every key, making the game end
-            if(isEverythingMappedLetter()){
+            if(isEverythingMappedLetter()) {
                 boolean success = checkAnswer();
 
                 // If we are showing a GUI, we lock/disable the input fields (also greying them out)
-                if(gameGui != null){
+                if (gameGui != null) {
                     lockFields();
                 }
 
@@ -332,15 +332,18 @@ public class Game {
                 showGameCompletion(success);
 
                 // TODO #7: create void method, named resetGameDetails()
-                // We reset the mappings
-                playerGameMapping.put(currentPlayer, null);
-                inputFromUserNumber = null;
-                inputFromUserLetter = null;
+                resetGameDetails();
+                }
             }
 
         }
-
+    private void resetGameDetails() {
+        // We reset the mappings
+        playerGameMapping.put(currentPlayer, null);
+        inputFromUserNumber = null;
+        inputFromUserLetter = null;
     }
+
 
     private void showGameCompletion(boolean success) {
         if (success) {
@@ -474,19 +477,17 @@ public class Game {
             }
         }
 
-        if(isEverythingMappedNumber()){
+        if(isEverythingMappedNumber()) {
             boolean success = checkAnswer();
 
-            if(gameGui != null){
+            if (gameGui != null) {
                 lockFields();
             }
 
             showGameCompletion(success);
 
             // TODO #7: create void method, named resetGameDetails()
-            playerGameMapping.put(currentPlayer, null);
-            inputFromUserNumber = null;
-            inputFromUserLetter = null;
+            resetGameDetails();
         }
 
     }
