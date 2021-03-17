@@ -2,7 +2,6 @@ package main.view;
 
 import main.cryptogram.Cryptogram;
 import main.game.Game;
-import main.players.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +22,7 @@ public class Frame {
     private SolutionPanel solutionPanel;
     private WordHolder wordHolder;
     private ButtonHolder buttonHolder;
+    private MenuBarHolder menuHolder;
 
     private Game gameController;
 
@@ -34,6 +34,9 @@ public class Frame {
         centerFrame();
         frame.pack();
         frame.setVisible(true);
+        menuHolder = new MenuBarHolder(gameController, frame);
+        frame.add(menuHolder.getHolder());
+
     }
 
     /**
@@ -53,6 +56,7 @@ public class Frame {
         frame.add(buttonHolder.getHolder(), BorderLayout.PAGE_END);
 
     }
+
 
     /**
      * Here we display a new set of encrypted
@@ -106,4 +110,6 @@ public class Frame {
     public JFrame getFrame() {
         return frame;
     }
+
+
 }
