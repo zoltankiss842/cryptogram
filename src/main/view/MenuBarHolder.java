@@ -33,7 +33,7 @@ public class MenuBarHolder {
         menuBar.add(this.scoreboard = new JMenu("Scoreboard"));
         scoreboard.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                CurrentPlayerStatistics statistics = new CurrentPlayerStatistics(gameController.getCurrentPlayer());
+
             }
         });
 
