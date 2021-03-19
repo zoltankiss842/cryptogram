@@ -19,7 +19,9 @@ public class Cryptogram {
     /**
      *  This is the original sentence: i like apples
      */
-    protected String solution;
+    protected String  solution;
+
+    protected int frequencies;
 
     /**
      * So it would work like:   cryptogramAlphabet.get(m) -> a, cryptogramAlphabet.get(r) -> b,  cryptogramAlphabet.get(t) -> c, ...
@@ -73,4 +75,14 @@ public class Cryptogram {
     public void setCryptogramAlphabet(HashMap<Object, Object> cryptogramAlphabet) {
         this.cryptogramAlphabet = cryptogramAlphabet;
     }
+
+    public int getFrequencies() {
+        return frequencies;
+    }
+
+    public void setFrequencies(int frequencies) {
+        this.frequencies = frequencies;
+    }
+
+
 }

@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * This class is the main controller class.
@@ -77,6 +78,7 @@ public class Game {
      */
     private HashMap<Integer, Character> inputFromUserNumber;
 
+
     private final Player currentPlayer;
 
     private ArrayList<String> sentences;
@@ -128,6 +130,8 @@ public class Game {
     public HashMap<Integer, Character> getInputFromUserNumber() {
         return inputFromUserNumber;
     }
+
+
 
     public Player getCurrentPlayer() {
         return currentPlayer;
@@ -183,7 +187,6 @@ public class Game {
           pane= new FirstOptionGamePane(gameGui.getFrame());
         }
 
-
         if(pane.getResult() == null){   // If player clicked on Cancel
             return;
         }
@@ -227,7 +230,7 @@ public class Game {
      */
     public void enterLetter(String cryptoLetter, String newLetter) throws NoGameBeingPlayed, NoSuchCryptogramLetter, PlainLetterAlreadyInUse{
         Cryptogram c = playerGameMapping.get(currentPlayer);
-
+        viewFrequencies();
 
         if(c == null){  // if the current cryptogram is null, that means a new game must be generated
             throw new NoGameBeingPlayed("Start a new game to enter a letter!");
@@ -397,7 +400,7 @@ public class Game {
     private void checkIfPlainAlreadyInUse(char cryptoChar, char newChar) throws PlainLetterAlreadyInUse {
         for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
             if (entry.getValue() != null && entry.getValue().equals(newChar) && entry.getKey() != cryptoChar) {
-                throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
+                throw new PlainLetterAlreadyInUse("Plain letter already in use for cryptogram: " + entry.getKey());
             }
         }
     }
@@ -405,7 +408,7 @@ public class Game {
     private void checkIfPlainAlreadyInUse(int cryptoChar, char newChar) throws PlainLetterAlreadyInUse {
         for (Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()) {
             if (entry.getValue() != null && entry.getValue().equals(newChar) && entry.getKey() != cryptoChar) {
-                throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
+                throw new PlainLetterAlreadyInUse("Plain letter already in use for cryptogram: " + entry.getKey());
             }
         }
     }
@@ -688,6 +691,7 @@ public class Game {
     private void generateCryptogram(Player player, String type) throws NoSentencesToGenerateFrom, NoSuchGameType {
         Random rnd = new Random();
         String solution = "";
+        String letter = "";
         Cryptogram cryptogram;
 
         solution = initNewSentence(rnd);
@@ -864,21 +868,32 @@ public class Game {
         return 'c';
     }
 
-    public boolean viewFrequencies(){
-        File f = new File("saves.txt");
-        Scanner mys;
-        try {
-            mys = new Scanner(f);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
+    public String viewFrequencies() {
+       char[] keys = currentPhrase.toCharArray();
+
+       HashMap<Character, Integer> frequencyMap = new HashMap<>();
+
+       for(Character key : keys){
+            if(!frequencyMap.containsKey(key)){
+                frequencyMap.put(key,1);
+            }else{
+                frequencyMap.put(key, frequencyMap.get(key)+1);
+            }
         }
-        while(mys.hasNextLine()){
-            String data = mys.nextLine();
-            String[] tokens = data.split(" ");
-            System.out.println(tokens[3]);
+
+        StringBuilder sb = new StringBuilder();
+        Iterator<Map.Entry<Character, Integer>> iter = frequencyMap.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<Character, Integer> entry = iter.next();
+            sb.append('\n');
+            sb.append(entry.getKey());
+            sb.append('-');
+            sb.append(entry.getValue());
+            if (iter.hasNext()) {
+                sb.append('\n').append(' ');
+            }
         }
-        return true;
+        return sb.toString();
     }
 
     public void saveGame(String name){
