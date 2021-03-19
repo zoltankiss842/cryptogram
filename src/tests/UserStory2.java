@@ -42,7 +42,7 @@ public class UserStory2 {
      */
     @Test
     public void enterLetterLetterCryptogram() throws Exception{
-        game = new Game(player, LetterCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -93,7 +93,7 @@ Scenario: player enters a letter
  */
     @Test
     public void enterLetterNumberCryptogram() throws Exception{
-        game = new Game(player, NumberCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -136,7 +136,7 @@ Scenario: player enters a letter
     */
     @Test
     public void cryptoAlreadyMappedLetterYesAnswer() throws Exception {
-        game = new Game(player, LetterCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -192,7 +192,7 @@ Scenario: player enters a letter
     */
     @Test
     public void cryptoAlreadyMappedLetterNoAnswer() throws Exception {
-        game = new Game(player, LetterCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -246,7 +246,7 @@ Scenario: player enters a letter
     */
     @Test(expected = Exception.class)
     public void plainAlreadyMappedLetter() throws Exception {
-        game = new Game(player, LetterCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -292,7 +292,7 @@ Scenario: player selects a plain letter which they have already mapped
 */
     @Test(expected = Exception.class)
     public void plainAlreadyMappedNumber() throws Exception {
-        game = new Game(player, NumberCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -332,7 +332,7 @@ Scenario: player selects a plain letter which they have already mapped
     */
     @Test
     public void enterLastValueCorrectLetter() throws Exception {
-        game = new Game(player, LetterCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -378,7 +378,7 @@ Scenario: player enters the last value to be mapped and successfully completes t
 */
     @Test
     public void enterLastValueCorrectNumber() throws Exception {
-        game = new Game(player, NumberCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -420,7 +420,7 @@ Scenario: player enters the last value to be mapped and successfully completes t
     */
     @Test
     public void enterLastValueInCorrectLetter() throws Exception {
-        game = new Game(player, LetterCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -463,7 +463,7 @@ Scenario: player enters the last value to be mapped and unsuccessfully completes
 */
     @Test
     public void enterLastValueInCorrectNumber() throws Exception {
-        game = new Game(player, NumberCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -505,7 +505,7 @@ Scenario: player enters the last value to be mapped and unsuccessfully completes
     */
     @Test(expected = Exception.class)
     public void enterNotUsedLetter() throws Exception {
-        game = new Game(player, LetterCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -549,7 +549,7 @@ Scenario: player enters a cryptogram value which is not used in the cryptogram
 */
     @Test(expected = Exception.class)
     public void enterNotUsedNumber() throws Exception {
-        game = new Game(player, NumberCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
 

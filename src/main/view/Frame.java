@@ -32,10 +32,12 @@ public class Frame {
         initFrame(name);
 
         centerFrame();
-        frame.pack();
-        frame.setVisible(true);
+
         menuHolder = new MenuBarHolder(gameController, frame);
         frame.add(menuHolder.getHolder());
+
+        frame.revalidate();
+        frame.setVisible(true);
 
     }
 
