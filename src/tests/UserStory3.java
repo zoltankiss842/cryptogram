@@ -38,7 +38,7 @@ public class UserStory3 {
      */
     @Test
     public void undoMappedLetter() throws Exception {
-        game = new Game(player, LetterCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -72,7 +72,7 @@ public class UserStory3 {
      */
     @Test
     public void undoMappedNumber() throws Exception {
-        game = new Game(player, NumberCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -106,7 +106,7 @@ public class UserStory3 {
     */
     @Test(expected = Exception.class)
     public void undoNotMappedLetter() throws Exception {
-        game = new Game(player, LetterCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -140,7 +140,7 @@ public class UserStory3 {
     */
     @Test(expected = Exception.class)
     public void undoNotMappedNumber() throws Exception {
-        game = new Game(player, NumberCryptogram.TYPE, sentences, false);
+        game = new Game(player, sentences, false);
 
         NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
 

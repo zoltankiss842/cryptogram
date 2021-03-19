@@ -177,58 +177,64 @@ public class LetterInput {
         FocusListener fl = new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-
+                return;
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                String text = userGuess.getText();
-                Game game = getGameController();
-                StringBuilder builder = new StringBuilder();
-                if(!text.isEmpty() && !text.isBlank()){
-                    try {
-                        game.enterLetter(originalLetter, text);
-                        if(game.isOverwrite()){
-                            word.updateLetterLabel(originalLetter, text);
-                            game.setOverwrite(false);
-                            previousUserInput = text;
-                        }
-                        else{
+                if(!e.isTemporary()){
+                    String text = userGuess.getText();
+                    Game game = getGameController();
+                    StringBuilder builder = new StringBuilder();
+                    if(!text.isEmpty() && !text.isBlank()){
+                        try {
+                            game.enterLetter(originalLetter, text);
+                            if(game.isOverwrite()){
+                                word.updateLetterLabel(originalLetter, text);
+                                game.setOverwrite(false);
+                                previousUserInput = text;
+                            }
+                            else{
+                                word.updateLetterLabel(originalLetter, previousUserInput);
+                            }
+
+                            if(game.isFinished()){
+                                word.updateLetterLabel(originalLetter, text);
+                            }
+
+                        } catch (Exception exception) {
                             word.updateLetterLabel(originalLetter, previousUserInput);
+                            if(exception instanceof PlainLetterAlreadyInUse){
+                                PlainLetterInUseMessagePane pane = new PlainLetterInUseMessagePane(
+                                        word.getWordHolder().getFrame().getFrame(),
+                                        exception.getMessage());
+                            }
+                            System.err.println(exception.getMessage());
                         }
-                    } catch (Exception exception) {
-                        word.updateLetterLabel(originalLetter, previousUserInput);
-                        if(exception instanceof PlainLetterAlreadyInUse){
-                            PlainLetterInUseMessagePane pane = new PlainLetterInUseMessagePane(
-                                    word.getWordHolder().getFrame().getFrame(),
-                                    exception.getMessage());
+
+
+                    }
+                    else{
+                        try {
+                            game.undoLetter(originalLetter);
+                            word.updateLetterLabel(originalLetter, null);
+                        } catch (Exception exception) {
+                            System.err.println(exception.getMessage());
                         }
-                        System.err.println(exception.getMessage());
                     }
 
 
-                }
-                else{
-                    try {
-                        game.undoLetter(originalLetter);
-                        word.updateLetterLabel(originalLetter, null);
-                    } catch (Exception exception) {
-                        System.err.println(exception.getMessage());
+                    if(game.getPlayerGameMapping().get(game.getCurrentPlayer()) instanceof LetterCryptogram){
+                        if(game.getInputFromUserLetter() != null){
+                            System.out.println(game.getInputFromUserLetter().toString());
+                        }
+                    }
+                    else{
+                        if(game.getInputFromUserNumber() != null){
+                            System.out.println(game.getInputFromUserNumber().toString());
+                        }
                     }
                 }
-
-
-                if(game.getPlayerGameMapping().get(game.getCurrentPlayer()) instanceof LetterCryptogram){
-                    if(game.getInputFromUserLetter() != null){
-                        System.out.println(game.getInputFromUserLetter().toString());
-                    }
-                }
-                else{
-                    if(game.getInputFromUserNumber() != null){
-                        System.out.println(game.getInputFromUserNumber().toString());
-                    }
-                }
-
             }
         };
 

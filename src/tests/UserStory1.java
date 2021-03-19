@@ -72,7 +72,7 @@ public class UserStory1 {
      */
     @Test
     public void numberCryptoTest() throws Exception {
-        game = new Game(player, NumberCryptogram.TYPE, sentences,false);
+        game = new Game(player, sentences,false);
 
 
         HashSet<Character> set = new HashSet<>();
@@ -97,7 +97,7 @@ public class UserStory1 {
      */
     @Test(expected = Exception.class)
     public void noPhrasesTest() throws Exception{
-        game = new Game(player, NumberCryptogram.TYPE, null, false);
+        game = new Game(player, null, false);
     }
 
     @After

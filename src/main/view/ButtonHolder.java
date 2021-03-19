@@ -69,7 +69,6 @@ public class ButtonHolder {
         });
 
         holder.add(newGame);
-//        holder.add(submit);
         holder.add(reset);
     }
 
@@ -112,7 +111,6 @@ public class ButtonHolder {
             @Override
             public void mouseEntered(MouseEvent e) {
                 playerName.getRootPane().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                nameHolder.setBorder(new LineBorder(new Color(0,0,0), 1));
                 nameHolder.setToolTipText("Check your statistics!");
             }
 

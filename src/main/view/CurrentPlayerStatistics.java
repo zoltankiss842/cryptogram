@@ -38,8 +38,6 @@ public class CurrentPlayerStatistics {
         frame.setResizable(false);
         frame.requestFocus();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-
     }
 
     private void initPanel() {

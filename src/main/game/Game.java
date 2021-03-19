@@ -6,12 +6,8 @@ import main.cryptogram.NumberCryptogram;
 import main.exceptions.*;
 import main.players.Player;
 import main.players.Players;
-import main.view.Frame;
-import main.view.GameCompletedMessagePane;
-import main.view.OverWriteOptionPane;
-import main.view.Word;
+import main.view.*;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -87,6 +83,7 @@ public class Game {
     private String currentPhrase;
     private Frame gameGui;
     private boolean overwrite = false;
+    private boolean finished = true;
 
     /**
      * This constructor is used by our program with UI in mind. It is getting generated from
@@ -99,25 +96,23 @@ public class Game {
      * @throws NoSentencesToGenerateFrom if there are no sentences to generate
      */
     public Game(String userName) throws NoSuchGameType, NoSentencesToGenerateFrom {
-        this(new Player(userName), LetterCryptogram.TYPE, new ArrayList<>(), true);
+        this(new Player(userName), new ArrayList<>(), true);
         playGame();
     }
 
     /**
      * This constructor is mainly used for unit tests, it creates better accessibility.
      * @param p                          current player
-     * @param cryptType                  cryptogram type
      * @param sentences                  an arraylist of sentences
      * @param createGui                  should the constructor generate a UI for this program
      * @throws NoSuchGameType            if the user chooses a non-existing game type
      * @throws NoSentencesToGenerateFrom if there are no sentences to generate
      */
-    public Game(Player p, String cryptType, ArrayList<String> sentences, boolean createGui) throws NoSuchGameType, NoSentencesToGenerateFrom {
+    public Game(Player p, ArrayList<String> sentences, boolean createGui) throws NoSuchGameType, NoSentencesToGenerateFrom {
         currentPlayer = loadPlayer(p);
         if(createGui) gameGui = new Frame(currentPlayer.getUsername(), this);
         this.sentences = sentences;
         loadSentences();
-        generateCryptogram(currentPlayer, cryptType);
     }
 
     // Basic getters/setters
@@ -146,6 +141,9 @@ public class Game {
         this.overwrite = overwrite;
     }
 
+    public boolean isFinished() {
+        return finished;
+    }
 
     /**
      * This method right now only returns the parameter, however
@@ -174,13 +172,23 @@ public class Game {
      * on the UI. This method cannot be used in the unit tests.
      */
     public void playGame(){
-        Cryptogram c = playerGameMapping.get(currentPlayer);
+        NewGameTypeOptionPane pane = new NewGameTypeOptionPane(gameGui.getFrame());
+
+        if(pane.getResult() == null){   // If player clicked on Cancel
+            return;
+        }
+
+        inputFromUserLetter = null;
+        inputFromUserNumber = null;
+
         try{
-            if (c instanceof LetterCryptogram) {
+            if(pane.getResult().equals(LetterCryptogram.TYPE)) {
                 generateCryptogram(currentPlayer, LetterCryptogram.TYPE);
+                finished = false;
             }
-            else if(c instanceof NumberCryptogram) {
+            else if(pane.getResult().equals(NumberCryptogram.TYPE)) {
                 generateCryptogram(currentPlayer, NumberCryptogram.TYPE);
+                finished = false;
             }
 
             gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
@@ -257,15 +265,15 @@ public class Game {
                         inputFromUserLetter.put(cryptoChar, newChar);   // we put the new value at key
 
                         // We update the phrase at the Crypto class
-                        updatePhrase(cryptoChar, newLetter.charAt(0), playerGameMapping.get(currentPlayer));
+                        updatePhrase(cryptoChar, newChar, playerGameMapping.get(currentPlayer));
 
                         currentPlayer.incrementTotalGuesses();  // We increment the total number of guesses
 
                             LetterCryptogram letter = (LetterCryptogram)c;
                             Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
-                            char temp = (Character) original;
+                            char temp = original;
 
-                            if(temp == newLetter.charAt(0)){
+                            if(temp == newChar){
                                 incrementCorrectGuesses();
                             }
                     }
@@ -280,7 +288,6 @@ public class Game {
 
                     if(answer.equals("Y")){
                         inputFromUserLetter.put(cryptoChar, newChar);
-
 
                         updatePhrase(cryptoChar, newChar, playerGameMapping.get(currentPlayer));
 
@@ -311,7 +318,7 @@ public class Game {
 
                     LetterCryptogram letter = (LetterCryptogram)c;
                     Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
-                    char temp = (Character) original;
+                    char temp = original;
 
                     if(temp == newChar){
                         incrementCorrectGuesses();
@@ -321,6 +328,8 @@ public class Game {
             // If the inputFromUserLetter does not contain any null values, that means the player
             // entered a letter to every key, making the game end
             if(isEverythingMappedLetter()) {
+                overwrite = false;
+                finished = true;
                 boolean success = checkAnswer();
 
                 // If we are showing a GUI, we lock/disable the input fields (also greying them out)
@@ -331,7 +340,6 @@ public class Game {
                 // Did the user correctly filled out the fields?
                 showGameCompletion(success);
 
-                // TODO #7: create void method, named resetGameDetails()
                 resetGameDetails();
                 }
             }
@@ -347,18 +355,14 @@ public class Game {
 
     private void showGameCompletion(boolean success) {
         if (success) {
-            currentPlayer.incrementCryptogramsCompleted();  // This is the successful completion
+            currentPlayer.incrementCryptogramsCompleted();
             currentPlayer.incrementCryptogramsPlayed();
-            if (gameGui != null) {
-                GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
-            }
         } else {
             currentPlayer.incrementCryptogramsPlayed();
+        }
 
-            if (gameGui != null) {
-                GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
-            }
-
+        if (gameGui != null) {
+            GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
         }
     }
 
@@ -380,6 +384,14 @@ public class Game {
 
     private void checkIfPlainAlreadyInUse(char cryptoChar, char newChar) throws PlainLetterAlreadyInUse {
         for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
+            if (entry.getValue() != null && entry.getValue().equals(newChar) && entry.getKey() != cryptoChar) {
+                throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
+            }
+        }
+    }
+
+    private void checkIfPlainAlreadyInUse(int cryptoChar, char newChar) throws PlainLetterAlreadyInUse {
+        for (Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()) {
             if (entry.getValue() != null && entry.getValue().equals(newChar) && entry.getKey() != cryptoChar) {
                 throw new PlainLetterAlreadyInUse("Plain letter already in use for cyptogram: " + entry.getKey());
             }
@@ -416,7 +428,7 @@ public class Game {
 
                     overwrite = true;
 
-                    checkIfPlainAlreadyInUse(newLetter.charAt(0), newChar);
+                    checkIfPlainAlreadyInUse(number, newChar);
 
                     inputFromUserNumber.put(number, newLetter.charAt(0));
 
@@ -461,9 +473,9 @@ public class Game {
         else{
             overwrite = true;
 
-            checkIfPlainAlreadyInUse(newLetter.charAt(0), newChar);
+            checkIfPlainAlreadyInUse(number, newChar);
 
-            inputFromUserNumber.put(number, newLetter.charAt(0));
+            inputFromUserNumber.put(number, newChar);
 
             currentPlayer.incrementTotalGuesses();
 
@@ -478,6 +490,8 @@ public class Game {
         }
 
         if(isEverythingMappedNumber()) {
+            overwrite = false;
+            finished = true;
             boolean success = checkAnswer();
 
             if (gameGui != null) {
@@ -613,15 +627,6 @@ public class Game {
             throw new NoSentencesToGenerateFrom("No sentences");
         }
 
-//        sentences.add("This is a very long sentence that will be displayed so we will see what is going to happen");
-//        sentences.add("He was so preoccupied with whether or not he could that he failed to stop to consider if he should");
-//        sentences.add("Pair your designer cowboy hat with scuba gear for a memorable occasion");
-//        sentences.add("For oil spots on the floor, nothing beats parking a motorbike in the lounge");
-//        sentences.add("He said he was not there yesterday however many people saw him there");
-
-         Random rand = new Random();
-         String chosenPhrase = sentences.get(rand.nextInt(sentences.size()));
-
         return true;
     }
 
@@ -658,7 +663,7 @@ public class Game {
             }
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -678,7 +683,13 @@ public class Game {
 
         cryptogram = initNewCryptogram(type, solution);
 
-        playerGameMapping = new HashMap<>();
+        if(playerGameMapping == null){
+            playerGameMapping = new HashMap<>();
+        }
+        else{
+            playerGameMapping.clear();
+        }
+
         playerGameMapping.put(player, cryptogram);
 
         initNewInputMap(cryptogram);
@@ -724,7 +735,9 @@ public class Game {
         else if(cryptogram instanceof NumberCryptogram){
             inputFromUserNumber = new HashMap<>();
             for(int number : ((NumberCryptogram) cryptogram).getSolutionInIntegerFormat()){
-                inputFromUserNumber.put(number, null);
+                if(number != 0){
+                    inputFromUserNumber.put(number, null);
+                }
             }
             currentPhrase = cryptogram.getPhrase();
         }
