@@ -21,6 +21,7 @@ public class CurrentPlayerStatistics {
     private JLabel playerTotalCorrectGuesses;
     private JLabel playerGamePlayed;
     private JLabel playerGameCompleted;
+    private JLabel playerGameSuccessfullyCompleted;
 
     public CurrentPlayerStatistics(Player player) {
         initFrame();
@@ -71,6 +72,9 @@ public class CurrentPlayerStatistics {
         JLabel playerGameCompletedLabel = new JLabel("Games completed:");
         playerGameCompleted = new JLabel(String.valueOf(player.getNumCryptogramsCompleted()));
 
+        JLabel playerGameSuccessfullyCompletedLabel = new JLabel("Correctly completed:");
+        playerGameSuccessfullyCompleted = new JLabel(String.valueOf(player.getNumCryptogramsSuccessfullyCompleted()));
+
         dataHolder.add(playerNameLabel);
         dataHolder.add(playerName);
         dataHolder.add(playerAccuracyLabel);
@@ -83,6 +87,8 @@ public class CurrentPlayerStatistics {
         dataHolder.add(playerGamePlayed);
         dataHolder.add(playerGameCompletedLabel);
         dataHolder.add(playerGameCompleted);
+        dataHolder.add(playerGameSuccessfullyCompletedLabel);
+        dataHolder.add(playerGameSuccessfullyCompleted);
 
         statsHolder.add(dataHolder, BorderLayout.CENTER);
     }

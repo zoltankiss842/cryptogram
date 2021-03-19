@@ -7,14 +7,16 @@ public class Player {
     private int totalCorrectGuesses;
     private int cryptogramsPlayed;
     private int cryptogramsCompleted;
+    private int cryptogramsSuccessfullyCompleted;
 
-    public Player(String playername) {
-        username = playername;
+    public Player(String playerName) {
+        username = playerName;
         accuracy = 0;
         totalGuesses = 0;
         totalCorrectGuesses = 0;
         cryptogramsPlayed = 0;
         cryptogramsCompleted = 0;
+        cryptogramsSuccessfullyCompleted = 0;
     }
 
     public String getUsername() {
@@ -43,12 +45,18 @@ public class Player {
         updateAccuracy();
     }
 
+    public void incrementCryptogramsSuccessfullyCompleted() { cryptogramsSuccessfullyCompleted++; }
+
     public void incrementCryptogramsCompleted() {
         cryptogramsCompleted++;
     }
 
     public void incrementCryptogramsPlayed() {
         cryptogramsPlayed++;
+    }
+
+    public int getNumCryptogramsSuccessfullyCompleted() {
+        return cryptogramsSuccessfullyCompleted;
     }
 
     public int getNumCryptogramsCompleted() {

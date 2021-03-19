@@ -190,6 +190,7 @@ public class Game {
 
         inputFromUserLetter = null;
         inputFromUserNumber = null;
+        currentPlayer.incrementCryptogramsPlayed();
 
         try{
             if(pane.getResult().equals(LetterCryptogram.TYPE)) {
@@ -366,9 +367,10 @@ public class Game {
     private void showGameCompletion(boolean success) {
         if (success) {
             currentPlayer.incrementCryptogramsCompleted();
-            currentPlayer.incrementCryptogramsPlayed();
+            currentPlayer.incrementCryptogramsSuccessfullyCompleted();
+
         } else {
-            currentPlayer.incrementCryptogramsPlayed();
+            currentPlayer.incrementCryptogramsCompleted();
         }
 
         if (gameGui != null) {
@@ -510,7 +512,6 @@ public class Game {
 
             showGameCompletion(success);
 
-            // TODO #7: create void method, named resetGameDetails()
             resetGameDetails();
         }
 
