@@ -175,6 +175,7 @@ public class Game {
      */
     public void playGame(){
         Cryptogram c = playerGameMapping.get(currentPlayer);
+        currentPlayer.incrementCryptogramsPlayed();
         try{
             if (c instanceof LetterCryptogram) {
                 generateCryptogram(currentPlayer, LetterCryptogram.TYPE);
@@ -331,7 +332,6 @@ public class Game {
                 // Did the user correctly filled out the fields?
                 showGameCompletion(success);
 
-                // TODO #7: create void method, named resetGameDetails()
                 resetGameDetails();
                 }
             }
@@ -346,15 +346,13 @@ public class Game {
 
 
     private void showGameCompletion(boolean success) {
+        currentPlayer.incrementCryptogramsCompleted();
         if (success) {
-            currentPlayer.incrementCryptogramsCompleted();  // This is the successful completion
-            currentPlayer.incrementCryptogramsPlayed();
+            currentPlayer.incrementCryptogramsSuccessfullyCompleted();  // This is the successful completion
             if (gameGui != null) {
                 GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
             }
         } else {
-            currentPlayer.incrementCryptogramsPlayed();
-
             if (gameGui != null) {
                 GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
             }
@@ -484,9 +482,9 @@ public class Game {
                 lockFields();
             }
 
-            showGameCompletion(success);
 
-            // TODO #7: create void method, named resetGameDetails()
+           /* showGameCompletion(success);*/
+
             resetGameDetails();
         }
 
@@ -658,7 +656,7 @@ public class Game {
             }
         }
 
-        return false;
+        return true;
     }
 
     /**
