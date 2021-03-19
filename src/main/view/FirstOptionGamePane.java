@@ -5,18 +5,20 @@ import main.cryptogram.NumberCryptogram;
 
 import javax.swing.*;
 
-public class NewGameTypeOptionPane implements OptionPane {
+public class FirstOptionGamePane implements OptionPane {
+
+
 
     private final String TITLE = "What type of game?";
     private final String MESSAGE = "What type of game would you like to play?";
-    private final String[] OPTIONS = {"Letter", "Number", "Cancel"};
-    private final int OPTION_TYPE = JOptionPane.YES_NO_CANCEL_OPTION;
+    private final String[] OPTIONS = {"Letter", "Number"};
+    private final int OPTION_TYPE = JOptionPane.YES_NO_OPTION;
     private final int MESSAGE_TYPE = JOptionPane.PLAIN_MESSAGE;
 
     private int result = -1;
     private JOptionPane pane;
 
-    public NewGameTypeOptionPane(JFrame frame) {
+    public FirstOptionGamePane(JFrame frame) {
         initPane(frame);
     }
 

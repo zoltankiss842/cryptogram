@@ -172,7 +172,17 @@ public class Game {
      * on the UI. This method cannot be used in the unit tests.
      */
     public void playGame(){
-        NewGameTypeOptionPane pane = new NewGameTypeOptionPane(gameGui.getFrame());
+
+            OptionPane pane;
+        if(inputFromUserLetter!=null)
+        {
+          pane= new NewGameTypeOptionPane(gameGui.getFrame());
+        }
+
+        else{
+          pane= new FirstOptionGamePane(gameGui.getFrame());
+        }
+
 
         if(pane.getResult() == null){   // If player clicked on Cancel
             return;

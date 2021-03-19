@@ -51,6 +51,7 @@ public class Frame {
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+        frame.setResizable(false);
         centerFrame();
 
         // Here we add the buttons on the bottom of the frame
