@@ -20,10 +20,10 @@ public class Frame {
 
     private JFrame frame;
     private SolutionPanel solutionPanel;
+    private FrequenciesPanel frequenciesPanel;
     private WordHolder wordHolder;
     private ButtonHolder buttonHolder;
     private MenuBarHolder menuHolder;
-
     private Game gameController;
 
     public Frame(String name, Game gameController){
@@ -72,6 +72,7 @@ public class Frame {
         // Resetting the components to display new sentences
         try{
             frame.remove(solutionPanel.getHolder());
+            frame.remove(frequenciesPanel.getHolder());
             frame.remove(wordHolder.getHolder());
             Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
             frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
@@ -82,6 +83,7 @@ public class Frame {
 
         wordHolder = null;
         solutionPanel = null;
+        frequenciesPanel = null;
 
         // Adding new encrypted sentence to the frame
         wordHolder = new WordHolder(frame, this);
@@ -90,7 +92,11 @@ public class Frame {
         // Adding the solution sentence to the frame
         solutionPanel = new SolutionPanel(cryptogram.getSolution());
 
+        frequenciesPanel = new FrequenciesPanel(gameController.viewFrequencies());
+
+
         frame.add(solutionPanel.getHolder(), BorderLayout.PAGE_START);
+        /*frame.add(frequenciesPanel.getHolder(), BorderLayout.PAGE_START);*/ // comment out to see cryptoLetter frequencies
         frame.add(wordHolder.getHolder(), BorderLayout.CENTER);
 
         centerFrame();

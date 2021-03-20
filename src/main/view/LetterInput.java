@@ -49,16 +49,18 @@ public class LetterInput {
         //letterInput.setBorder(new LineBorder(new Color(0,0,0),1));
     }
 
-    private void initEncryptedLetter(String letter) {
+    public void initEncryptedLetter(String letter) {
         this.encryptedLetter = new JLabel(letter);
         originalLetter = letter;
         encryptedLetter.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
+
     private void assembleLetterInput() {
         letterInput.add(userGuess);
         letterInput.add(encryptedLetter);
     }
+
 
     /**
      * Here we set up the user input field.
@@ -256,4 +258,5 @@ public class LetterInput {
     private Game getGameController(){
         return this.word.getWordHolder().getFrame().getGameController();
     }
+
 }
