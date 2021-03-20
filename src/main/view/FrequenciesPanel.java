@@ -6,17 +6,14 @@ import java.util.HashMap;
 public class FrequenciesPanel {
     private JPanel holder;
     private JLabel frequencies;
-    private JLabel letterFreq;
 
     public FrequenciesPanel(String letterFreq) {
         initHolder();
         initFrequencies(letterFreq);
     }
 
-    private void initFrequencies(String letterFr) {
-       frequencies = new JLabel("<html>Frequencies<html>" + letterFr);
-       frequencies.setText("<html>" + letterFr.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
-
+    private void initFrequencies(String letterFreq) {
+       frequencies = new JLabel("Frequencies: " + letterFreq);
        holder.add(frequencies);
     }
 

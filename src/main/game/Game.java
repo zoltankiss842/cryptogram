@@ -870,17 +870,18 @@ public class Game {
 
     public String viewFrequencies() {
        char[] keys = currentPhrase.toCharArray();
+       HashMap<Character, Integer> frequencyMap = new HashMap<>(); // frequency map for the keys and their frequencies
 
-       HashMap<Character, Integer> frequencyMap = new HashMap<>();
-
-       for(Character key : keys){
-            if(!frequencyMap.containsKey(key)){
-                frequencyMap.put(key,1);
+       for(int i = 0; i < keys.length; i++){
+           if(!(keys[i]==('!') || keys[i]==(' '))) { // counts !'s and spaces so we take them out
+            if(!frequencyMap.containsKey(keys[i])){
+                frequencyMap.put(keys[i],1); // if map does not contain the key we put that in with frequency 1
             }else{
-                frequencyMap.put(key, frequencyMap.get(key)+1);
-            }
+                frequencyMap.put(keys[i], frequencyMap.get(keys[i])+1); // otherwise we add plus one to the frequency
+            }}
         }
 
+       // here we format it to string to look nicer
         StringBuilder sb = new StringBuilder();
         Iterator<Map.Entry<Character, Integer>> iter = frequencyMap.entrySet().iterator();
         while (iter.hasNext()) {
@@ -890,7 +891,7 @@ public class Game {
             sb.append('-');
             sb.append(entry.getValue());
             if (iter.hasNext()) {
-                sb.append('\n').append(' ');
+                sb.append(',').append(' ');
             }
         }
         return sb.toString();

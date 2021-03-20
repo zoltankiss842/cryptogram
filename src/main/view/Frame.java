@@ -24,8 +24,6 @@ public class Frame {
     private WordHolder wordHolder;
     private ButtonHolder buttonHolder;
     private MenuBarHolder menuHolder;
-    private String originalLetter;
-
     private Game gameController;
 
     public Frame(String name, Game gameController){
@@ -96,8 +94,9 @@ public class Frame {
 
         frequenciesPanel = new FrequenciesPanel(gameController.viewFrequencies());
 
-        frame.add(frequenciesPanel.getHolder(), BorderLayout.EAST);
+
         frame.add(solutionPanel.getHolder(), BorderLayout.PAGE_START);
+        /*frame.add(frequenciesPanel.getHolder(), BorderLayout.PAGE_START);*/ // comment out to see cryptoLetter frequencies
         frame.add(wordHolder.getHolder(), BorderLayout.CENTER);
 
         centerFrame();
