@@ -1,5 +1,8 @@
 package main.view;
 
+import main.exceptions.InvalidGameCreation;
+import main.exceptions.InvalidPlayerCreation;
+import main.exceptions.NoSaveGameFound;
 import main.game.Game;
 
 import javax.swing.*;
@@ -79,7 +82,17 @@ public class ButtonHolder {
         loadGame = new JButton("Load");
         loadGame.addActionListener(new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent e){ gameController.loadGame(gameController.getCurrentPlayer().getUsername());}
+            public void actionPerformed(ActionEvent e){
+                try {
+                    gameController.loadGame(gameController.getCurrentPlayer().getUsername());
+                } catch (NoSaveGameFound noSaveGameFound) {
+                    noSaveGameFound.printStackTrace();
+                } catch (InvalidPlayerCreation invalidPlayerCreation) {
+                    invalidPlayerCreation.printStackTrace();
+                } catch (InvalidGameCreation invalidGameCreation) {
+                    invalidGameCreation.printStackTrace();
+                }
+            }
         });
 
 

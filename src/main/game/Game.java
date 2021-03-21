@@ -655,7 +655,13 @@ public class Game {
                         Character key = oneMapping.charAt(0);
                         Character value = oneMapping.charAt(1);
 
-                        inputMap.put(key, value);
+                        if(value == '#'){
+                            inputMap.put(key, null);
+                        }
+                        else{
+                            inputMap.put(key, value);
+                        }
+
                     }
 
                     Cryptogram c = new LetterCryptogram(solution, alphabetMap);
@@ -663,6 +669,27 @@ public class Game {
                     inputFromUserLetter = inputMap;
 
                     System.out.println("File reading was successful");
+
+                    gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
+
+                    for(int i = 0; i < tokenisedInputMapping.length; ++i){
+                        String oneMapping = tokenisedInputMapping[i];
+                        oneMapping = oneMapping.replaceAll(" ", "");
+                        Character key = oneMapping.charAt(0);
+                        Character value = oneMapping.charAt(1);
+
+                        if(value == '#'){
+                            for(Word word : gameGui.getWordHolder().getWords()){
+                                word.updateLetterLabel(String.valueOf(key), null);
+                            }
+                        }
+                        else{
+                            for(Word word : gameGui.getWordHolder().getWords()){
+                                word.updateLetterLabel(String.valueOf(key), String.valueOf(value));
+                            }
+                        }
+
+                    }
 
                     return true;
                 }
@@ -686,7 +713,18 @@ public class Game {
                         Integer key = Integer.parseInt(String.valueOf(oneMapping.charAt(0)));
                         Character value = oneMapping.charAt(1);
 
-                        inputMap.put(key, value);
+                        if(value == '#'){
+                            inputMap.put(key, null);
+                            for(Word word : gameGui.getWordHolder().getWords()){
+                                word.updateLetterLabel(String.valueOf(oneMapping.charAt(0)), null);
+                            }
+                        }
+                        else{
+                            inputMap.put(key, value);
+                            for(Word word : gameGui.getWordHolder().getWords()){
+                                word.updateLetterLabel(String.valueOf(key), String.valueOf(value));
+                            }
+                        }
                     }
 
                     Cryptogram c = new NumberCryptogram(solution, alphabetMap);
@@ -694,6 +732,27 @@ public class Game {
                     inputFromUserNumber = inputMap;
 
                     System.out.println("File reading was successful");
+
+                    gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
+
+                    for(int i = 0; i < tokenisedInputMapping.length; ++i){
+                        String oneMapping = tokenisedInputMapping[i];
+                        oneMapping = oneMapping.replaceAll(" ", "");
+                        Character key = oneMapping.charAt(0);
+                        Character value = oneMapping.charAt(1);
+
+                        if(value == '#'){
+                            for(Word word : gameGui.getWordHolder().getWords()){
+                                word.updateLetterLabel(String.valueOf(key), null);
+                            }
+                        }
+                        else{
+                            for(Word word : gameGui.getWordHolder().getWords()){
+                                word.updateLetterLabel(String.valueOf(key), String.valueOf(value));
+                            }
+                        }
+
+                    }
 
                     return true;
                 }
