@@ -2,7 +2,7 @@ package main.view;
 
 import javax.swing.*;
 
-class OverWriteSavePane {
+public class OverWriteSavePane {
 
     private final String TITLE = "Overwrite saved file";
     private final String MESSAGE = "Would you like to overwrite your saved file: ";
