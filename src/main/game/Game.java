@@ -708,9 +708,9 @@ public class Game {
 
                     for(int i = 0; i < tokenisedInputMapping.length; ++i){
                         String oneMapping = tokenisedInputMapping[i];
-                        oneMapping = oneMapping.replaceAll(" ", "");
-                        Integer key = Integer.parseInt(String.valueOf(oneMapping.charAt(0)));
-                        Character value = oneMapping.charAt(1);
+                        String[] tempToken = oneMapping.split(" ");
+                        Integer key = Integer.parseInt(tempToken[0]);
+                        Character value = tempToken[1].charAt(0);
 
                         if(value == '#'){
                             inputMap.put(key, null);
@@ -731,9 +731,9 @@ public class Game {
 
                     for(int i = 0; i < tokenisedInputMapping.length; ++i){
                         String oneMapping = tokenisedInputMapping[i];
-                        oneMapping = oneMapping.replaceAll(" ", "");
-                        Character key = oneMapping.charAt(0);
-                        Character value = oneMapping.charAt(1);
+                        String[] tempToken = oneMapping.split(" ");
+                        Integer key = Integer.parseInt(tempToken[0]);
+                        Character value = tempToken[1].charAt(0);
 
                         if(value == '#'){
                             for(Word word : gameGui.getWordHolder().getWords()){
