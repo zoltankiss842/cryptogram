@@ -279,15 +279,6 @@ public class Game {
                         // We update the phrase at the Crypto class
                         updatePhrase(cryptoChar, newChar, playerGameMapping.get(currentPlayer));
 
-                        currentPlayer.incrementTotalGuesses();  // We increment the total number of guesses
-
-                            LetterCryptogram letter = (LetterCryptogram)c;
-                            Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
-                            char temp = original;
-
-                            if(temp == newChar){
-                                incrementCorrectGuesses();
-                            }
                     }
                 }
                 // else we show a terminal prompt
@@ -303,15 +294,6 @@ public class Game {
 
                         updatePhrase(cryptoChar, newChar, playerGameMapping.get(currentPlayer));
 
-                        currentPlayer.incrementTotalGuesses();
-
-                            LetterCryptogram letter = (LetterCryptogram)c;
-                            Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
-                            char temp = original;
-
-                            if(temp == newChar){
-                                incrementCorrectGuesses();
-                            }
                     }
                 }
 
@@ -326,7 +308,12 @@ public class Game {
 
                 updatePhrase(cryptoChar, newChar, playerGameMapping.get(currentPlayer));
 
-                currentPlayer.incrementTotalGuesses();
+            }
+
+            if(newLetter != null && !newLetter.isEmpty() && !newLetter.isBlank()){
+
+                if(plainLetterAtCryptoChar == null || plainLetterAtCryptoChar != newChar){
+                    currentPlayer.incrementTotalGuesses();  // We increment the total number of guesses
 
                     LetterCryptogram letter = (LetterCryptogram)c;
                     Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
@@ -335,6 +322,7 @@ public class Game {
                     if(temp == newChar){
                         incrementCorrectGuesses();
                     }
+                }
             }
 
             // If the inputFromUserLetter does not contain any null values, that means the player
@@ -444,17 +432,6 @@ public class Game {
                     checkIfPlainAlreadyInUse(number, newChar);
 
                     inputFromUserNumber.put(number, newLetter.charAt(0));
-
-                    currentPlayer.incrementTotalGuesses();
-
-                    NumberCryptogram c = (NumberCryptogram) playerGameMapping.get(currentPlayer);
-
-                    Object original = c.getCryptogramAlphabet().get(number);
-                    char temp = (Character) original;
-
-                    if(temp == newLetter.charAt(0)){
-                        incrementCorrectGuesses();
-                    }
                 }
             }
             else{
@@ -468,16 +445,6 @@ public class Game {
 
                     inputFromUserNumber.put(number, newLetter.charAt(0));
 
-                    currentPlayer.incrementTotalGuesses();
-
-                    NumberCryptogram c = (NumberCryptogram) playerGameMapping.get(currentPlayer);
-
-                    Object original = c.getCryptogramAlphabet().get(number);
-                    char temp = (Character) original;
-
-                    if(temp == newLetter.charAt(0)){
-                        incrementCorrectGuesses();
-                    }
                 }
             }
 
@@ -489,16 +456,20 @@ public class Game {
             checkIfPlainAlreadyInUse(number, newChar);
 
             inputFromUserNumber.put(number, newChar);
+        }
 
-            currentPlayer.incrementTotalGuesses();
+        if(newLetter != null && !newLetter.isEmpty() && !newLetter.isBlank()){
 
-            NumberCryptogram c = (NumberCryptogram) playerGameMapping.get(currentPlayer);
+            if(plainLetterAtCryptoChar == null || plainLetterAtCryptoChar != newChar){
+                currentPlayer.incrementTotalGuesses();  // We increment the total number of guesses
 
-            Object original = c.getCryptogramAlphabet().get(number);
-            char temp = (Character) original;
+                NumberCryptogram letter = (NumberCryptogram) playerGameMapping.get(currentPlayer);
+                Character original = (Character) letter.getCryptogramAlphabet().get(number);
+                char temp = original;
 
-            if(temp == newLetter.charAt(0)){
-                incrementCorrectGuesses();
+                if(temp == newChar){
+                    incrementCorrectGuesses();
+                }
             }
         }
 
