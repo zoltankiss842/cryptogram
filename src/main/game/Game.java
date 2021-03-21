@@ -619,31 +619,37 @@ public class Game {
             while(mys.hasNextLine()){
                 String name = mys.nextLine();
                 if(name.isBlank() || name.isEmpty() || !userName.equals(name)){
+                    mys.close();
                     throw new InvalidPlayerCreation("Player save file corrupted or modified for name!");
                 }
 
                 String type = mys.nextLine();
                 if(type.isBlank() || type.isEmpty()){
+                    mys.close();
                     throw new InvalidGameCreation("Game save file corrupted or modified for type!");
                 }
 
                 String solution = mys.nextLine();
                 if(solution.isBlank() || solution.isEmpty()){
+                    mys.close();
                     throw new InvalidGameCreation("Game save file corrupted or modified for solution!");
                 }
 
                 String alphabet = mys.nextLine();
                 if(alphabet.isBlank() || alphabet.isEmpty()){
+                    mys.close();
                     throw new InvalidGameCreation("Game save file corrupted or modified for alphabet!");
                 }
 
                 String inputMapping = mys.nextLine();
                 if(inputMapping.isBlank() || inputMapping.isEmpty()){
+                    mys.close();
                     throw new InvalidGameCreation("Game save file corrupted or modified for inputMapping!");
                 }
 
                 String[] tokenisedAlphabet = alphabet.split(";");
                 if(tokenisedAlphabet.length != 26){
+                    mys.close();
                     throw new InvalidGameCreation("Game save file corrupted or modified for inputMapping!");
                 }
 
@@ -684,28 +690,29 @@ public class Game {
                     inputFromUserLetter = inputMap;
 
                     System.out.println("File reading was successful");
-                    if (gameGui==null)
-                    gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
+                    if (gameGui!=null) {
+                        gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
 
-                    for(int i = 0; i < tokenisedInputMapping.length; ++i){
-                        String oneMapping = tokenisedInputMapping[i];
-                        oneMapping = oneMapping.replaceAll(" ", "");
-                        Character key = oneMapping.charAt(0);
-                        Character value = oneMapping.charAt(1);
+                        for (int i = 0; i < tokenisedInputMapping.length; ++i) {
+                            String oneMapping = tokenisedInputMapping[i];
+                            oneMapping = oneMapping.replaceAll(" ", "");
+                            Character key = oneMapping.charAt(0);
+                            Character value = oneMapping.charAt(1);
 
-                        if(value == '#'){
-                            for(Word word : gameGui.getWordHolder().getWords()){
-                                word.updateLetterLabel(String.valueOf(key), null);
+                            if (value == '#') {
+                                for (Word word : gameGui.getWordHolder().getWords()) {
+                                    word.updateLetterLabel(String.valueOf(key), null);
+                                }
+                            } else {
+                                for (Word word : gameGui.getWordHolder().getWords()) {
+                                    word.updateLetterLabel(String.valueOf(key), String.valueOf(value));
+                                }
                             }
-                        }
-                        else{
-                            for(Word word : gameGui.getWordHolder().getWords()){
-                                word.updateLetterLabel(String.valueOf(key), String.valueOf(value));
-                            }
-                        }
 
+                        }
                     }
 
+                    mys.close();
                     return true;
                 }
                 else if(type.equals(NumberCryptogram.TYPE)){
@@ -764,14 +771,17 @@ public class Game {
 
                     }
 
+                    mys.close();
                     return true;
                 }
                 else{
+                    mys.close();
                     throw new InvalidGameCreation("Game save file corrupted or modified for inputMapping!");
                 }
 
             }
 
+            mys.close();
             return false;
 
         } catch (FileNotFoundException e) {
@@ -783,6 +793,7 @@ public class Game {
         catch (InvalidGameCreation e){
             throw new InvalidGameCreation("Game save file corrupted or modified!");
         }
+
     }
 
     /**
