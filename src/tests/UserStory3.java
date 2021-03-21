@@ -83,7 +83,7 @@ public class UserStory3 {
     @Test
     public void undoMappedNumber() throws Exception {
         InputStream sysInBackup = System.in; // backup System.in to restore it later
-        ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
+        ByteArrayInputStream in = new ByteArrayInputStream("N".getBytes());
         System.setIn(in);
         game = new Game(player, sentences, false);
         game.playGame();
