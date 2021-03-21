@@ -67,6 +67,27 @@ public class Player {
         return cryptogramsPlayed;
     }
 
+    public void setTotalGuesses(int totalGuesses) {
+        this.totalGuesses = totalGuesses;
+    }
+
+    public void setCryptogramsPlayed(int cryptogramsPlayed) {
+        this.cryptogramsPlayed = cryptogramsPlayed;
+    }
+
+    public void setCryptogramsCompleted(int cryptogramsCompleted) {
+        this.cryptogramsCompleted = cryptogramsCompleted;
+    }
+
+    public void setCryptogramsSuccessfullyCompleted(int cryptogramsSuccessfullyCompleted) {
+        this.cryptogramsSuccessfullyCompleted = cryptogramsSuccessfullyCompleted;
+    }
+
+    public void setTotalCorrectGuesses(int totalCorrectGuesses) {
+        this.totalCorrectGuesses = totalCorrectGuesses;
+    }
+
+
     public int getTotalGuesses() {
         return totalGuesses;
     }
