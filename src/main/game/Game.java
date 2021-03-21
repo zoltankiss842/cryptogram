@@ -77,6 +77,7 @@ public class Game {
 
 
     private final Player currentPlayer;
+    private Players allPlayers;
 
     private ArrayList<String> sentences;
     private String currentPhrase;
