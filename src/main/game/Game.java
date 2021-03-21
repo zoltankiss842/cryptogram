@@ -8,6 +8,7 @@ import main.players.Player;
 import main.players.Players;
 import main.view.*;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import java.util.Random;
@@ -1046,77 +1047,104 @@ public class Game {
     {
         Cryptogram c=playerGameMapping.get(currentPlayer);
         File myFile = new File(currentPlayer.getUsername()+".txt");
-        try {
-            FileWriter myWriter = new FileWriter(myFile);
-            myWriter.write(currentPlayer.getUsername() +"\n");
-            if(c instanceof NumberCryptogram)
-            {
-                myWriter.write( "NUMBER\n");
+
+        boolean playerWantsToOverwrite = true;
+
+        if(myFile.exists()){
+            if(gameGui != null){
+                OverWriteSavePane pane = new OverWriteSavePane(gameGui.getFrame());
+
+                playerWantsToOverwrite = pane.getResult();
+
             }
-            else
-                myWriter.write( "LETTER\n");
-            myWriter.write( c.getSolution()+"\n");
-            if(c instanceof NumberCryptogram)
-            {
+            else{
+                Scanner sc = new Scanner(System.in);
+
+                System.out.println("Save game found for player: " + currentPlayer.getUsername());
+                System.out.println("Would you like to overwrite your save? Y/N");
+                String answer = sc.nextLine();
+
+                if(answer.equals("Y")){
+                    playerWantsToOverwrite = true;
+                }
+                else{
+                    playerWantsToOverwrite = false;
+                }
+            }
+        }
+
+        if(playerWantsToOverwrite){
+            try {
+                FileWriter myWriter = new FileWriter(myFile);
+                myWriter.write(currentPlayer.getUsername() +"\n");
+                if(c instanceof NumberCryptogram)
+                {
+                    myWriter.write( "NUMBER\n");
+                }
+                else
+                    myWriter.write( "LETTER\n");
+                myWriter.write( c.getSolution()+"\n");
+                if(c instanceof NumberCryptogram)
+                {
                     HashMap<Integer, Character> cryptoMapping=((NumberCryptogram) c).getNumberCryptogramAlphabet();
                     for(Map.Entry<Integer, Character> entry : cryptoMapping.entrySet()){
                         myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey())+";");
                     }
+                    myWriter.write("\n");
+                    HashMap<Integer, Character>currentState= inputFromUserNumber;
+                    String value="";
+
+                    for(Map.Entry<Integer, Character> entry : currentState.entrySet()){
+
+                        if(currentState.get(entry.getKey())==null)
+                        {
+                            value="#";
+                        }
+                        else
+                        {
+                            value=currentState.get(entry.getKey()).toString();
+                        }
+                        myWriter.write( entry.getKey().toString()+" "+value+";");
+
+                    }
+
+                }
+                else
+                {
+                    HashMap<Character, Character> cryptoMapping= ((LetterCryptogram) c).getLetterCryptogramAlphabet();
+                    for(Map.Entry<Character, Character> entry : cryptoMapping.entrySet()){
+                        myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey()).toString()+";");
+                    }
+                    myWriter.write("\n");
+                    String value="";
+                    HashMap<Character, Character> currentState= inputFromUserLetter;
+                    for(Map.Entry<Character, Character> entry : currentState.entrySet()){
+                        if(currentState.get(entry.getKey())==null)
+                        {
+                            value="#";
+                        }
+                        else
+                        {
+                            value=currentState.get(entry.getKey()).toString();
+                        }
+                        myWriter.write( entry.getKey().toString()+" "+value+";");
+                    }
+
+                }
+
                 myWriter.write("\n");
-                HashMap<Integer, Character>currentState= inputFromUserNumber;
-                String value="";
 
-                for(Map.Entry<Integer, Character> entry : currentState.entrySet()){
-
-                    if(currentState.get(entry.getKey())==null)
-                    {
-                        value="#";
-                    }
-                    else
-                    {
-                        value=currentState.get(entry.getKey()).toString();
-                    }
-                    myWriter.write( entry.getKey().toString()+" "+value+";");
-
-                }
-
-
-
-
+                myWriter.close();
+                System.out.println("Successfully wrote to the file.");
+            } catch (IOException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
             }
-            else
-            {
-                HashMap<Character, Character> cryptoMapping= ((LetterCryptogram) c).getLetterCryptogramAlphabet();
-                for(Map.Entry<Character, Character> entry : cryptoMapping.entrySet()){
-                    myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey()).toString()+";");
-                }
-                myWriter.write("\n");
-                String value="";
-                HashMap<Character, Character> currentState= inputFromUserLetter;
-                for(Map.Entry<Character, Character> entry : currentState.entrySet()){
-                    if(currentState.get(entry.getKey())==null)
-                    {
-                        value="#";
-                    }
-                    else
-                    {
-                        value=currentState.get(entry.getKey()).toString();
-                    }
-                    myWriter.write( entry.getKey().toString()+" "+value+";");
-                }
-
-            }
-
-            myWriter.write("\n");
-
-
-
-            myWriter.close();
-            System.out.println("Successfully wrote to the file.");
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
         }
+
+
+
+
     }
 
 
