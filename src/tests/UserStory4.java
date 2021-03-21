@@ -46,8 +46,8 @@ public class UserStory4 {
         Assert.assertTrue(test.exists());
 
         test.delete();
-
-
+        File players = new File("players.txt");
+        players.delete();
 
     }
 
@@ -67,8 +67,7 @@ public class UserStory4 {
         Assert.assertTrue(test.exists());
 
         test.delete();
-
-
-
+        File players = new File("players.txt");
+        players.delete();
     }
 }

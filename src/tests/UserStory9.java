@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -53,6 +54,12 @@ public class UserStory9 {
         Assert.assertEquals(letter2.getSolution(),SOLUTION2.toLowerCase());
         player.incrementCryptogramsSuccessfullyCompleted();
         Assert.assertTrue(player.getNumCryptogramsSuccessfullyCompleted() == 2);
+
+
+        File test=new File("test.txt");
+        test.delete();
+        File players = new File("players.txt");
+        players.delete();
     }
 
     /*
@@ -71,6 +78,10 @@ public class UserStory9 {
         Assert.assertTrue(letter.getSolution() != SOLUTION2.toLowerCase());
         Assert.assertTrue(player.getNumCryptogramsSuccessfullyCompleted() == 0);
 
+        File test=new File("test.txt");
+        test.delete();
+        File players = new File("players.txt");
+        players.delete();
     }
 
     @After

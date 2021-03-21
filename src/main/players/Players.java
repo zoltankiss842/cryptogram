@@ -12,6 +12,12 @@ public class Players {
 
     public Players() {
         allPlayers=new ArrayList<>();
+
+        try {
+            playersFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void add(Player p) {

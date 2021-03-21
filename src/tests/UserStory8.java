@@ -58,7 +58,10 @@ public class UserStory8 {
 
         Assert.assertTrue(!sc.nextLine().isEmpty());
 
-
+        File test=new File("test.txt");
+        test.delete();
+        File players = new File("players.txt");
+        players.delete();
     }
 
 }

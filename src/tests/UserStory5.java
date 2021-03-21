@@ -14,9 +14,6 @@ import java.util.ArrayList;
 
 public class UserStory5 {
 
-
-
-
     private final String SOLUTION = "This is a test sentence that needs to be solved";
     private final String PLAYER_NAME = "test";
 
