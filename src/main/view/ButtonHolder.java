@@ -23,6 +23,9 @@ public class ButtonHolder {
 
     private JButton newGame;
     private JButton reset;
+    private JButton saveGame;
+    private JButton loadGame;
+
 
     public ButtonHolder(String name, Game gameController) {
 
@@ -68,8 +71,24 @@ public class ButtonHolder {
             }
         });
 
+        saveGame = new JButton("Save");
+        saveGame.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){ gameController.savegame();}
+        });
+        loadGame = new JButton("Load");
+        loadGame.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){ gameController.loadGame(gameController.getCurrentPlayer().getUsername());}
+        });
+
+
+
         holder.add(newGame);
         holder.add(reset);
+        holder.add(saveGame);
+        holder.add(loadGame);
+
     }
 
     /**
