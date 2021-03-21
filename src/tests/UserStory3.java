@@ -2,6 +2,7 @@ package tests;
 
 import main.cryptogram.LetterCryptogram;
 import main.cryptogram.NumberCryptogram;
+import main.exceptions.*;
 import main.game.Game;
 import main.players.Player;
 import org.junit.After;
@@ -9,6 +10,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,10 +28,12 @@ public class UserStory3 {
     private ArrayList<String> sentences;
 
     @Before
-    public void setUp(){
+    public void setUp() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
         player = new Player(PLAYER_NAME);
         sentences = new ArrayList<>();
         sentences.add(SOLUTION);
+
+        game = new Game(player, sentences, false);
     }
 
     /*
@@ -37,8 +43,12 @@ public class UserStory3 {
         - Then the letter is removed from the player mapping
      */
     @Test
-    public void undoMappedLetter() throws Exception {
+    public void undoMappedLetter() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed, PlainLetterAlreadyInUse, NoSuchCryptogramLetter {
+        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
+        System.setIn(in);
         game = new Game(player, sentences, false);
+        game.playGame();
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -72,7 +82,11 @@ public class UserStory3 {
      */
     @Test
     public void undoMappedNumber() throws Exception {
+        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        ByteArrayInputStream in = new ByteArrayInputStream("N".getBytes());
+        System.setIn(in);
         game = new Game(player, sentences, false);
+        game.playGame();
 
         NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -166,6 +180,11 @@ public class UserStory3 {
 
         game.enterLetter(String.valueOf(list.get(0)), "k");
         game.undoLetter(String.valueOf(i));
+
+        File test=new File("test.txt");
+        test.delete();
+        File players = new File("players.txt");
+        players.delete();
     }
 
     @After

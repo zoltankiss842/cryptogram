@@ -45,6 +45,16 @@ public class NumberCryptogram extends Cryptogram{
         super.setCryptogramAlphabet(new HashMap<Object, Object>(numberCryptogramAlphabet));
     }
 
+    public NumberCryptogram(String solution, HashMap<Integer, Character> numberCryptogramAlphabet) {
+        this.numberCryptogramAlphabet = numberCryptogramAlphabet;
+        solution = solution.toLowerCase();
+        super.setPhrase(solutionToPhrase(solution));
+        super.setSolution(solution);
+        // Here we upcasting the alphabet, as Object is every classes parent.
+        // However, this means we need to downcast, when we get the alphabet.
+        super.setCryptogramAlphabet(new HashMap<Object, Object>(numberCryptogramAlphabet));
+    }
+
     // Basic getters
 
     /**

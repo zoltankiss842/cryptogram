@@ -8,10 +8,8 @@ import main.players.Player;
 import main.players.Players;
 import main.view.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import javax.swing.*;
+import java.io.*;
 import java.util.*;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -79,7 +77,8 @@ public class Game {
     private HashMap<Integer, Character> inputFromUserNumber;
 
 
-    private final Player currentPlayer;
+    private Player currentPlayer;
+    private Players allPlayers;
 
     private ArrayList<String> sentences;
     private String currentPhrase;
@@ -97,7 +96,7 @@ public class Game {
      * @throws NoSuchGameType            if the user chooses a non-existing game type
      * @throws NoSentencesToGenerateFrom if there are no sentences to generate
      */
-    public Game(String userName) throws NoSuchGameType, NoSentencesToGenerateFrom {
+    public Game(String userName) throws NoSuchGameType, NoSentencesToGenerateFrom, InvalidPlayerCreation, NoSaveGameFound, InvalidGameCreation {
         this(new Player(userName), new ArrayList<>(), true);
         playGame();
     }
@@ -110,11 +109,35 @@ public class Game {
      * @throws NoSuchGameType            if the user chooses a non-existing game type
      * @throws NoSentencesToGenerateFrom if there are no sentences to generate
      */
-    public Game(Player p, ArrayList<String> sentences, boolean createGui) throws NoSuchGameType, NoSentencesToGenerateFrom {
-        currentPlayer = loadPlayer(p);
-        if(createGui) gameGui = new Frame(currentPlayer.getUsername(), this);
+    public Game(Player p, ArrayList<String> sentences, boolean createGui) throws NoSuchGameType, NoSentencesToGenerateFrom, InvalidPlayerCreation, NoSaveGameFound, InvalidGameCreation {
+        if(createGui) gameGui = new Frame(p.getUsername(), this);
         this.sentences = sentences;
+
+
+        allPlayers=new Players();
+        playerGameMapping=new HashMap<>();
+        allPlayers.loadStats();
+        try {
+            currentPlayer = loadPlayer(p);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            currentPlayer=p;
+        }
+
+        if(!allPlayers.findPlayer(currentPlayer))
+        {
+            allPlayers.add(currentPlayer);
+        }
+        else
+        {
+            currentPlayer=allPlayers.replacePlayer(currentPlayer.getUsername());
+        }
+
         loadSentences();
+
+
     }
 
     // Basic getters/setters
@@ -159,9 +182,10 @@ public class Game {
      * @param p     player with parameters
      * @return      found player
      */
-    public Player loadPlayer(Player p){
-        if(Players.findPlayer(p)){
+    public Player loadPlayer(Player p) throws InvalidPlayerCreation, NoSaveGameFound, InvalidGameCreation {
+        if(allPlayers.findPlayer(p)){
             if(loadGame(p.getUsername())){
+
                 return p;
             }
 
@@ -177,40 +201,56 @@ public class Game {
      */
     public void playGame(){
 
-            OptionPane pane;
-        if(inputFromUserLetter!=null)
-        {
-          pane= new NewGameTypeOptionPane(gameGui.getFrame());
-        }
+    String playerWantsToOverwrite="";
+        if(gameGui != null){
 
+            NewGameTypeOptionPane pane = new NewGameTypeOptionPane(gameGui.getFrame());
+
+            playerWantsToOverwrite = pane.getResult();
+
+        }
         else{
-          pane= new FirstOptionGamePane(gameGui.getFrame());
+            Scanner sc = new Scanner(System.in);
+
+            System.out.println("Save game found for player: " + currentPlayer.getUsername());
+            System.out.println("Would you like to overwrite your save? Y/N");
+            String answer = sc.nextLine();
+
+            if(answer.equals("Y")){
+                playerWantsToOverwrite = "LETTER";
+            }
+            else{
+                playerWantsToOverwrite = "NUMBER";
+            }
         }
 
-        if(pane.getResult() == null){   // If player clicked on Cancel
-            return;
-        }
+
+
+
+
 
         inputFromUserLetter = null;
         inputFromUserNumber = null;
         currentPlayer.incrementCryptogramsPlayed();
 
         try{
-            if(pane.getResult().equals(LetterCryptogram.TYPE)) {
+            if(playerWantsToOverwrite.equals(LetterCryptogram.TYPE)) {
                 generateCryptogram(currentPlayer, LetterCryptogram.TYPE);
                 finished = false;
             }
-            else if(pane.getResult().equals(NumberCryptogram.TYPE)) {
+            else if(playerWantsToOverwrite.equals(NumberCryptogram.TYPE)) {
                 generateCryptogram(currentPlayer, NumberCryptogram.TYPE);
                 finished = false;
             }
 
+            if (gameGui!=null)
             gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
         }
         catch (NoSentencesToGenerateFrom | NoSuchGameType e)
         {
             System.out.println("No cryptogram exists to play");
         }
+
     }
 
 
@@ -281,15 +321,6 @@ public class Game {
                         // We update the phrase at the Crypto class
                         updatePhrase(cryptoChar, newChar, playerGameMapping.get(currentPlayer));
 
-                        currentPlayer.incrementTotalGuesses();  // We increment the total number of guesses
-
-                            LetterCryptogram letter = (LetterCryptogram)c;
-                            Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
-                            char temp = original;
-
-                            if(temp == newChar){
-                                incrementCorrectGuesses();
-                            }
                     }
                 }
                 // else we show a terminal prompt
@@ -305,15 +336,6 @@ public class Game {
 
                         updatePhrase(cryptoChar, newChar, playerGameMapping.get(currentPlayer));
 
-                        currentPlayer.incrementTotalGuesses();
-
-                            LetterCryptogram letter = (LetterCryptogram)c;
-                            Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
-                            char temp = original;
-
-                            if(temp == newChar){
-                                incrementCorrectGuesses();
-                            }
                     }
                 }
 
@@ -328,7 +350,12 @@ public class Game {
 
                 updatePhrase(cryptoChar, newChar, playerGameMapping.get(currentPlayer));
 
-                currentPlayer.incrementTotalGuesses();
+            }
+
+            if(newLetter != null && !newLetter.isEmpty() && !newLetter.isBlank()){
+
+                if(plainLetterAtCryptoChar == null || plainLetterAtCryptoChar != newChar){
+                    currentPlayer.incrementTotalGuesses();  // We increment the total number of guesses
 
                     LetterCryptogram letter = (LetterCryptogram)c;
                     Character original = (Character) letter.getCryptogramAlphabet().get(cryptoChar);
@@ -337,6 +364,7 @@ public class Game {
                     if(temp == newChar){
                         incrementCorrectGuesses();
                     }
+                }
             }
 
             // If the inputFromUserLetter does not contain any null values, that means the player
@@ -367,7 +395,7 @@ public class Game {
     }
 
 
-    private void showGameCompletion(boolean success) {
+    public boolean showGameCompletion(boolean success) {
         if (success) {
             currentPlayer.incrementCryptogramsCompleted();
             currentPlayer.incrementCryptogramsSuccessfullyCompleted();
@@ -378,7 +406,8 @@ public class Game {
 
         if (gameGui != null) {
             GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
-        }
+            return true;
+        }return false;
     }
 
     private void updatePhrase(char cryptoChar, char newChar, Cryptogram cryptogram) {
@@ -446,17 +475,6 @@ public class Game {
                     checkIfPlainAlreadyInUse(number, newChar);
 
                     inputFromUserNumber.put(number, newLetter.charAt(0));
-
-                    currentPlayer.incrementTotalGuesses();
-
-                    NumberCryptogram c = (NumberCryptogram) playerGameMapping.get(currentPlayer);
-
-                    Object original = c.getCryptogramAlphabet().get(number);
-                    char temp = (Character) original;
-
-                    if(temp == newLetter.charAt(0)){
-                        incrementCorrectGuesses();
-                    }
                 }
             }
             else{
@@ -470,16 +488,6 @@ public class Game {
 
                     inputFromUserNumber.put(number, newLetter.charAt(0));
 
-                    currentPlayer.incrementTotalGuesses();
-
-                    NumberCryptogram c = (NumberCryptogram) playerGameMapping.get(currentPlayer);
-
-                    Object original = c.getCryptogramAlphabet().get(number);
-                    char temp = (Character) original;
-
-                    if(temp == newLetter.charAt(0)){
-                        incrementCorrectGuesses();
-                    }
                 }
             }
 
@@ -491,16 +499,20 @@ public class Game {
             checkIfPlainAlreadyInUse(number, newChar);
 
             inputFromUserNumber.put(number, newChar);
+        }
 
-            currentPlayer.incrementTotalGuesses();
+        if(newLetter != null && !newLetter.isEmpty() && !newLetter.isBlank()){
 
-            NumberCryptogram c = (NumberCryptogram) playerGameMapping.get(currentPlayer);
+            if(plainLetterAtCryptoChar == null || plainLetterAtCryptoChar != newChar){
+                currentPlayer.incrementTotalGuesses();  // We increment the total number of guesses
 
-            Object original = c.getCryptogramAlphabet().get(number);
-            char temp = (Character) original;
+                NumberCryptogram letter = (NumberCryptogram) playerGameMapping.get(currentPlayer);
+                Character original = (Character) letter.getCryptogramAlphabet().get(number);
+                char temp = original;
 
-            if(temp == newLetter.charAt(0)){
-                incrementCorrectGuesses();
+                if(temp == newChar){
+                    incrementCorrectGuesses();
+                }
             }
         }
 
@@ -596,26 +608,193 @@ public class Game {
      * This method will load a saved cryptogame
      * For now we need to agree on a text format, so this is a
      * TODO: implement this method correctly
-     * @param name
+     * @param userName
      * @return
      */
-    public boolean loadGame(String name){
-        File f = new File("saves.txt");
+    public boolean loadGame(String userName) throws NoSaveGameFound, InvalidPlayerCreation, InvalidGameCreation {
         Scanner mys;
         try {
+            FileReader f = new FileReader(userName + ".txt");
             mys = new Scanner(f);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        }
-        while(mys.hasNextLine()){
-            String data = mys.nextLine();
-            String[] tokens = data.split(" ");
-            if(name.equals(tokens[0])){
-                return true;
+
+            while(mys.hasNextLine()){
+                String name = mys.nextLine();
+                if(name.isBlank() || name.isEmpty() || !userName.equals(name)){
+                    mys.close();
+                    throw new InvalidPlayerCreation("Player save file corrupted or modified for name!");
+                }
+
+                String type = mys.nextLine();
+                if(type.isBlank() || type.isEmpty()){
+                    mys.close();
+                    throw new InvalidGameCreation("Game save file corrupted or modified for type!");
+                }
+
+                String solution = mys.nextLine();
+                if(solution.isBlank() || solution.isEmpty()){
+                    mys.close();
+                    throw new InvalidGameCreation("Game save file corrupted or modified for solution!");
+                }
+
+                String alphabet = mys.nextLine();
+                if(alphabet.isBlank() || alphabet.isEmpty()){
+                    mys.close();
+                    throw new InvalidGameCreation("Game save file corrupted or modified for alphabet!");
+                }
+
+                String inputMapping = mys.nextLine();
+                if(inputMapping.isBlank() || inputMapping.isEmpty()){
+                    mys.close();
+                    throw new InvalidGameCreation("Game save file corrupted or modified for inputMapping!");
+                }
+
+                String[] tokenisedAlphabet = alphabet.split(";");
+                if(tokenisedAlphabet.length != 26){
+                    mys.close();
+                    throw new InvalidGameCreation("Game save file corrupted or modified for inputMapping!");
+                }
+
+                String[] tokenisedInputMapping = inputMapping.split(";");
+
+                if(type.equals(LetterCryptogram.TYPE)){
+                    HashMap<Character, Character> alphabetMap = new HashMap<>();
+                    HashMap<Character, Character> inputMap = new HashMap<>();
+
+
+                    for(int i = 0; i < tokenisedAlphabet.length; ++i){
+                        String oneMapping = tokenisedAlphabet[i];
+                        oneMapping = oneMapping.replaceAll(" ", "");
+                        Character key = oneMapping.charAt(0);
+                        Character value = oneMapping.charAt(1);
+
+                        alphabetMap.put(key, value);
+                    }
+
+                    for(int i = 0; i < tokenisedInputMapping.length; ++i){
+                        String oneMapping = tokenisedInputMapping[i];
+                        oneMapping = oneMapping.replaceAll(" ", "");
+                        Character key = oneMapping.charAt(0);
+                        Character value = oneMapping.charAt(1);
+
+                        if(value == '#'){
+                            inputMap.put(key, null);
+                        }
+                        else{
+                            inputMap.put(key, value);
+                        }
+
+                    }
+
+                    Cryptogram c = new LetterCryptogram(solution, alphabetMap);
+                    currentPlayer=allPlayers.replacePlayer(userName);
+                    playerGameMapping.put(currentPlayer, c);
+                    inputFromUserLetter = inputMap;
+
+                    System.out.println("File reading was successful");
+                    if (gameGui!=null) {
+                        gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
+
+                        for (int i = 0; i < tokenisedInputMapping.length; ++i) {
+                            String oneMapping = tokenisedInputMapping[i];
+                            oneMapping = oneMapping.replaceAll(" ", "");
+                            Character key = oneMapping.charAt(0);
+                            Character value = oneMapping.charAt(1);
+
+                            if (value == '#') {
+                                for (Word word : gameGui.getWordHolder().getWords()) {
+                                    word.updateLetterLabel(String.valueOf(key), null);
+                                }
+                            } else {
+                                for (Word word : gameGui.getWordHolder().getWords()) {
+                                    word.updateLetterLabel(String.valueOf(key), String.valueOf(value));
+                                }
+                            }
+
+                        }
+                    }
+
+                    mys.close();
+                    return true;
+                }
+                else if(type.equals(NumberCryptogram.TYPE)){
+                    HashMap<Integer, Character> alphabetMap = new HashMap<>();
+                    HashMap<Integer, Character> inputMap = new HashMap<>();
+
+
+                    for(int i = 0; i < tokenisedAlphabet.length; ++i){
+                        String oneMapping = tokenisedAlphabet[i];
+                        String[] tempToken = oneMapping.split(" ");
+                        Integer key = Integer.parseInt(tempToken[0]);
+                        Character value = tempToken[1].charAt(0);
+
+                        alphabetMap.put(key, value);
+                    }
+
+                    for(int i = 0; i < tokenisedInputMapping.length; ++i){
+                        String oneMapping = tokenisedInputMapping[i];
+                        String[] tempToken = oneMapping.split(" ");
+                        Integer key = Integer.parseInt(tempToken[0]);
+                        Character value = tempToken[1].charAt(0);
+
+                        if(value == '#'){
+                            inputMap.put(key, null);
+                        }
+                        else{
+                            inputMap.put(key, value);
+                        }
+                    }
+
+                    Cryptogram c = new NumberCryptogram(solution, alphabetMap);
+                    currentPlayer=allPlayers.replacePlayer(userName);
+                    playerGameMapping.put(currentPlayer, c);
+                    inputFromUserNumber = inputMap;
+
+                    System.out.println("File reading was successful");
+
+                    gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
+
+                    for(int i = 0; i < tokenisedInputMapping.length; ++i){
+                        String oneMapping = tokenisedInputMapping[i];
+                        String[] tempToken = oneMapping.split(" ");
+                        Integer key = Integer.parseInt(tempToken[0]);
+                        Character value = tempToken[1].charAt(0);
+
+                        if(value == '#'){
+                            for(Word word : gameGui.getWordHolder().getWords()){
+                                word.updateLetterLabel(String.valueOf(key), null);
+                            }
+                        }
+                        else{
+                            for(Word word : gameGui.getWordHolder().getWords()){
+                                word.updateLetterLabel(String.valueOf(key), String.valueOf(value));
+                            }
+                        }
+
+                    }
+
+                    mys.close();
+                    return true;
+                }
+                else{
+                    mys.close();
+                    throw new InvalidGameCreation("Game save file corrupted or modified for inputMapping!");
+                }
+
             }
+
+            mys.close();
+            return false;
+
+        } catch (FileNotFoundException e) {
+            throw new NoSaveGameFound("No save game found for player: " + userName);
         }
-        return false;
+        catch (InvalidPlayerCreation e){
+            throw new InvalidPlayerCreation("Player save file corrupted or modified!");
+        }
+        catch (InvalidGameCreation e){
+            throw new InvalidGameCreation("Game save file corrupted or modified!");
+        }
+
     }
 
     /**
@@ -625,20 +804,25 @@ public class Game {
      */
     public boolean loadSentences() throws NoSentencesToGenerateFrom {
         File f = new File("phrases.txt");
-        Scanner mys;
+        Scanner mys = null;
         try{
             mys = new Scanner(f);
+
+            while(mys.hasNextLine()){
+                sentences.add(mys.nextLine());
+            }
+
+            if(sentences == null){
+                throw new NoSentencesToGenerateFrom("No sentences");
+            }
+
+            mys.close();
         }catch(FileNotFoundException e){
+            if(mys != null){
+                mys.close();
+            }
             e.printStackTrace();
             return false;
-        }
-
-        while(mys.hasNextLine()){
-            sentences.add(mys.nextLine());
-        }
-
-        if(sentences == null){
-            throw new NoSentencesToGenerateFrom("No sentences");
         }
 
         return true;
@@ -869,7 +1053,9 @@ public class Game {
     }
 
     public String viewFrequencies() {
-       char[] keys = currentPhrase.toCharArray();
+      try{
+          char[] keys = currentPhrase.toCharArray();
+
        HashMap<Character, Integer> frequencyMap = new HashMap<>(); // frequency map for the keys and their frequencies
 
        for(int i = 0; i < keys.length; i++){
@@ -894,31 +1080,17 @@ public class Game {
                 sb.append(',').append(' ');
             }
         }
+
         return sb.toString();
+      }
+      catch(Exception E)
+      {
+          System.out.println("Not a problem for today");
+      }
+      return "";
     }
 
-    public void saveGame(String name){
-        try{
-            File f = new File("saves.txt");
-            if(f.createNewFile()){
-                System.out.println("File created: "+f.getName());
-            }else{
-                System.out.println("File already exists.");
-            }
-        } catch (IOException e) {
-            System.out.println("An error occured.");
-            e.printStackTrace();
-        }
-        try{
-            FileWriter myw = new FileWriter("saves.txt");
-            myw.write(name+" "+"game");
-            myw.close();
-            System.out.println("Successfully saved");
-        }catch(IOException e){
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-    }
+
 
     public ArrayList<String> getSentences() {
         return sentences;
@@ -934,5 +1106,116 @@ public class Game {
             show(c.phrase);*/
         }
     }
+    public void savegame()
+    {
+        allPlayers.saveStats();
+        Cryptogram c=playerGameMapping.get(currentPlayer);
+        File myFile = new File(currentPlayer.getUsername()+".txt");
+
+        boolean playerWantsToOverwrite = true;
+
+        if(myFile.exists()){
+            if(gameGui != null){
+                OverWriteSavePane pane = new OverWriteSavePane(gameGui.getFrame());
+
+                playerWantsToOverwrite = pane.getResult();
+
+            }
+            else{
+                Scanner sc = new Scanner(System.in);
+
+                System.out.println("Save game found for player: " + currentPlayer.getUsername());
+                System.out.println("Would you like to overwrite your save? Y/N");
+                String answer = sc.nextLine();
+
+                if(answer.equals("Y")){
+                    playerWantsToOverwrite = true;
+                }
+                else{
+                    playerWantsToOverwrite = false;
+                }
+            }
+        }
+
+        if(playerWantsToOverwrite){
+            FileWriter myWriter = null;
+            try {
+                myWriter = new FileWriter(myFile);
+                myWriter.write(currentPlayer.getUsername() +"\n");
+                if(c instanceof NumberCryptogram)
+                {
+                    myWriter.write( "NUMBER\n");
+                }
+                else
+                    myWriter.write( "LETTER\n");
+                myWriter.write( c.getSolution()+"\n");
+                if(c instanceof NumberCryptogram)
+                {
+                    HashMap<Integer, Character> cryptoMapping=((NumberCryptogram) c).getNumberCryptogramAlphabet();
+                    for(Map.Entry<Integer, Character> entry : cryptoMapping.entrySet()){
+                        myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey())+";");
+                    }
+                    myWriter.write("\n");
+                    HashMap<Integer, Character>currentState= inputFromUserNumber;
+                    String value="";
+
+                    for(Map.Entry<Integer, Character> entry : currentState.entrySet()){
+
+                        if(currentState.get(entry.getKey())==null)
+                        {
+                            value="#";
+                        }
+                        else
+                        {
+                            value=currentState.get(entry.getKey()).toString();
+                        }
+                        myWriter.write( entry.getKey().toString()+" "+value+";");
+
+                    }
+
+                }
+                else
+                {
+                    HashMap<Character, Character> cryptoMapping= ((LetterCryptogram) c).getLetterCryptogramAlphabet();
+                    for(Map.Entry<Character, Character> entry : cryptoMapping.entrySet()){
+                        myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey()).toString()+";");
+                    }
+                    myWriter.write("\n");
+                    String value="";
+                    HashMap<Character, Character> currentState= inputFromUserLetter;
+                    for(Map.Entry<Character, Character> entry : currentState.entrySet()){
+                        if(currentState.get(entry.getKey())==null)
+                        {
+                            value="#";
+                        }
+                        else
+                        {
+                            value=currentState.get(entry.getKey()).toString();
+                        }
+                        myWriter.write( entry.getKey().toString()+" "+value+";");
+                    }
+
+                }
+
+                myWriter.write("\n");
+
+                myWriter.close();
+                System.out.println("Successfully wrote to the file.");
+            } catch (IOException e) {
+                if(myWriter != null){
+                    try{
+                        myWriter.close();
+                    }
+                    catch (Exception ex){}
+                }
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+
 
 }
