@@ -2,6 +2,7 @@ package tests;
 
 import main.cryptogram.LetterCryptogram;
 import main.cryptogram.NumberCryptogram;
+import main.exceptions.*;
 import main.game.Game;
 import main.players.Player;
 import org.junit.After;
@@ -14,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-/* As a player I want to be able to undo a letter so I can play the cryptogram */
 public class UserStory9 {
 
     private final String PLAYER_NAME = "test";
@@ -26,11 +26,13 @@ public class UserStory9 {
     private Game game;
 
     @Before
-    public void setUp(){
+    public void setUp() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
         player = new Player(PLAYER_NAME);
         sentences = new ArrayList<>();
         sentences.add(SOLUTION);
         sentences.add(SOLUTION2);
+
+        game = new Game(player, sentences, false);
     }
 
     /*
@@ -40,8 +42,7 @@ public class UserStory9 {
     - Then the number of cryptograms successfully completed is incremented and a success message is presented to the player
      */
     @Test
-    public void successfullyCompletedCrypto() throws Exception {
-        game = new Game(player, sentences, false);
+    public void successfullyCompletedCrypto() {
 
         LetterCryptogram letter = new LetterCryptogram(SOLUTION);
         // Checking if the solution is the sentence that was given is the solution to the cryptogram
@@ -70,8 +71,7 @@ public class UserStory9 {
      */
 
     @Test
-    public void unsuccessfullyCompletedCrypto() throws Exception {
-        game = new Game(player, sentences, false);
+    public void unsuccessfullyCompletedCrypto() {
 
         LetterCryptogram letter = new LetterCryptogram(SOLUTION);
         // Checking if the solution is incorrect

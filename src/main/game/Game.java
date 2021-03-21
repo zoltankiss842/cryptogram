@@ -250,6 +250,7 @@ public class Game {
         {
             System.out.println("No cryptogram exists to play");
         }
+
     }
 
 
