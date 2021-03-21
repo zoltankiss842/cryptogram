@@ -109,7 +109,11 @@ public class Game {
      * @throws NoSentencesToGenerateFrom if there are no sentences to generate
      */
     public Game(Player p, ArrayList<String> sentences, boolean createGui) throws NoSuchGameType, NoSentencesToGenerateFrom, InvalidPlayerCreation, NoSaveGameFound, InvalidGameCreation {
+        allPlayers=new Players();
+        allPlayers.loadStats();
         currentPlayer = loadPlayer(p);
+
+        allPlayers.add(currentPlayer);
         if(createGui) gameGui = new Frame(currentPlayer.getUsername(), this);
         this.sentences = sentences;
         loadSentences();
@@ -160,6 +164,7 @@ public class Game {
     public Player loadPlayer(Player p) throws InvalidPlayerCreation, NoSaveGameFound, InvalidGameCreation {
         if(Players.findPlayer(p)){
             if(loadGame(p.getUsername())){
+
                 return p;
             }
 
@@ -1014,6 +1019,7 @@ public class Game {
     }
     public void savegame()
     {
+        allPlayers.saveStats();
         Cryptogram c=playerGameMapping.get(currentPlayer);
         File myFile = new File(currentPlayer.getUsername()+".txt");
         try {
