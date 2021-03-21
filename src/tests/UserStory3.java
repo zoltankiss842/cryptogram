@@ -2,6 +2,7 @@ package tests;
 
 import main.cryptogram.LetterCryptogram;
 import main.cryptogram.NumberCryptogram;
+import main.exceptions.*;
 import main.game.Game;
 import main.players.Player;
 import org.junit.After;
@@ -37,7 +38,7 @@ public class UserStory3 {
         - Then the letter is removed from the player mapping
      */
     @Test
-    public void undoMappedLetter() throws Exception {
+    public void undoMappedLetter() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed, PlainLetterAlreadyInUse, NoSuchCryptogramLetter {
         game = new Game(player, sentences, false);
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);

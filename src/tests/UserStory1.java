@@ -75,6 +75,7 @@ public class UserStory1 {
         game = new Game(player, sentences,false);
 
 
+
         HashSet<Character> set = new HashSet<>();
         NumberCryptogram number = new NumberCryptogram(SOLUTION);
         Assert.assertEquals(number.getSolution(),SOLUTION.toLowerCase());

@@ -201,34 +201,49 @@ public class Game {
      */
     public void playGame(){
 
-            OptionPane pane;
-        if(inputFromUserLetter!=null)
-        {
-          pane= new NewGameTypeOptionPane(gameGui.getFrame());
-        }
+    String playerWantsToOverwrite="";
+        if(gameGui != null){
 
+            NewGameTypeOptionPane pane = new NewGameTypeOptionPane(gameGui.getFrame());
+
+            playerWantsToOverwrite = pane.getResult();
+
+        }
         else{
-          pane= new FirstOptionGamePane(gameGui.getFrame());
+            Scanner sc = new Scanner(System.in);
+
+            System.out.println("Save game found for player: " + currentPlayer.getUsername());
+            System.out.println("Would you like to overwrite your save? Y/N");
+            String answer = sc.nextLine();
+
+            if(answer.equals("Y")){
+                playerWantsToOverwrite = "LETTER";
+            }
+            else{
+                playerWantsToOverwrite = "NUMBER";
+            }
         }
 
-        if(pane.getResult() == null){   // If player clicked on Cancel
-            return;
-        }
+
+
+
+
 
         inputFromUserLetter = null;
         inputFromUserNumber = null;
         currentPlayer.incrementCryptogramsPlayed();
 
         try{
-            if(pane.getResult().equals(LetterCryptogram.TYPE)) {
+            if(playerWantsToOverwrite.equals(LetterCryptogram.TYPE)) {
                 generateCryptogram(currentPlayer, LetterCryptogram.TYPE);
                 finished = false;
             }
-            else if(pane.getResult().equals(NumberCryptogram.TYPE)) {
+            else if(playerWantsToOverwrite.equals(NumberCryptogram.TYPE)) {
                 generateCryptogram(currentPlayer, NumberCryptogram.TYPE);
                 finished = false;
             }
 
+            if (gameGui!=null)
             gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
         }
         catch (NoSentencesToGenerateFrom | NoSuchGameType e)
@@ -668,7 +683,7 @@ public class Game {
                     inputFromUserLetter = inputMap;
 
                     System.out.println("File reading was successful");
-
+                    if (gameGui==null)
                     gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
 
                     for(int i = 0; i < tokenisedInputMapping.length; ++i){
