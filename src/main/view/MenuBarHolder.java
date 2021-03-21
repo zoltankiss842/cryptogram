@@ -40,6 +40,7 @@ public class MenuBarHolder {
         menuBar.add(this.exit = new JMenu("Exit"));
         exit.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
+                gameController.savegame();
                 jExitClicked(evt);
             }
     });
