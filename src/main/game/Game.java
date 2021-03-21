@@ -394,7 +394,7 @@ public class Game {
     }
 
 
-    private void showGameCompletion(boolean success) {
+    public boolean showGameCompletion(boolean success) {
         if (success) {
             currentPlayer.incrementCryptogramsCompleted();
             currentPlayer.incrementCryptogramsSuccessfullyCompleted();
@@ -405,7 +405,8 @@ public class Game {
 
         if (gameGui != null) {
             GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
-        }
+            return true;
+        }return false;
     }
 
     private void updatePhrase(char cryptoChar, char newChar, Cryptogram cryptogram) {
