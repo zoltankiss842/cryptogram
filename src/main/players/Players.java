@@ -7,9 +7,12 @@ import java.util.*;
 import java.io.File;
 
 public class Players {
-    private static ArrayList<Player> allPlayers = new ArrayList<>(20);
+    private  ArrayList<Player> allPlayers ;
     File playersFile = new File("players.txt");
 
+    public Players() {
+        allPlayers=new ArrayList<>();
+    }
 
     public void add(Player p) {
         allPlayers.add(p);
@@ -19,13 +22,21 @@ public class Players {
 
     }
 
-    public static boolean findPlayer(Player p) {
+    public  boolean findPlayer(Player p) {
         for (int i = 0; i < allPlayers.size(); i++) {
-            if (p.getUsername() == allPlayers.get(i).getUsername()) {
+            if (p.getUsername().equals(allPlayers.get(i).getUsername())) {
                 return true;
             }
         }
         return false;
+    }
+    public Player replacePlayer(String username) {
+        for (int i = 0; i < allPlayers.size(); i++) {
+            if (username.equals(allPlayers.get(i).getUsername())) {
+                return allPlayers.get(i) ;
+            }
+        }
+        return null;
     }
 
     public void getAllPlayersAccuracies() {

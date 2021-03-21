@@ -76,7 +76,7 @@ public class Game {
     private HashMap<Integer, Character> inputFromUserNumber;
 
 
-    private final Player currentPlayer;
+    private Player currentPlayer;
     private Players allPlayers;
 
     private ArrayList<String> sentences;
@@ -110,10 +110,27 @@ public class Game {
      */
     public Game(Player p, ArrayList<String> sentences, boolean createGui) throws NoSuchGameType, NoSentencesToGenerateFrom, InvalidPlayerCreation, NoSaveGameFound, InvalidGameCreation {
         allPlayers=new Players();
+        playerGameMapping=new HashMap<>();
         allPlayers.loadStats();
-        currentPlayer = loadPlayer(p);
+        try {
+            currentPlayer = loadPlayer(p);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            currentPlayer=p;
+        }
 
-        allPlayers.add(currentPlayer);
+        if(!allPlayers.findPlayer(currentPlayer))
+        {
+            allPlayers.add(currentPlayer);
+        }
+        else
+        {
+            currentPlayer=allPlayers.replacePlayer(currentPlayer.getUsername());
+        }
+
+
         if(createGui) gameGui = new Frame(currentPlayer.getUsername(), this);
         this.sentences = sentences;
         loadSentences();
@@ -162,7 +179,7 @@ public class Game {
      * @return      found player
      */
     public Player loadPlayer(Player p) throws InvalidPlayerCreation, NoSaveGameFound, InvalidGameCreation {
-        if(Players.findPlayer(p)){
+        if(allPlayers.findPlayer(p)){
             if(loadGame(p.getUsername())){
 
                 return p;
@@ -665,7 +682,7 @@ public class Game {
                     }
 
                     Cryptogram c = new LetterCryptogram(solution, alphabetMap);
-                    playerGameMapping.put(currentPlayer, c);
+                    playerGameMapping.put(allPlayers.replacePlayer(userName), c);
                     inputFromUserLetter = inputMap;
 
                     System.out.println("File reading was successful");
