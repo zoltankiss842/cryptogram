@@ -898,28 +898,7 @@ public class Game {
         return sb.toString();
     }
 
-    public void saveGame(String name){
-        try{
-            File f = new File("saves.txt");
-            if(f.createNewFile()){
-                System.out.println("File created: "+f.getName());
-            }else{
-                System.out.println("File already exists.");
-            }
-        } catch (IOException e) {
-            System.out.println("An error occured.");
-            e.printStackTrace();
-        }
-        try{
-            FileWriter myw = new FileWriter("saves.txt");
-            myw.write(name+" "+"game");
-            myw.close();
-            System.out.println("Successfully saved");
-        }catch(IOException e){
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-    }
+
 
     public ArrayList<String> getSentences() {
         return sentences;
@@ -935,8 +914,9 @@ public class Game {
             show(c.phrase);*/
         }
     }
-    public void savegame(Cryptogram c)
+    public void savegame()
     {
+        Cryptogram c=playerGameMapping.get(currentPlayer);
         File myFile = new File(currentPlayer.getUsername()+".txt");
         try {
             FileWriter myWriter = new FileWriter(myFile);
@@ -952,12 +932,24 @@ public class Game {
             {
                     HashMap<Integer, Character> cryptoMapping=((NumberCryptogram) c).getNumberCryptogramAlphabet();
                     for(Map.Entry<Integer, Character> entry : cryptoMapping.entrySet()){
-                        myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey()));
+                        myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey())+";");
                     }
                 myWriter.write("\n");
                 HashMap<Integer, Character>currentState= inputFromUserNumber;
+                String value="";
+
                 for(Map.Entry<Integer, Character> entry : currentState.entrySet()){
-                    myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey()).toString());
+
+                    if(currentState.get(entry.getKey())==null)
+                    {
+                        value="#";
+                    }
+                    else
+                    {
+                        value=currentState.get(entry.getKey()).toString();
+                    }
+                    myWriter.write( entry.getKey().toString()+" "+value+";");
+
                 }
 
 
@@ -968,13 +960,21 @@ public class Game {
             {
                 HashMap<Character, Character> cryptoMapping= ((LetterCryptogram) c).getLetterCryptogramAlphabet();
                 for(Map.Entry<Character, Character> entry : cryptoMapping.entrySet()){
-                    myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey()).toString());
+                    myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey()).toString()+";");
                 }
                 myWriter.write("\n");
-
+                String value="";
                 HashMap<Character, Character> currentState= inputFromUserLetter;
                 for(Map.Entry<Character, Character> entry : currentState.entrySet()){
-                    myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey()).toString());
+                    if(currentState.get(entry.getKey())==null)
+                    {
+                        value="#";
+                    }
+                    else
+                    {
+                        value=currentState.get(entry.getKey()).toString();
+                    }
+                    myWriter.write( entry.getKey().toString()+" "+value+";");
                 }
 
             }

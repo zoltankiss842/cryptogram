@@ -74,7 +74,7 @@ public class ButtonHolder {
         saveGame = new JButton("Save");
         saveGame.addActionListener(new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent e){ /*gameController.saveGame()*/;}
+            public void actionPerformed(ActionEvent e){ gameController.savegame();}
         });
         loadGame = new JButton("Load");
         loadGame.addActionListener(new ActionListener(){
