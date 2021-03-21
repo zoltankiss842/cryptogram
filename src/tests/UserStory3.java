@@ -10,6 +10,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,6 +44,9 @@ public class UserStory3 {
      */
     @Test
     public void undoMappedLetter() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed, PlainLetterAlreadyInUse, NoSuchCryptogramLetter {
+        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
+        System.setIn(in);
         game = new Game(player, sentences, false);
         game.playGame();
 
@@ -76,6 +82,9 @@ public class UserStory3 {
      */
     @Test
     public void undoMappedNumber() throws Exception {
+        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
+        System.setIn(in);
         game = new Game(player, sentences, false);
         game.playGame();
 
@@ -171,6 +180,11 @@ public class UserStory3 {
 
         game.enterLetter(String.valueOf(list.get(0)), "k");
         game.undoLetter(String.valueOf(i));
+
+        File test=new File("test.txt");
+        test.delete();
+        File players = new File("players.txt");
+        players.delete();
     }
 
     @After
