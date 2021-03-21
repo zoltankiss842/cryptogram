@@ -7,6 +7,7 @@ import main.exceptions.*;
 import main.players.Player;
 import main.players.Players;
 import main.view.*;
+import org.junit.Assert;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -934,5 +935,61 @@ public class Game {
             show(c.phrase);*/
         }
     }
+    public void savegame(Cryptogram c)
+    {
+        File myFile = new File(currentPlayer.getUsername()+".txt");
+        try {
+            FileWriter myWriter = new FileWriter(myFile);
+            myWriter.write(currentPlayer.getUsername() +"\n");
+            if(c instanceof NumberCryptogram)
+            {
+                myWriter.write( "NUMBER\n");
+            }
+            else
+                myWriter.write( "LETTER\n");
+            myWriter.write( c.getSolution()+"\n");
+            if(c instanceof NumberCryptogram)
+            {
+                    HashMap<Integer, Character> cryptoMapping=((NumberCryptogram) c).getNumberCryptogramAlphabet();
+                    for(Map.Entry<Integer, Character> entry : cryptoMapping.entrySet()){
+                        myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey()));
+                    }
+                myWriter.write("\n");
+                HashMap<Integer, Character>currentState= inputFromUserNumber;
+                for(Map.Entry<Integer, Character> entry : currentState.entrySet()){
+                    myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey()).toString());
+                }
+
+
+
+
+            }
+            else
+            {
+                HashMap<Character, Character> cryptoMapping= ((LetterCryptogram) c).getLetterCryptogramAlphabet();
+                for(Map.Entry<Character, Character> entry : cryptoMapping.entrySet()){
+                    myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey()).toString());
+                }
+                myWriter.write("\n");
+
+                HashMap<Character, Character> currentState= inputFromUserLetter;
+                for(Map.Entry<Character, Character> entry : currentState.entrySet()){
+                    myWriter.write( entry.getKey().toString()+" "+cryptoMapping.get(entry.getKey()).toString());
+                }
+
+            }
+
+            myWriter.write("\n");
+
+
+
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
 
 }
