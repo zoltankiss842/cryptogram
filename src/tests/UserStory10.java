@@ -95,12 +95,12 @@ public class UserStory10 {
         Assert.assertEquals(letter.getSolution(),SOLUTION.toLowerCase());
         player.incrementCryptogramsSuccessfullyCompleted();
         player.incrementCryptogramsPlayed();
-        Assert.assertEquals(1, player.getNumCryptogramsPlayed());
+        Assert.assertEquals(2, player.getNumCryptogramsPlayed());
 
         game.savegame();
         game.loadGame(PLAYER_NAME);
 
-        Assert.assertEquals(1, player.getNumCryptogramsPlayed());
+        Assert.assertEquals(2, player.getNumCryptogramsPlayed());
 
         Assert.assertNotNull(game.getPlayerGameMapping().get(game.getCurrentPlayer()));
 
