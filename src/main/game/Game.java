@@ -110,6 +110,10 @@ public class Game {
      * @throws NoSentencesToGenerateFrom if there are no sentences to generate
      */
     public Game(Player p, ArrayList<String> sentences, boolean createGui) throws NoSuchGameType, NoSentencesToGenerateFrom, InvalidPlayerCreation, NoSaveGameFound, InvalidGameCreation {
+        if(createGui) gameGui = new Frame(p.getUsername(), this);
+        this.sentences = sentences;
+
+
         allPlayers=new Players();
         playerGameMapping=new HashMap<>();
         allPlayers.loadStats();
@@ -131,10 +135,9 @@ public class Game {
             currentPlayer=allPlayers.replacePlayer(currentPlayer.getUsername());
         }
 
-
-        if(createGui) gameGui = new Frame(currentPlayer.getUsername(), this);
-        this.sentences = sentences;
         loadSentences();
+
+
     }
 
     // Basic getters/setters
@@ -660,7 +663,8 @@ public class Game {
                     }
 
                     Cryptogram c = new LetterCryptogram(solution, alphabetMap);
-                    playerGameMapping.put(allPlayers.replacePlayer(userName), c);
+                    currentPlayer=allPlayers.replacePlayer(userName);
+                    playerGameMapping.put(currentPlayer, c);
                     inputFromUserLetter = inputMap;
 
                     System.out.println("File reading was successful");
@@ -723,6 +727,7 @@ public class Game {
                     }
 
                     Cryptogram c = new NumberCryptogram(solution, alphabetMap);
+                    currentPlayer=allPlayers.replacePlayer(userName);
                     playerGameMapping.put(currentPlayer, c);
                     inputFromUserNumber = inputMap;
 
@@ -1021,7 +1026,9 @@ public class Game {
     }
 
     public String viewFrequencies() {
-       char[] keys = currentPhrase.toCharArray();
+      try{
+          char[] keys = currentPhrase.toCharArray();
+
        HashMap<Character, Integer> frequencyMap = new HashMap<>(); // frequency map for the keys and their frequencies
 
        for(int i = 0; i < keys.length; i++){
@@ -1046,7 +1053,14 @@ public class Game {
                 sb.append(',').append(' ');
             }
         }
+
         return sb.toString();
+      }
+      catch(Exception E)
+      {
+          System.out.println("Not a problem for today");
+      }
+      return "";
     }
 
 
