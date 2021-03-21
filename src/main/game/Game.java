@@ -690,28 +690,29 @@ public class Game {
                     inputFromUserLetter = inputMap;
 
                     System.out.println("File reading was successful");
-                    if (gameGui==null)
-                    gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
+                    if (gameGui!=null) {
+                        gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
 
-                    for(int i = 0; i < tokenisedInputMapping.length; ++i){
-                        String oneMapping = tokenisedInputMapping[i];
-                        oneMapping = oneMapping.replaceAll(" ", "");
-                        Character key = oneMapping.charAt(0);
-                        Character value = oneMapping.charAt(1);
+                        for (int i = 0; i < tokenisedInputMapping.length; ++i) {
+                            String oneMapping = tokenisedInputMapping[i];
+                            oneMapping = oneMapping.replaceAll(" ", "");
+                            Character key = oneMapping.charAt(0);
+                            Character value = oneMapping.charAt(1);
 
-                        if(value == '#'){
-                            for(Word word : gameGui.getWordHolder().getWords()){
-                                word.updateLetterLabel(String.valueOf(key), null);
+                            if (value == '#') {
+                                for (Word word : gameGui.getWordHolder().getWords()) {
+                                    word.updateLetterLabel(String.valueOf(key), null);
+                                }
+                            } else {
+                                for (Word word : gameGui.getWordHolder().getWords()) {
+                                    word.updateLetterLabel(String.valueOf(key), String.valueOf(value));
+                                }
                             }
-                        }
-                        else{
-                            for(Word word : gameGui.getWordHolder().getWords()){
-                                word.updateLetterLabel(String.valueOf(key), String.valueOf(value));
-                            }
-                        }
 
+                        }
                     }
 
+                    mys.close();
                     return true;
                 }
                 else if(type.equals(NumberCryptogram.TYPE)){
@@ -792,6 +793,7 @@ public class Game {
         catch (InvalidGameCreation e){
             throw new InvalidGameCreation("Game save file corrupted or modified!");
         }
+
     }
 
     /**

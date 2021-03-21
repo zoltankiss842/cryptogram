@@ -3,10 +3,12 @@ package tests;
 import main.exceptions.*;
 import main.game.Game;
 import main.players.Player;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -39,6 +41,20 @@ public class UserStory5 {
         game.playGame();
         game.savegame();
         game.loadGame(PLAYER_NAME);
+
+        File test=new File("test.txt");
+
+        Assert.assertTrue(test.delete());
+
+        Assert.assertNotNull(game.getPlayerGameMapping().get(game.getCurrentPlayer()));
+
+
+
+
+
+
+
+
 
     }
 }
