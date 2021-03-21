@@ -72,7 +72,7 @@ public class Players {
     }
 
     public void loadStats() {
-        Scanner mys;
+        Scanner mys = null;
         try {
             mys = new Scanner(playersFile);
             while(mys.hasNextLine()){
@@ -89,7 +89,11 @@ public class Players {
                     add(p);
 
             }
+            mys.close();
         } catch (FileNotFoundException e) {
+            if(mys != null){
+                mys.close();
+            }
             e.printStackTrace();
         }}
 }

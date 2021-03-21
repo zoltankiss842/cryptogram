@@ -619,31 +619,37 @@ public class Game {
             while(mys.hasNextLine()){
                 String name = mys.nextLine();
                 if(name.isBlank() || name.isEmpty() || !userName.equals(name)){
+                    mys.close();
                     throw new InvalidPlayerCreation("Player save file corrupted or modified for name!");
                 }
 
                 String type = mys.nextLine();
                 if(type.isBlank() || type.isEmpty()){
+                    mys.close();
                     throw new InvalidGameCreation("Game save file corrupted or modified for type!");
                 }
 
                 String solution = mys.nextLine();
                 if(solution.isBlank() || solution.isEmpty()){
+                    mys.close();
                     throw new InvalidGameCreation("Game save file corrupted or modified for solution!");
                 }
 
                 String alphabet = mys.nextLine();
                 if(alphabet.isBlank() || alphabet.isEmpty()){
+                    mys.close();
                     throw new InvalidGameCreation("Game save file corrupted or modified for alphabet!");
                 }
 
                 String inputMapping = mys.nextLine();
                 if(inputMapping.isBlank() || inputMapping.isEmpty()){
+                    mys.close();
                     throw new InvalidGameCreation("Game save file corrupted or modified for inputMapping!");
                 }
 
                 String[] tokenisedAlphabet = alphabet.split(";");
                 if(tokenisedAlphabet.length != 26){
+                    mys.close();
                     throw new InvalidGameCreation("Game save file corrupted or modified for inputMapping!");
                 }
 
@@ -764,14 +770,17 @@ public class Game {
 
                     }
 
+                    mys.close();
                     return true;
                 }
                 else{
+                    mys.close();
                     throw new InvalidGameCreation("Game save file corrupted or modified for inputMapping!");
                 }
 
             }
 
+            mys.close();
             return false;
 
         } catch (FileNotFoundException e) {
@@ -792,20 +801,25 @@ public class Game {
      */
     public boolean loadSentences() throws NoSentencesToGenerateFrom {
         File f = new File("phrases.txt");
-        Scanner mys;
+        Scanner mys = null;
         try{
             mys = new Scanner(f);
+
+            while(mys.hasNextLine()){
+                sentences.add(mys.nextLine());
+            }
+
+            if(sentences == null){
+                throw new NoSentencesToGenerateFrom("No sentences");
+            }
+
+            mys.close();
         }catch(FileNotFoundException e){
+            if(mys != null){
+                mys.close();
+            }
             e.printStackTrace();
             return false;
-        }
-
-        while(mys.hasNextLine()){
-            sentences.add(mys.nextLine());
-        }
-
-        if(sentences == null){
-            throw new NoSentencesToGenerateFrom("No sentences");
         }
 
         return true;
@@ -1121,8 +1135,9 @@ public class Game {
         }
 
         if(playerWantsToOverwrite){
+            FileWriter myWriter = null;
             try {
-                FileWriter myWriter = new FileWriter(myFile);
+                myWriter = new FileWriter(myFile);
                 myWriter.write(currentPlayer.getUsername() +"\n");
                 if(c instanceof NumberCryptogram)
                 {
@@ -1184,14 +1199,16 @@ public class Game {
                 myWriter.close();
                 System.out.println("Successfully wrote to the file.");
             } catch (IOException e) {
+                if(myWriter != null){
+                    try{
+                        myWriter.close();
+                    }
+                    catch (Exception ex){}
+                }
                 System.out.println("An error occurred.");
                 e.printStackTrace();
             }
         }
-
-
-
-
     }
 
 
