@@ -8,10 +8,7 @@ import main.players.Player;
 import main.players.Players;
 import main.view.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -97,7 +94,7 @@ public class Game {
      * @throws NoSuchGameType            if the user chooses a non-existing game type
      * @throws NoSentencesToGenerateFrom if there are no sentences to generate
      */
-    public Game(String userName) throws NoSuchGameType, NoSentencesToGenerateFrom {
+    public Game(String userName) throws NoSuchGameType, NoSentencesToGenerateFrom, InvalidPlayerCreation, NoSaveGameFound, InvalidGameCreation {
         this(new Player(userName), new ArrayList<>(), true);
         playGame();
     }
@@ -110,7 +107,7 @@ public class Game {
      * @throws NoSuchGameType            if the user chooses a non-existing game type
      * @throws NoSentencesToGenerateFrom if there are no sentences to generate
      */
-    public Game(Player p, ArrayList<String> sentences, boolean createGui) throws NoSuchGameType, NoSentencesToGenerateFrom {
+    public Game(Player p, ArrayList<String> sentences, boolean createGui) throws NoSuchGameType, NoSentencesToGenerateFrom, InvalidPlayerCreation, NoSaveGameFound, InvalidGameCreation {
         currentPlayer = loadPlayer(p);
         if(createGui) gameGui = new Frame(currentPlayer.getUsername(), this);
         this.sentences = sentences;
@@ -159,7 +156,7 @@ public class Game {
      * @param p     player with parameters
      * @return      found player
      */
-    public Player loadPlayer(Player p){
+    public Player loadPlayer(Player p) throws InvalidPlayerCreation, NoSaveGameFound, InvalidGameCreation {
         if(Players.findPlayer(p)){
             if(loadGame(p.getUsername())){
                 return p;
@@ -596,26 +593,127 @@ public class Game {
      * This method will load a saved cryptogame
      * For now we need to agree on a text format, so this is a
      * TODO: implement this method correctly
-     * @param name
+     * @param userName
      * @return
      */
-    public boolean loadGame(String name){
-        File f = new File("saves.txt");
+    public boolean loadGame(String userName) throws NoSaveGameFound, InvalidPlayerCreation, InvalidGameCreation {
         Scanner mys;
         try {
+            FileReader f = new FileReader(userName + ".txt");
             mys = new Scanner(f);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        }
-        while(mys.hasNextLine()){
-            String data = mys.nextLine();
-            String[] tokens = data.split(" ");
-            if(name.equals(tokens[0])){
-                return true;
+
+            while(mys.hasNextLine()){
+                String name = mys.nextLine();
+                if(name.isBlank() || name.isEmpty() || !userName.equals(name)){
+                    throw new InvalidPlayerCreation("Player save file corrupted or modified for name!");
+                }
+
+                String type = mys.nextLine();
+                if(type.isBlank() || type.isEmpty()){
+                    throw new InvalidGameCreation("Game save file corrupted or modified for type!");
+                }
+
+                String solution = mys.nextLine();
+                if(solution.isBlank() || solution.isEmpty()){
+                    throw new InvalidGameCreation("Game save file corrupted or modified for solution!");
+                }
+
+                String alphabet = mys.nextLine();
+                if(alphabet.isBlank() || alphabet.isEmpty()){
+                    throw new InvalidGameCreation("Game save file corrupted or modified for alphabet!");
+                }
+
+                String inputMapping = mys.nextLine();
+                if(inputMapping.isBlank() || inputMapping.isEmpty()){
+                    throw new InvalidGameCreation("Game save file corrupted or modified for inputMapping!");
+                }
+
+                String[] tokenisedAlphabet = alphabet.split(";");
+                if(tokenisedAlphabet.length != 26){
+                    throw new InvalidGameCreation("Game save file corrupted or modified for inputMapping!");
+                }
+
+                String[] tokenisedInputMapping = inputMapping.split(";");
+
+                if(type.equals(LetterCryptogram.TYPE)){
+                    HashMap<Character, Character> alphabetMap = new HashMap<>();
+                    HashMap<Character, Character> inputMap = new HashMap<>();
+
+
+                    for(int i = 0; i < tokenisedAlphabet.length; ++i){
+                        String oneMapping = tokenisedAlphabet[i];
+                        oneMapping = oneMapping.replaceAll(" ", "");
+                        Character key = oneMapping.charAt(0);
+                        Character value = oneMapping.charAt(1);
+
+                        alphabetMap.put(key, value);
+                    }
+
+                    for(int i = 0; i < tokenisedInputMapping.length; ++i){
+                        String oneMapping = tokenisedInputMapping[i];
+                        oneMapping = oneMapping.replaceAll(" ", "");
+                        Character key = oneMapping.charAt(0);
+                        Character value = oneMapping.charAt(1);
+
+                        inputMap.put(key, value);
+                    }
+
+                    Cryptogram c = new LetterCryptogram(solution, alphabetMap);
+                    playerGameMapping.put(currentPlayer, c);
+                    inputFromUserLetter = inputMap;
+
+                    System.out.println("File reading was successful");
+
+                    return true;
+                }
+                else if(type.equals(NumberCryptogram.TYPE)){
+                    HashMap<Integer, Character> alphabetMap = new HashMap<>();
+                    HashMap<Integer, Character> inputMap = new HashMap<>();
+
+
+                    for(int i = 0; i < tokenisedAlphabet.length; ++i){
+                        String oneMapping = tokenisedAlphabet[i];
+                        oneMapping = oneMapping.replaceAll(" ", "");
+                        Integer key = Integer.parseInt(String.valueOf(oneMapping.charAt(0)));
+                        Character value = oneMapping.charAt(1);
+
+                        alphabetMap.put(key, value);
+                    }
+
+                    for(int i = 0; i < tokenisedInputMapping.length; ++i){
+                        String oneMapping = tokenisedInputMapping[i];
+                        oneMapping = oneMapping.replaceAll(" ", "");
+                        Integer key = Integer.parseInt(String.valueOf(oneMapping.charAt(0)));
+                        Character value = oneMapping.charAt(1);
+
+                        inputMap.put(key, value);
+                    }
+
+                    Cryptogram c = new NumberCryptogram(solution, alphabetMap);
+                    playerGameMapping.put(currentPlayer, c);
+                    inputFromUserNumber = inputMap;
+
+                    System.out.println("File reading was successful");
+
+                    return true;
+                }
+                else{
+                    throw new InvalidGameCreation("Game save file corrupted or modified for inputMapping!");
+                }
+
             }
+
+            return false;
+
+        } catch (FileNotFoundException e) {
+            throw new NoSaveGameFound("No save game found for player: " + userName);
         }
-        return false;
+        catch (InvalidPlayerCreation e){
+            throw new InvalidPlayerCreation("Player save file corrupted or modified!");
+        }
+        catch (InvalidGameCreation e){
+            throw new InvalidGameCreation("Game save file corrupted or modified!");
+        }
     }
 
     /**
@@ -899,7 +997,7 @@ public class Game {
 
     public void saveGame(String name){
         try{
-            File f = new File("saves.txt");
+            File f = new File(currentPlayer + ".txt");
             if(f.createNewFile()){
                 System.out.println("File created: "+f.getName());
             }else{

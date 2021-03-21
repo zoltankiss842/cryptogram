@@ -31,6 +31,16 @@ public class LetterCryptogram extends Cryptogram {
         super.setCryptogramAlphabet(new HashMap<Object, Object>(letterCryptogramAlphabet));
     }
 
+    public LetterCryptogram(String solution, HashMap<Character, Character> letterCryptogramAlphabet) {
+        this.letterCryptogramAlphabet = letterCryptogramAlphabet;
+        solution = solution.toLowerCase();
+        super.setPhrase(solutionToPhrase(solution));
+        super.setSolution(solution);
+        // Here we upcasting the alphabet, as Object is every classes parent.
+        // However, this means we need to downcast, when we get the alphabet.
+        super.setCryptogramAlphabet(new HashMap<Object, Object>(letterCryptogramAlphabet));
+    }
+
     //Basic getters
 
     /**
@@ -140,4 +150,7 @@ public class LetterCryptogram extends Cryptogram {
         return '#';     // If no such letter exist we return a placeholder char
     }
 
+    public void setLetterCryptogramAlphabet(HashMap<Character, Character> letterCryptogramAlphabet) {
+        this.letterCryptogramAlphabet = letterCryptogramAlphabet;
+    }
 }
