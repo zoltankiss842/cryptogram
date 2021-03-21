@@ -699,9 +699,9 @@ public class Game {
 
                     for(int i = 0; i < tokenisedAlphabet.length; ++i){
                         String oneMapping = tokenisedAlphabet[i];
-                        oneMapping = oneMapping.replaceAll(" ", "");
-                        Integer key = Integer.parseInt(String.valueOf(oneMapping.charAt(0)));
-                        Character value = oneMapping.charAt(1);
+                        String[] tempToken = oneMapping.split(" ");
+                        Integer key = Integer.parseInt(tempToken[0]);
+                        Character value = tempToken[1].charAt(0);
 
                         alphabetMap.put(key, value);
                     }
@@ -714,15 +714,9 @@ public class Game {
 
                         if(value == '#'){
                             inputMap.put(key, null);
-                            for(Word word : gameGui.getWordHolder().getWords()){
-                                word.updateLetterLabel(String.valueOf(oneMapping.charAt(0)), null);
-                            }
                         }
                         else{
                             inputMap.put(key, value);
-                            for(Word word : gameGui.getWordHolder().getWords()){
-                                word.updateLetterLabel(String.valueOf(key), String.valueOf(value));
-                            }
                         }
                     }
 
