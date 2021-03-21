@@ -3,6 +3,7 @@ package tests;
 import main.exceptions.*;
 import main.game.Game;
 import main.players.Player;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +50,7 @@ public class UserStory8 {
 
         File file = new File("players.txt");
         File testFile = new File("test.txt");
-        testFile.delete();
+
 
         Assert.assertTrue(file.exists());
 
@@ -57,11 +58,22 @@ public class UserStory8 {
         Scanner sc = new Scanner(reader);
 
         Assert.assertTrue(!sc.nextLine().isEmpty());
+        sc.close();
+
+
+        file.delete();
+
+        testFile.delete();
+    }
+    @After
+    public void tearDown()
+    {
 
         File test=new File("test.txt");
         test.delete();
         File players = new File("players.txt");
         players.delete();
+
     }
 
 }
