@@ -25,10 +25,12 @@ public class UserStory3 {
     private ArrayList<String> sentences;
 
     @Before
-    public void setUp(){
+    public void setUp() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
         player = new Player(PLAYER_NAME);
         sentences = new ArrayList<>();
         sentences.add(SOLUTION);
+
+        game = new Game(player, sentences, false);
     }
 
     /*
@@ -40,6 +42,7 @@ public class UserStory3 {
     @Test
     public void undoMappedLetter() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed, PlainLetterAlreadyInUse, NoSuchCryptogramLetter {
         game = new Game(player, sentences, false);
+        game.playGame();
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -74,6 +77,7 @@ public class UserStory3 {
     @Test
     public void undoMappedNumber() throws Exception {
         game = new Game(player, sentences, false);
+        game.playGame();
 
         NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
 

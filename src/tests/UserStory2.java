@@ -333,6 +333,7 @@ Scenario: player selects a plain letter which they have already mapped
     @Test
     public void enterLastValueCorrectLetter() throws Exception {
         game = new Game(player, sentences, false);
+        game.playGame();
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -379,6 +380,7 @@ Scenario: player enters the last value to be mapped and successfully completes t
     @Test
     public void enterLastValueCorrectNumber() throws Exception {
         game = new Game(player, sentences, false);
+        game.playGame();
 
         NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -421,6 +423,7 @@ Scenario: player enters the last value to be mapped and successfully completes t
     @Test
     public void enterLastValueInCorrectLetter() throws Exception {
         game = new Game(player, sentences, false);
+        game.playGame();
 
         LetterCryptogram letter = (LetterCryptogram) game.getPlayerGameMapping().get(player);
 
@@ -463,7 +466,11 @@ Scenario: player enters the last value to be mapped and unsuccessfully completes
 */
     @Test
     public void enterLastValueInCorrectNumber() throws Exception {
+        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
+        System.setIn(in);
         game = new Game(player, sentences, false);
+        game.playGame();
 
         NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
 
