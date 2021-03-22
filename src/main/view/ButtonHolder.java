@@ -1,8 +1,6 @@
 package main.view;
 
-import main.exceptions.InvalidGameCreation;
-import main.exceptions.InvalidPlayerCreation;
-import main.exceptions.NoSaveGameFound;
+import main.exceptions.*;
 import main.game.Game;
 
 import javax.swing.*;
@@ -28,6 +26,7 @@ public class ButtonHolder {
     private JButton reset;
     private JButton saveGame;
     private JButton loadGame;
+    private JButton getHint;
 
 
     public ButtonHolder(String name, Game gameController) {
@@ -95,12 +94,19 @@ public class ButtonHolder {
             }
         });
 
-
+        getHint = new JButton("Hint");
+        getHint.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                gameController.getHint();
+            }
+        });
 
         holder.add(newGame);
         holder.add(reset);
         holder.add(saveGame);
         holder.add(loadGame);
+        holder.add(getHint);
 
     }
 

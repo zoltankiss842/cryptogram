@@ -425,6 +425,8 @@ public class Game {
                 String.valueOf(newChar));
     }
 
+
+
     private void checkIfPlainAlreadyInUse(char cryptoChar, char newChar) throws PlainLetterAlreadyInUse {
         for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
             if (entry.getValue() != null && entry.getValue().equals(newChar) && entry.getKey() != cryptoChar) {
@@ -1030,26 +1032,42 @@ public class Game {
         }
     }
 
-    public char getHint(){
-        if(currentPhrase.equals("")){
-            System.out.println("Empty phrase");
-        }else{
-            char[] myArray = currentPhrase.toCharArray();
-            ArrayList<Character> phrasechars = new ArrayList<>();
-            HashSet set = new HashSet();
-            for(int i=0;i<myArray.length;i++){
-                if(!set.add(myArray[i])){
-                    phrasechars.add(myArray[i]);
+
+    /*shows hint when number or letter has no mapping or the mapping is wrong*/
+    public void getHint(){
+        Cryptogram c=playerGameMapping.get(currentPlayer);
+        HashMap<Character, Character> letterMap = new HashMap<>();
+        HashMap<Character, Character> letterHints = new HashMap<>();
+            if(c instanceof LetterCryptogram) {
+                HashMap<Character, Character> cryptoMapping= ((LetterCryptogram) c).getLetterCryptogramAlphabet();
+                for(Map.Entry<Character, Character> entry : cryptoMapping.entrySet()){
+                    letterMap.put(entry.getKey(), entry.getValue());
                 }
-            }
 
-            Random rand = new Random();
-            System.out.println("Here the hint");
-            return(phrasechars.get(rand.nextInt(set.size())));
-        }
 
-        return 'c';
-    }
+                for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
+                    if (entry.getValue() == null) {
+                        letterHints.put(entry.getKey(), cryptoMapping.get(entry.getValue()));
+                    }
+                }
+
+                Object[] userInputs = inputFromUserLetter.keySet().toArray();
+                for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
+                    if (entry.getValue() == null) {
+                        Object key = userInputs[new Random().nextInt(userInputs.length)];
+                        System.out.println("Your hint: " + key + "->" + letterMap.get(key));
+                        overwrite = true;
+                        inputFromUserLetter.put((Character) key, letterMap.get(key));
+                        updatePhrase((Character) key, letterMap.get(key), playerGameMapping.get(currentPlayer));
+                        System.out.println(getInputFromUserLetter().toString());
+
+                        break;
+                    }
+                }
+
+
+            }}
+
 
 
     /* shows letter or number frequencies of the encrypted alphabet */
@@ -1118,7 +1136,7 @@ public class Game {
            }}
       catch(Exception E)
       {
-          System.out.println("Not a problem for today");
+          System.out.println("No frequencies to show");
       }
       return "";
     }
