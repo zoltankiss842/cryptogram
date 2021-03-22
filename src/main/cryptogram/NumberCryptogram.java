@@ -86,7 +86,7 @@ public class NumberCryptogram extends Cryptogram{
      * (Character and char are interchangeable to a certain level)
      * @return
      */
-    public HashMap<Integer, Character> createAlphabet(){
+    public void createAlphabet(){
         numberCryptogramAlphabet = new HashMap<>();     // Initialize
 
         Integer temp[] = new Integer[26];               // Temp char array
@@ -103,7 +103,6 @@ public class NumberCryptogram extends Cryptogram{
             originalLetter++;
         }
 
-        return numberCryptogramAlphabet;
 
     }
 
