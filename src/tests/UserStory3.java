@@ -86,9 +86,11 @@ public class UserStory3 {
         ByteArrayInputStream in = new ByteArrayInputStream("N".getBytes());
         System.setIn(in);
         game = new Game(player, sentences, false);
+
         game.playGame();
 
         NumberCryptogram number = (NumberCryptogram) game.getPlayerGameMapping().get(player);
+
 
         // Collecting individual numbers from the encrypted phrase
         HashSet<Integer> set = new HashSet<>();

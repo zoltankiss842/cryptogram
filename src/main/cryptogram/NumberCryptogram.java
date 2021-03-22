@@ -84,8 +84,9 @@ public class NumberCryptogram extends Cryptogram{
      * 4. From number 1 to 26, assigns the random number, to the original letter, thus creating the alphabet
      *
      * (Character and char are interchangeable to a certain level)
+     * @return
      */
-    private void createAlphabet(){
+    public void createAlphabet(){
         numberCryptogramAlphabet = new HashMap<>();     // Initialize
 
         Integer temp[] = new Integer[26];               // Temp char array
@@ -101,6 +102,8 @@ public class NumberCryptogram extends Cryptogram{
             numberCryptogramAlphabet.put(temp[i], (char) originalLetter);
             originalLetter++;
         }
+
+
     }
 
     /**

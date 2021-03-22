@@ -96,7 +96,7 @@ public class Frame {
 
 
         frame.add(solutionPanel.getHolder(), BorderLayout.PAGE_START);
-        /*frame.add(frequenciesPanel.getHolder(), BorderLayout.PAGE_START);*/ // comment out to see cryptoLetter frequencies
+        frame.add(frequenciesPanel.getHolder(), BorderLayout.PAGE_START); // comment out to see cryptoLetter frequencies
         frame.add(wordHolder.getHolder(), BorderLayout.CENTER);
 
         centerFrame();

@@ -270,7 +270,6 @@ public class Game {
      */
     public void enterLetter(String cryptoLetter, String newLetter) throws NoGameBeingPlayed, NoSuchCryptogramLetter, PlainLetterAlreadyInUse{
         Cryptogram c = playerGameMapping.get(currentPlayer);
-        viewFrequencies();
 
         if(c == null){  // if the current cryptogram is null, that means a new game must be generated
             throw new NoGameBeingPlayed("Start a new game to enter a letter!");
@@ -1052,37 +1051,71 @@ public class Game {
         return 'c';
     }
 
+
+    /* shows letter or number frequencies of the encrypted alphabet */
     public String viewFrequencies() {
-      try{
-          char[] keys = currentPhrase.toCharArray();
+        Cryptogram c=playerGameMapping.get(currentPlayer);
 
-       HashMap<Character, Integer> frequencyMap = new HashMap<>(); // frequency map for the keys and their frequencies
+        HashMap<Character, Integer> letterFrequencyMap = new HashMap<>(); // frequency map for the keys and their frequencies
 
-       for(int i = 0; i < keys.length; i++){
+        try{
+
+            char[] keys = currentPhrase.toCharArray();
+            // here we see frequencies for letter crypto
+            if(c instanceof LetterCryptogram) {
+            for(int i = 0; i < keys.length; i++){
            if(!(keys[i]==('!') || keys[i]==(' '))) { // counts !'s and spaces so we take them out
-            if(!frequencyMap.containsKey(keys[i])){
-                frequencyMap.put(keys[i],1); // if map does not contain the key we put that in with frequency 1
+            if(!letterFrequencyMap.containsKey(keys[i])){
+                letterFrequencyMap.put(keys[i],1); // if map does not contain the key we put that in with frequency 1
             }else{
-                frequencyMap.put(keys[i], frequencyMap.get(keys[i])+1); // otherwise we add plus one to the frequency
+                letterFrequencyMap.put(keys[i], letterFrequencyMap.get(keys[i])+1); // otherwise we add plus one to the frequency
             }}
         }
-
-       // here we format it to string to look nicer
-        StringBuilder sb = new StringBuilder();
-        Iterator<Map.Entry<Character, Integer>> iter = frequencyMap.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry<Character, Integer> entry = iter.next();
-            sb.append('\n');
-            sb.append(entry.getKey());
-            sb.append('-');
-            sb.append(entry.getValue());
-            if (iter.hasNext()) {
-                sb.append(',').append(' ');
+                // here we format it to string to look nicer
+                StringBuilder sb = new StringBuilder();
+                Iterator<Map.Entry<Character, Integer>> iter = letterFrequencyMap.entrySet().iterator();
+                while (iter.hasNext()) {
+                    Map.Entry<Character, Integer> entry = iter.next();
+                    sb.append('\n');
+                    sb.append(entry.getKey());
+                    sb.append('-');
+                    sb.append(entry.getValue());
+                    if (iter.hasNext()) {
+                        sb.append(',').append(' ');
+                    }
+                }
+                return sb.toString();
             }
-        }
 
-        return sb.toString();
-      }
+        // here we see frequencies for number crypto
+            HashMap<Integer, Integer> numFrequencyMap = new HashMap<>();
+            ArrayList<Integer> numKeys = ((NumberCryptogram) c).getSolutionInIntegerFormat();
+
+            if(c instanceof NumberCryptogram) {
+           for(int i = 0; i < numKeys.size(); i++){
+               if(!(numKeys.get(i)==('!') || numKeys.get(i)==(' '))) { // counts !'s and spaces so we take them out
+                   if(!numFrequencyMap.containsKey(numKeys.get(i))){
+                       numFrequencyMap.put(numKeys.get(i),1); // if map does not contain the key we put that in with frequency 1
+                   }else{
+                       numFrequencyMap.put(numKeys.get(i), numFrequencyMap.get(numKeys.get(i))+1); // otherwise we add plus one to the frequency
+                   }}}
+
+           // here we format it to string to look nicer
+           StringBuilder sb2 = new StringBuilder();
+           Iterator<Map.Entry<Integer, Integer>> iter2 = numFrequencyMap.entrySet().iterator();
+           while (iter2.hasNext()) {
+               Map.Entry<Integer, Integer> entry = iter2.next();
+               sb2.append('\n');
+               sb2.append(entry.getKey());
+               sb2.append('-');
+               sb2.append(entry.getValue());
+               if (iter2.hasNext()) {
+                   sb2.append(',').append(' ');
+               }
+           }
+           return sb2.toString();
+
+           }}
       catch(Exception E)
       {
           System.out.println("Not a problem for today");
