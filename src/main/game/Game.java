@@ -1051,14 +1051,17 @@ public class Game {
         return 'c';
     }
 
+
+    /* shows letter or number frequencies of the encrypted alphabet */
     public String viewFrequencies() {
         Cryptogram c=playerGameMapping.get(currentPlayer);
         char[] keys = currentPhrase.toCharArray();
 
         HashMap<Character, Integer> letterFrequencyMap = new HashMap<>(); // frequency map for the keys and their frequencies
 
-
         try{
+
+            // here we see frequencies for letter crypto
             if(c instanceof LetterCryptogram) {
             for(int i = 0; i < keys.length; i++){
            if(!(keys[i]==('!') || keys[i]==(' '))) { // counts !'s and spaces so we take them out
@@ -1087,7 +1090,6 @@ public class Game {
 
         // here we see frequencies for number crypto
             HashMap<Integer, Integer> numFrequencyMap = new HashMap<>();
-
             ArrayList<Integer> numKeys = ((NumberCryptogram) c).getSolutionInIntegerFormat();
 
             if(c instanceof NumberCryptogram) {
@@ -1101,6 +1103,7 @@ public class Game {
                    }else{
                        numFrequencyMap.put(numKeys.get(i), numFrequencyMap.get(numKeys.get(i))+1); // otherwise we add plus one to the frequency
                    }}}
+
            // here we format it to string to look nicer
            StringBuilder sb2 = new StringBuilder();
            Iterator<Map.Entry<Integer, Integer>> iter2 = numFrequencyMap.entrySet().iterator();
