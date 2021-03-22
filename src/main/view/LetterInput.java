@@ -191,7 +191,6 @@ public class LetterInput {
                     if(!text.isEmpty() && !text.isBlank()){
                         try {
                             game.enterLetter(originalLetter, text);
-                            game.getHint();
                             if(game.isOverwrite()){
                                 word.updateLetterLabel(originalLetter, text);
                                 game.setOverwrite(false);

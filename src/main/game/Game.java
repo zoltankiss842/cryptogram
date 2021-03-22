@@ -1035,10 +1035,14 @@ public class Game {
 
     /*shows hint when number or letter has no mapping or the mapping is wrong*/
     public void getHint(){
-        Cryptogram c=playerGameMapping.get(currentPlayer);
-        HashMap<Character, Character> letterMap = new HashMap<>();
-        HashMap<Character, Character> letterHints = new HashMap<>();
+
+        Cryptogram c = playerGameMapping.get(currentPlayer);
+
+            // hint for letter crypto
             if(c instanceof LetterCryptogram) {
+                HashMap<Character, Character> letterMap = new HashMap<>();
+                HashMap<Character, Character> letterHints = new HashMap<>();
+
                 HashMap<Character, Character> cryptoMapping= ((LetterCryptogram) c).getLetterCryptogramAlphabet();
                 for(Map.Entry<Character, Character> entry : cryptoMapping.entrySet()){
                     letterMap.put(entry.getKey(), entry.getValue());
@@ -1046,28 +1050,75 @@ public class Game {
 
 
                 for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
-                    if (entry.getValue() == null) {
                         letterHints.put(entry.getKey(), cryptoMapping.get(entry.getValue()));
-                    }
+
                 }
 
                 Object[] userInputs = inputFromUserLetter.keySet().toArray();
                 for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
                     if (entry.getValue() == null) {
+
+                        // generate random hint
                         Object key = userInputs[new Random().nextInt(userInputs.length)];
+
+                        // output in the terminal
                         System.out.println("Your hint: " + key + "->" + letterMap.get(key));
                         overwrite = true;
                         inputFromUserLetter.put((Character) key, letterMap.get(key));
                         updatePhrase((Character) key, letterMap.get(key), playerGameMapping.get(currentPlayer));
                         System.out.println(getInputFromUserLetter().toString());
 
+                        // update it in the GUI
+                        for(Word word : gameGui.getWordHolder().getWords()){
+                            word.updateLetterLabel(String.valueOf(key), letterMap.get(key).toString());
+                        }
+
+                        // we don't want to give any more hints so we just stop
                         break;
                     }
-                }
+                }}
+
+                // hint for number crypto
+                if(c instanceof NumberCryptogram) {
+
+                    HashMap<Integer, Character> numberMap = new HashMap<>();
+                    HashMap<Integer, Character> numberHints = new HashMap<>();
+
+                    HashMap<Integer, Character> numCryptoMapping= ((NumberCryptogram) c).getNumberCryptogramAlphabet();
+                    for(Map.Entry<Integer, Character> entry : numCryptoMapping.entrySet()){
+                        numberMap.put(entry.getKey(), entry.getValue());
+                    }
 
 
-            }}
+                    for (Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()) {
+                            numberHints.put(entry.getKey(), numCryptoMapping.get(entry.getValue()));
 
+                    }
+
+                    Object[] userInputsForNum = inputFromUserNumber.keySet().toArray();
+                    for (Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()) {
+                        if (entry.getValue() == null) {
+
+                            // generate random hint
+                            Object key = userInputsForNum[new Random().nextInt(userInputsForNum.length)];
+
+                            // output in the terminal
+                            System.out.println("Your hint: " + key + "->" + numberMap.get(key));
+                            overwrite = true;
+                            inputFromUserNumber.put((Integer) key, numberMap.get(key));
+                          /*  updatePhrase((Integer) key, numberMap.get(key), playerGameMapping.get(currentPlayer));*/
+                            System.out.println(getInputFromUserNumber().toString());
+
+                            // update it in the GUI
+                            for(Word word : gameGui.getWordHolder().getWords()){
+                                word.updateLetterLabel(String.valueOf(key), numberMap.get(key).toString());
+                            }
+
+                            // we don't want to give any more hints so we just stop
+                            break;
+                        }
+                    }}
+    }
 
 
     /* shows letter or number frequencies of the encrypted alphabet */
