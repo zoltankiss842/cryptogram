@@ -14,6 +14,8 @@ import java.util.*;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static java.lang.Math.round;
+
 /**
  * This class is the main controller class.
  * This handles every user input and display output.
@@ -1130,27 +1132,33 @@ public class Game {
         try{
 
             char[] keys = currentPhrase.toCharArray();
+
+            ArrayList<Character> tokenised = new ArrayList<>(26);
             // here we see frequencies for letter crypto
             if(c instanceof LetterCryptogram) {
             for(int i = 0; i < keys.length; i++){
            if(!(keys[i]==('!') || keys[i]==(' '))) { // counts !'s and spaces so we take them out
+               tokenised.add(keys[i]);
             if(!letterFrequencyMap.containsKey(keys[i])){
                 letterFrequencyMap.put(keys[i],1); // if map does not contain the key we put that in with frequency 1
             }else{
                 letterFrequencyMap.put(keys[i], letterFrequencyMap.get(keys[i])+1); // otherwise we add plus one to the frequency
             }}
-        }
+            }
                 // here we format it to string to look nicer
                 StringBuilder sb = new StringBuilder();
                 Iterator<Map.Entry<Character, Integer>> iter = letterFrequencyMap.entrySet().iterator();
                 while (iter.hasNext()) {
                     Map.Entry<Character, Integer> entry = iter.next();
+                    int percentage = (int)round((double)entry.getValue() /(double)tokenised.size()*100);
                     sb.append('\n');
                     sb.append(entry.getKey());
-                    sb.append('-');
+                    sb.append(',');
                     sb.append(entry.getValue());
+                    sb.append(',');
+                    sb.append(percentage + "%");
                     if (iter.hasNext()) {
-                        sb.append(',').append(' ');
+                        sb.append(';').append(' ');
                     }
                 }
                 return sb.toString();
@@ -1159,10 +1167,12 @@ public class Game {
         // here we see frequencies for number crypto
             HashMap<Integer, Integer> numFrequencyMap = new HashMap<>();
             ArrayList<Integer> numKeys = ((NumberCryptogram) c).getSolutionInIntegerFormat();
+            ArrayList<Character> tokenised2 = new ArrayList<>(26);
 
             if(c instanceof NumberCryptogram) {
            for(int i = 0; i < numKeys.size(); i++){
                if(!(numKeys.get(i)==('!') || numKeys.get(i)==(' '))) { // counts !'s and spaces so we take them out
+                   tokenised2.add(keys[i]);
                    if(!numFrequencyMap.containsKey(numKeys.get(i))){
                        numFrequencyMap.put(numKeys.get(i),1); // if map does not contain the key we put that in with frequency 1
                    }else{
@@ -1174,12 +1184,15 @@ public class Game {
            Iterator<Map.Entry<Integer, Integer>> iter2 = numFrequencyMap.entrySet().iterator();
            while (iter2.hasNext()) {
                Map.Entry<Integer, Integer> entry = iter2.next();
+               int percentage = (int)round((double)entry.getValue() /(double)tokenised2.size()*100);
                sb2.append('\n');
                sb2.append(entry.getKey());
-               sb2.append('-');
+               sb2.append(',');
                sb2.append(entry.getValue());
+               sb2.append(',');
+               sb2.append(percentage + "%");
                if (iter2.hasNext()) {
-                   sb2.append(',').append(' ');
+                   sb2.append(';').append(' ');
                }
            }
            return sb2.toString();
