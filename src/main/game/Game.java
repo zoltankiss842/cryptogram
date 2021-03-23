@@ -1131,18 +1131,18 @@ public class Game {
 
         try{
 
-            char[] keys = currentPhrase.toCharArray();
-
+            char[] values = c.getSolution().toCharArray();
             ArrayList<Character> tokenised = new ArrayList<>(26);
+
             // here we see frequencies for letter crypto
             if(c instanceof LetterCryptogram) {
-            for(int i = 0; i < keys.length; i++){
-           if(!(keys[i]==('!') || keys[i]==(' '))) { // counts !'s and spaces so we take them out
-               tokenised.add(keys[i]);
-            if(!letterFrequencyMap.containsKey(keys[i])){
-                letterFrequencyMap.put(keys[i],1); // if map does not contain the key we put that in with frequency 1
+            for(int i = 0; i < values.length; i++){
+           if(!(values[i]==('!') || values[i]==(' '))) { // counts !'s and spaces so we take them out
+               tokenised.add(values[i]);
+            if(!letterFrequencyMap.containsKey(values[i])){
+                letterFrequencyMap.put(values[i],1); // if map does not contain the key we put that in with frequency 1
             }else{
-                letterFrequencyMap.put(keys[i], letterFrequencyMap.get(keys[i])+1); // otherwise we add plus one to the frequency
+                letterFrequencyMap.put(values[i], letterFrequencyMap.get(values[i])+1); // otherwise we add plus one to the frequency
             }}
             }
                 // here we format it to string to look nicer
@@ -1165,25 +1165,25 @@ public class Game {
             }
 
         // here we see frequencies for number crypto
-            HashMap<Integer, Integer> numFrequencyMap = new HashMap<>();
-            ArrayList<Integer> numKeys = ((NumberCryptogram) c).getSolutionInIntegerFormat();
+            HashMap<Character, Integer> numFrequencyMap = new HashMap<>();
+            char [] numValues = c.getSolution().toCharArray();
             ArrayList<Character> tokenised2 = new ArrayList<>(26);
 
             if(c instanceof NumberCryptogram) {
-           for(int i = 0; i < numKeys.size(); i++){
-               if(!(numKeys.get(i)==('!') || numKeys.get(i)==(' '))) { // counts !'s and spaces so we take them out
-                   tokenised2.add(keys[i]);
-                   if(!numFrequencyMap.containsKey(numKeys.get(i))){
-                       numFrequencyMap.put(numKeys.get(i),1); // if map does not contain the key we put that in with frequency 1
+           for(int i = 0; i < numValues.length; i++){
+               if(!(numValues[i]==('!') || numValues[i]==(' '))) { // counts !'s and spaces so we take them out
+                   tokenised2.add(values[i]);
+                   if(!numFrequencyMap.containsKey(numValues[i])){
+                       numFrequencyMap.put(numValues[i],1); // if map does not contain the key we put that in with frequency 1
                    }else{
-                       numFrequencyMap.put(numKeys.get(i), numFrequencyMap.get(numKeys.get(i))+1); // otherwise we add plus one to the frequency
+                       numFrequencyMap.put(numValues[i], numFrequencyMap.get(numValues[i])+1); // otherwise we add plus one to the frequency
                    }}}
 
            // here we format it to string to look nicer
            StringBuilder sb2 = new StringBuilder();
-           Iterator<Map.Entry<Integer, Integer>> iter2 = numFrequencyMap.entrySet().iterator();
+           Iterator<Map.Entry<Character, Integer>> iter2 = numFrequencyMap.entrySet().iterator();
            while (iter2.hasNext()) {
-               Map.Entry<Integer, Integer> entry = iter2.next();
+               Map.Entry<Character, Integer> entry = iter2.next();
                int percentage = (int)round((double)entry.getValue() /(double)tokenised2.size()*100);
                sb2.append('\n');
                sb2.append(entry.getKey());
