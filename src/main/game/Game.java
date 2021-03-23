@@ -1037,7 +1037,7 @@ public class Game {
 
     /*shows hint when number or letter has no mapping or the mapping is wrong*/
     public void getHint(){
-
+    try{
         Cryptogram c = playerGameMapping.get(currentPlayer);
 
             // hint for letter crypto
@@ -1058,11 +1058,13 @@ public class Game {
 
                 Object[] userInputs = inputFromUserLetter.keySet().toArray();
                 for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
-                    if (entry.getValue() == null) {
-
                         // generate random hint
                         Object key = userInputs[new Random().nextInt(userInputs.length)];
 
+                    Character original = (Character) c.getCryptogramAlphabet().get(key);
+                    char temp = original;
+
+                    if (inputFromUserLetter.get(key) == null) {
                         // output in the terminal
                         System.out.println("Your hint: " + key + "->" + letterMap.get(key));
                         overwrite = true;
@@ -1075,10 +1077,11 @@ public class Game {
                             word.updateLetterLabel(String.valueOf(key), letterMap.get(key).toString());
                         }
 
-                        // we don't want to give any more hints so we just stop
+                        // we don't want to give more than one hint so we just stop
                         break;
                     }
                 }}
+
 
                 // hint for number crypto
                 if(c instanceof NumberCryptogram) {
@@ -1099,11 +1102,10 @@ public class Game {
 
                     Object[] userInputsForNum = inputFromUserNumber.keySet().toArray();
                     for (Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()) {
-                        if (entry.getValue() == null) {
-
                             // generate random hint
                             Object key = userInputsForNum[new Random().nextInt(userInputsForNum.length)];
 
+                        if (inputFromUserNumber.get(key) == null) {
                             // output in the terminal
                             System.out.println("Your hint: " + key + "->" + numberMap.get(key));
                             overwrite = true;
@@ -1120,6 +1122,17 @@ public class Game {
                             break;
                         }
                     }}
+
+                // see if crypto is done, if so, we show completion message
+                if(isEverythingMappedLetter()) {
+                    boolean success = checkAnswer();
+                    System.out.println("Everything is mapped, no more hints to give");
+                    showGameCompletion(success);
+                }}
+
+catch(Exception e) {
+    System.out.println("Cannot show hints.");
+        }
     }
 
 
