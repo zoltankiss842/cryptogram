@@ -96,13 +96,6 @@ public class ButtonHolder {
                 }
             }
         });
-        top10 = new JButton("Top10");
-        top10.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                gameController.showstats();
-            }
-        });
 
         getHint = new JButton("Hint");
         getHint.addActionListener(new ActionListener(){
