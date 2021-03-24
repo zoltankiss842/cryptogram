@@ -1,6 +1,8 @@
 package main.view;
 
-import main.exceptions.*;
+import main.exceptions.InvalidGameCreation;
+import main.exceptions.InvalidPlayerCreation;
+import main.exceptions.NoSaveGameFound;
 import main.game.Game;
 
 import javax.swing.*;
@@ -94,6 +96,13 @@ public class ButtonHolder {
                 }
             }
         });
+        top10 = new JButton("Top10");
+        top10.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                gameController.showstats();
+            }
+        });
 
         getHint = new JButton("Hint");
         getHint.addActionListener(new ActionListener(){
@@ -107,7 +116,6 @@ public class ButtonHolder {
         holder.add(reset);
         holder.add(saveGame);
         holder.add(loadGame);
-        holder.add(top10);
         holder.add(getHint);
 
     }
