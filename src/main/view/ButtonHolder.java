@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.FileNotFoundException;
 
 /**
  * This class is for managing the buttons that the player see
@@ -26,6 +27,7 @@ public class ButtonHolder {
     private JButton reset;
     private JButton saveGame;
     private JButton loadGame;
+    private JButton top10;
     private JButton getHint;
 
 
@@ -93,6 +95,13 @@ public class ButtonHolder {
                 }
             }
         });
+        top10 = new JButton("Top10");
+        top10.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                gameController.showstats();
+            }
+        });
 
         getHint = new JButton("Hint");
         getHint.addActionListener(new ActionListener(){
@@ -106,6 +115,7 @@ public class ButtonHolder {
         holder.add(reset);
         holder.add(saveGame);
         holder.add(loadGame);
+        holder.add(top10);
         holder.add(getHint);
 
     }

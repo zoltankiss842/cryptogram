@@ -1,10 +1,12 @@
 package main.players;
 
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import main.exceptions.InvalidGameCreation;
+import main.exceptions.InvalidPlayerCreation;
+import main.exceptions.MissingNameInFile;
+import main.exceptions.MissingStatsInFile;
+
+import java.io.*;
 import java.util.*;
-import java.io.File;
 
 public class Players {
     private  ArrayList<Player> allPlayers ;
@@ -54,6 +56,41 @@ public class Players {
 
     public void getAllPlayersCompletedCryptos() {
 
+    }
+
+    public void printallnames(){ //test methods to see all the names
+        for(int i=0;i<allPlayers.size();i++){
+            System.out.println(allPlayers.get(i).getUsername());
+        }
+    }
+
+    public HashMap<String,String> readStats(){
+        HashMap<String,String> hash = new HashMap<>();
+        try{
+            FileReader f = new FileReader(playersFile);
+            Scanner scan = new Scanner(f);
+            while(scan.hasNext()){
+                String name = scan.nextLine();
+                if(name.isBlank() || name.isEmpty() || replacePlayer(name)==null){ //was going to write a method to check if a certain name is in the list of players but this has the same effect
+                    scan.close();
+                    throw new MissingNameInFile("Name is missing in file!");
+                }
+                String stats = scan.nextLine();
+                if(stats.isBlank() || stats.isEmpty()){
+                    scan.close();
+                    throw new MissingStatsInFile("Stats are missing in file!");
+                }
+                hash.put(name,stats);
+                System.out.println("name test: "+name+"\n"+stats);
+            }
+        }catch(FileNotFoundException e){
+            System.out.println("Something went wrong while reading player stats, no: "+playersFile+" file");
+        }catch(MissingNameInFile e){
+            System.out.println("Missing name in file");
+        }catch(MissingStatsInFile e){
+            System.out.println("Missing stats in file");
+        }
+        return hash;
     }
 
     public void saveStats() {
