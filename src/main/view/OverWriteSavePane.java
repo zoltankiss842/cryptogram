@@ -5,7 +5,7 @@ import javax.swing.*;
 public class OverWriteSavePane {
 
     private final String TITLE = "Overwrite saved file";
-    private final String MESSAGE = "Would you like to overwrite your saved file: ";
+    private final String MESSAGE = "Would you like to overwrite your saved file? ";
     private final int OPTION_TYPE = JOptionPane.YES_NO_OPTION;
     private final int MESSAGE_TYPE = JOptionPane.QUESTION_MESSAGE;
 

@@ -13,7 +13,7 @@ public class FrequenciesPanel {
     }
 
     private void initFrequencies(String letterFreq) {
-       frequencies = new JLabel("Frequencies: " + letterFreq);
+       frequencies = new JLabel(letterFreq);
        holder.add(frequencies);
     }
 

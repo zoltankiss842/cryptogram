@@ -14,6 +14,8 @@ import java.util.*;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static java.lang.Math.round;
+
 /**
  * This class is the main controller class.
  * This handles every user input and display output.
@@ -424,6 +426,8 @@ public class Game {
                 String.valueOf(plainLetterAtCryptoChar.charValue()),
                 String.valueOf(newChar));
     }
+
+
 
     private void checkIfPlainAlreadyInUse(char cryptoChar, char newChar) throws PlainLetterAlreadyInUse {
         for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
@@ -1030,29 +1034,100 @@ public class Game {
         }
     }
 
-    public char getHint(){
-        if(currentPhrase.equals("")){
-            System.out.println("Empty phrase");
-        }else{
-            char[] myArray = currentPhrase.toCharArray();
-            ArrayList<Character> phrasechars = new ArrayList<>();
-            HashSet set = new HashSet();
-            for(int i=0;i<myArray.length;i++){
-                if(!set.add(myArray[i])){
-                    phrasechars.add(myArray[i]);
+
+    /*shows hint when number or letter has no mapping or the mapping is wrong*/
+    public void getHint(){
+
+        Cryptogram c = playerGameMapping.get(currentPlayer);
+
+            // hint for letter crypto
+            if(c instanceof LetterCryptogram) {
+                HashMap<Character, Character> letterMap = new HashMap<>();
+
+                HashMap<Character, Character> cryptoMapping = ((LetterCryptogram) c).getLetterCryptogramAlphabet();
+                for(Map.Entry<Character, Character> entry : cryptoMapping.entrySet()){
+                        letterMap.put(entry.getKey(), entry.getValue());
                 }
-            }
 
-            Random rand = new Random();
-            System.out.println("Here the hint");
-            return(phrasechars.get(rand.nextInt(set.size())));
-        }
+                // generate random hint
+                Object[] keys = inputFromUserLetter.keySet().toArray();
+                Object hint = keys[new Random().nextInt(keys.length)];
 
-        return 'c';
-    }
+                for(Map.Entry<Character, Character> entry : cryptoMapping.entrySet()){ {
+
+                        // shows if the value mapped to hint is null or wrongly mapped
+                        if ((inputFromUserLetter.get(hint) == null) || !(letterMap.get(hint).equals(inputFromUserLetter.get(hint)))) {
+
+                        // output in the terminal
+                        System.out.println("Your hint: " + hint  + "->" + letterMap.get(hint));
+                        overwrite = true;
+                        inputFromUserLetter.put((Character) hint, letterMap.get(hint));
+                        updatePhrase((Character) hint, letterMap.get(hint), playerGameMapping.get(currentPlayer));
+
+                        // update it in the GUI
+                        for(Word word : gameGui.getWordHolder().getWords()){
+                            word.updateLetterLabel(String.valueOf(hint), letterMap.get(hint).toString());
+                        }
+
+                        // we don't want to give more than one hint at a time so we just stop
+                            break;
+                    }
+                }
+                }
+
+                // see if crypto is done, if so, we show completion message
+                if(isEverythingMappedLetter()) {
+                    boolean success = checkAnswer();
+                    System.out.println("Cryptogram completed, no more hints to give");
+                    showGameCompletion(success);
+                }}
 
 
-    /* shows letter or number frequencies of the encrypted alphabet */
+                // hint for number crypto
+                if(c instanceof NumberCryptogram) {
+
+                    HashMap<Integer, Character> numberMap = new HashMap<>();
+
+                    HashMap<Integer, Character> numCryptoMapping= ((NumberCryptogram) c).getNumberCryptogramAlphabet();
+                    for(Map.Entry<Integer, Character> entry : numCryptoMapping.entrySet()){
+                        numberMap.put(entry.getKey(), entry.getValue());
+                    }
+
+                    // generate random hint
+                    Object[] userInputsForNum = inputFromUserNumber.keySet().toArray();
+                    Object numHint = userInputsForNum[new Random().nextInt(userInputsForNum.length)];
+
+                    for (Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()) {
+
+                        if (inputFromUserNumber.get(numHint) == null || !(numberMap.get(numHint).equals(inputFromUserNumber.get(numHint)))) {
+
+                            // output in the terminal
+                            System.out.println("Your hint: " + numHint + "->" + numberMap.get(numHint));
+                            overwrite = true;
+                            inputFromUserNumber.put((Integer) numHint, numberMap.get(numHint));
+                            System.out.println(getInputFromUserNumber().toString());
+
+                            // update it in the GUI
+                            for(Word word : gameGui.getWordHolder().getWords()){
+                                word.updateLetterLabel(String.valueOf(numHint), numberMap.get(numHint).toString());
+                            }
+
+                            // we don't want to give more than one hint at a time so we just stop
+                            break;
+                        }
+                    }
+
+                    // see if crypto is done, if so, we show completion message
+                    if(isEverythingMappedNumber()) {
+                        boolean success = checkAnswer();
+                        System.out.println("Cryptogram completed, no more hints to give");
+                        showGameCompletion(success);
+                    }
+                }
+}
+
+
+    /* shows letter or number frequencies of the solution */
     public String viewFrequencies() {
         Cryptogram c=playerGameMapping.get(currentPlayer);
 
@@ -1060,57 +1135,68 @@ public class Game {
 
         try{
 
-            char[] keys = currentPhrase.toCharArray();
+            char[] values = c.getSolution().toCharArray();
+            ArrayList<Character> tokenised = new ArrayList<>(26);
+
             // here we see frequencies for letter crypto
             if(c instanceof LetterCryptogram) {
-            for(int i = 0; i < keys.length; i++){
-           if(!(keys[i]==('!') || keys[i]==(' '))) { // counts !'s and spaces so we take them out
-            if(!letterFrequencyMap.containsKey(keys[i])){
-                letterFrequencyMap.put(keys[i],1); // if map does not contain the key we put that in with frequency 1
+            for(int i = 0; i < values.length; i++){
+           if(!(values[i]==('!') || values[i]==(' '))) { // counts !'s and spaces so we take them out
+               tokenised.add(values[i]);
+            if(!letterFrequencyMap.containsKey(values[i])){
+                letterFrequencyMap.put(values[i],1); // if map does not contain the key we put that in with frequency 1
             }else{
-                letterFrequencyMap.put(keys[i], letterFrequencyMap.get(keys[i])+1); // otherwise we add plus one to the frequency
+                letterFrequencyMap.put(values[i], letterFrequencyMap.get(values[i])+1); // otherwise we add plus one to the frequency
             }}
-        }
+            }
                 // here we format it to string to look nicer
                 StringBuilder sb = new StringBuilder();
                 Iterator<Map.Entry<Character, Integer>> iter = letterFrequencyMap.entrySet().iterator();
                 while (iter.hasNext()) {
                     Map.Entry<Character, Integer> entry = iter.next();
+                    int percentage = (int)round((double)entry.getValue() /(double)tokenised.size()*100);
                     sb.append('\n');
                     sb.append(entry.getKey());
-                    sb.append('-');
+                    sb.append(',');
                     sb.append(entry.getValue());
+                    sb.append(',');
+                    sb.append(percentage + "%");
                     if (iter.hasNext()) {
-                        sb.append(',').append(' ');
+                        sb.append(';').append(' ');
                     }
                 }
                 return sb.toString();
             }
 
         // here we see frequencies for number crypto
-            HashMap<Integer, Integer> numFrequencyMap = new HashMap<>();
-            ArrayList<Integer> numKeys = ((NumberCryptogram) c).getSolutionInIntegerFormat();
+            HashMap<Character, Integer> numFrequencyMap = new HashMap<>();
+            char [] numValues = c.getSolution().toCharArray();
+            ArrayList<Character> tokenised2 = new ArrayList<>(26);
 
             if(c instanceof NumberCryptogram) {
-           for(int i = 0; i < numKeys.size(); i++){
-               if(!(numKeys.get(i)==('!') || numKeys.get(i)==(' '))) { // counts !'s and spaces so we take them out
-                   if(!numFrequencyMap.containsKey(numKeys.get(i))){
-                       numFrequencyMap.put(numKeys.get(i),1); // if map does not contain the key we put that in with frequency 1
+           for(int i = 0; i < numValues.length; i++){
+               if(!(numValues[i]==('!') || numValues[i]==(' '))) { // counts !'s and spaces so we take them out
+                   tokenised2.add(values[i]);
+                   if(!numFrequencyMap.containsKey(numValues[i])){
+                       numFrequencyMap.put(numValues[i],1); // if map does not contain the key we put that in with frequency 1
                    }else{
-                       numFrequencyMap.put(numKeys.get(i), numFrequencyMap.get(numKeys.get(i))+1); // otherwise we add plus one to the frequency
+                       numFrequencyMap.put(numValues[i], numFrequencyMap.get(numValues[i])+1); // otherwise we add plus one to the frequency
                    }}}
 
            // here we format it to string to look nicer
            StringBuilder sb2 = new StringBuilder();
-           Iterator<Map.Entry<Integer, Integer>> iter2 = numFrequencyMap.entrySet().iterator();
+           Iterator<Map.Entry<Character, Integer>> iter2 = numFrequencyMap.entrySet().iterator();
            while (iter2.hasNext()) {
-               Map.Entry<Integer, Integer> entry = iter2.next();
+               Map.Entry<Character, Integer> entry = iter2.next();
+               int percentage = (int)round((double)entry.getValue() /(double)tokenised2.size()*100);
                sb2.append('\n');
                sb2.append(entry.getKey());
-               sb2.append('-');
+               sb2.append(',');
                sb2.append(entry.getValue());
+               sb2.append(',');
+               sb2.append(percentage + "%");
                if (iter2.hasNext()) {
-                   sb2.append(',').append(' ');
+                   sb2.append(';').append(' ');
                }
            }
            return sb2.toString();
@@ -1118,7 +1204,7 @@ public class Game {
            }}
       catch(Exception E)
       {
-          System.out.println("Not a problem for today");
+          System.out.println("No frequencies to show");
       }
       return "";
     }
