@@ -27,7 +27,6 @@ public class ButtonHolder {
     private JButton reset;
     private JButton saveGame;
     private JButton loadGame;
-    private JButton top10;
     private JButton getHint;
 
 
@@ -93,13 +92,6 @@ public class ButtonHolder {
                 } catch (InvalidGameCreation invalidGameCreation) {
                     invalidGameCreation.printStackTrace();
                 }
-            }
-        });
-        top10 = new JButton("Top10");
-        top10.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                gameController.showstats();
             }
         });
 
