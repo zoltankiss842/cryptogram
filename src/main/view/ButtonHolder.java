@@ -1,8 +1,6 @@
 package main.view;
 
-import main.exceptions.InvalidGameCreation;
-import main.exceptions.InvalidPlayerCreation;
-import main.exceptions.NoSaveGameFound;
+import main.exceptions.*;
 import main.game.Game;
 
 import javax.swing.*;
@@ -12,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.FileNotFoundException;
 
 /**
  * This class is for managing the buttons that the player see
@@ -28,6 +27,7 @@ public class ButtonHolder {
     private JButton reset;
     private JButton saveGame;
     private JButton loadGame;
+    private JButton top10;
 
 
     public ButtonHolder(String name, Game gameController) {
@@ -94,6 +94,13 @@ public class ButtonHolder {
                 }
             }
         });
+        top10 = new JButton("Top10");
+        top10.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                gameController.showstats();
+            }
+        });
 
 
 
@@ -101,6 +108,7 @@ public class ButtonHolder {
         holder.add(reset);
         holder.add(saveGame);
         holder.add(loadGame);
+        holder.add(top10);
 
     }
 

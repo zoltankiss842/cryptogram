@@ -1139,6 +1139,11 @@ public class Game {
             show(c.phrase);*/
         }
     }
+
+    public void showstats(){
+        Top10Panel top10 = new Top10Panel(allPlayers.readStats());
+    }
+
     public void savegame()
     {
         allPlayers.saveStats();
