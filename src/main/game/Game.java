@@ -1079,6 +1079,11 @@ public class Game {
                 if(isEverythingMappedLetter()) {
                     boolean success = checkAnswer();
                     System.out.println("Cryptogram completed, no more hints to give");
+
+                    if (gameGui != null) {
+                        lockFields();
+                    }
+
                     showGameCompletion(success);
                 }}
 
@@ -1105,7 +1110,6 @@ public class Game {
                             System.out.println("Your hint: " + numHint + "->" + numberMap.get(numHint));
                             overwrite = true;
                             inputFromUserNumber.put((Integer) numHint, numberMap.get(numHint));
-                            System.out.println(getInputFromUserNumber().toString());
 
                             // update it in the GUI
                             for(Word word : gameGui.getWordHolder().getWords()){
@@ -1119,8 +1123,16 @@ public class Game {
 
                     // see if crypto is done, if so, we show completion message
                     if(isEverythingMappedNumber()) {
+                        if (gameGui != null) {
+                            lockFields();
+                        }
                         boolean success = checkAnswer();
                         System.out.println("Cryptogram completed, no more hints to give");
+
+                        if (gameGui != null) {
+                            lockFields();
+                        }
+
                         showGameCompletion(success);
                     }
                 }
