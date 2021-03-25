@@ -1231,12 +1231,13 @@ public class Game {
         this.sentences = sentences;
     }
 
-    public void showSolution(){
+    public void showSolution(String solution){
         if(currentPlayer!=null){
-            /*Cryptogram c = playerGameMapping.get(currentPlayer);
-            show(c.phrase);*/
+            Cryptogram c = playerGameMapping.get(currentPlayer);
+            c.getSolution();
         }
     }
+
     public void savegame()
     {
         allPlayers.saveStats();
