@@ -32,7 +32,7 @@ public class UserStory4 {
 
     }
     @Test
-    public void testSaveLetter() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
+    public void testSaveLetter() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed {
         InputStream sysInBackup = System.in; // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("N".getBytes());
         System.setIn(in);
@@ -53,7 +53,7 @@ public class UserStory4 {
 
 
     @Test
-    public void testSaveNumber() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
+    public void testSaveNumber() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed {
         InputStream sysInBackup = System.in; // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
