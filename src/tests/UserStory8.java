@@ -37,7 +37,7 @@ public class UserStory8 {
         - Then their details are saved to a file
      */
     @Test
-    public void storeDetails() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, FileNotFoundException {
+    public void storeDetails() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, FileNotFoundException, NoGameBeingPlayed {
         game = new Game(player, sentences, false);
 
         InputStream sysInBackup = System.in; // backup System.in to restore it later

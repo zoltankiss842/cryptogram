@@ -33,7 +33,7 @@ public class NewGameTypeOptionPane implements OptionPane {
             return NumberCryptogram.TYPE;
         }
         else{
-            return null;
+            return "";
         }
     }
 

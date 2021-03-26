@@ -30,7 +30,7 @@ public class Word {
         //word.setBorder(new LineBorder(new Color(0,128,0), 1));
     }
 
-    private void createLetters(String word) {                       //TODO: Ezt kell átírni
+    private void createLetters(String word) {
         letters = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
         for(char c : word.toCharArray()){
