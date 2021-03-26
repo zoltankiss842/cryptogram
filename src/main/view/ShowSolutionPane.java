@@ -17,7 +17,7 @@ import java.awt.*;
 
 public class ShowSolutionPane {
     private final String TITLE = "The solution: ";
-    private final String[] OPTIONS = {"Okay"};
+    private final String[] OPTIONS = {"OK"};
     private final int OPTION_TYPE = JOptionPane.OK_OPTION;
     private final int MESSAGE_TYPE = JOptionPane.PLAIN_MESSAGE;
 

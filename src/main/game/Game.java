@@ -1234,8 +1234,8 @@ public class Game {
     public void showSolution() {
         if (gameGui != null) {
             if (currentPlayer != null) {
-                ShowSolutionPane pane = new ShowSolutionPane(playerGameMapping.get(currentPlayer).getSolution(), gameGui.getFrame());
                 lockFields();
+                ShowSolutionPane pane = new ShowSolutionPane(playerGameMapping.get(currentPlayer).getSolution(), gameGui.getFrame());
             }
         }
     }

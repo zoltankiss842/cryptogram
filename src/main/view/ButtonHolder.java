@@ -109,7 +109,7 @@ public class ButtonHolder {
         });
 
         //Clicking the "show solution" button reveals the solution to the current cryptogram in play
-        showSolution = new JButton("Show Solution");
+        showSolution = new JButton("Solution");
         showSolution.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
