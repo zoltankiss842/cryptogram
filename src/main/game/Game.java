@@ -1231,10 +1231,12 @@ public class Game {
         this.sentences = sentences;
     }
 
-    public void showSolution(String solution){
-        if(currentPlayer!=null){
-            Cryptogram c = playerGameMapping.get(currentPlayer);
-            c.getSolution();
+    public void showSolution() {
+        if (gameGui != null) {
+            if (currentPlayer != null) {
+                ShowSolutionPane pane = new ShowSolutionPane(playerGameMapping.get(currentPlayer).getSolution(), gameGui.getFrame());
+                lockFields();
+            }
         }
     }
 

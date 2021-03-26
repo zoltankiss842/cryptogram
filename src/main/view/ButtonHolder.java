@@ -177,60 +177,7 @@ public class ButtonHolder {
         return mouseListener;
     }
 
-       /* public JPanel getHolder() {
-        return holder;
-    } */
-
-    /**
-     * Here we create the show solution display,
-     * which is interactive, so the user can click on it and can check the
-     * solution to the current cryptogram.
-     * @param solution    the solution to the cryptogram
-     */
-    private void initShowSolution(String solution) {
-        nameHolder = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
-        nameHolder.addMouseListener(createMouseListener());
-
-        playerName = new JLabel(solution);
-
-    }
-
-
-        MouseListener mouseListener = new MouseListener() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                 statistics = new CurrentPlayerStatistics(gameController.getCurrentPlayer());
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                playerName.getRootPane().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                nameHolder.setToolTipText("show the solution!");
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                playerName.getRootPane().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                nameHolder.setBorder(null);
-            }
-        };
-
-        return mouseListener;
-    }
     public JPanel getHolder() {
         return holder;
     }
 }
-
