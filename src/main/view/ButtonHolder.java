@@ -1,6 +1,8 @@
 package main.view;
 
-import main.exceptions.*;
+import main.exceptions.InvalidGameCreation;
+import main.exceptions.InvalidPlayerCreation;
+import main.exceptions.NoSaveGameFound;
 import main.game.Game;
 
 import javax.swing.*;
@@ -10,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.FileNotFoundException;
 
 /**
  * This class is for managing the buttons that the player see
