@@ -37,8 +37,7 @@ public class Frame {
         frame.add(menuHolder.getHolder());
 
         frame.revalidate();
-        frame.setVisible(true);
-
+        frame.setVisible(false);
     }
 
     /**
@@ -71,7 +70,6 @@ public class Frame {
 
         // Resetting the components to display new sentences
         try{
-            frame.remove(solutionPanel.getHolder());
             frame.remove(frequenciesPanel.getHolder());
             frame.remove(wordHolder.getHolder());
             Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -89,10 +87,43 @@ public class Frame {
         wordHolder = new WordHolder(frame, this);
         wordHolder.displayNewSentence(cryptogram.getPhrase());
 
-        // Adding the solution sentence to the frame
-        solutionPanel = new SolutionPanel(cryptogram.getSolution());
-
         frequenciesPanel = new FrequenciesPanel(gameController.viewFrequencies());
+
+        frame.add(frequenciesPanel.getHolder(), BorderLayout.PAGE_START); // comment out to see cryptoLetter frequencies
+        frame.add(wordHolder.getHolder(), BorderLayout.CENTER);
+
+        centerFrame();
+        if(!frame.isVisible()){
+            frame.setVisible(true);
+        }
+        frame.pack();
+        frame.revalidate();
+    }
+
+    public void displayEmptyScreen(){
+        // Resetting the components to display new sentences
+        try{
+            frame.remove(frequenciesPanel.getHolder());
+            frame.remove(wordHolder.getHolder());
+            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+            frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
+        }
+        catch (NullPointerException e){
+            System.err.println("Components were already null, cannot remove them from Frame.");
+        }
+
+        wordHolder = null;
+        solutionPanel = null;
+        frequenciesPanel = null;
+
+        // Adding new encrypted sentence to the frame
+        wordHolder = new WordHolder(frame, this);
+        wordHolder.displayEmptyPanel();
+
+        // Adding the solution sentence to the frame
+        solutionPanel = new SolutionPanel("");
+
+        frequenciesPanel = new FrequenciesPanel("");
 
 
         frame.add(solutionPanel.getHolder(), BorderLayout.PAGE_START);
@@ -100,7 +131,11 @@ public class Frame {
         frame.add(wordHolder.getHolder(), BorderLayout.CENTER);
 
         centerFrame();
+        if(!frame.isVisible()){
+            frame.setVisible(true);
+        }
         frame.pack();
+        frame.revalidate();
     }
 
     private void centerFrame(){

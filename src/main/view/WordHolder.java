@@ -50,7 +50,7 @@ public class WordHolder {
             words.clear();
         }
 
-        String[] tokens = encrypted.split(" ");               //TODO: Stringet máshogy kell szabdalni
+        String[] tokens = encrypted.split(" ");
         for(int i = 0; i < tokens.length; ++i){
             Word newWord = new Word(tokens[i], this);
             words.add(newWord);
@@ -86,6 +86,21 @@ public class WordHolder {
         }
 
         return true;
+    }
+
+    public void displayEmptyPanel(){
+        // We reset the words
+        if(words != null){
+            words.clear();
+        }
+
+        holder.setLayout(new BorderLayout());
+
+        JLabel defaultMessage = new JLabel("Start a new game or load an existing one to play!");
+        defaultMessage.setHorizontalAlignment(JLabel.CENTER);
+        defaultMessage.setVerticalAlignment(JLabel.CENTER);
+
+        holder.add(defaultMessage, BorderLayout.CENTER);
     }
 
     public JScrollPane getHolder() {
