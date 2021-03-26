@@ -30,6 +30,7 @@ public class ButtonHolder {
     private JButton saveGame;
     private JButton loadGame;
     private JButton getHint;
+    private JButton showSolution;
 
 
     public ButtonHolder(String name, Game gameController) {
@@ -77,14 +78,16 @@ public class ButtonHolder {
         });
 
         saveGame = new JButton("Save");
-        saveGame.addActionListener(new ActionListener(){
+        saveGame.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e){ gameController.savegame();}
+            public void actionPerformed(ActionEvent e) {
+                gameController.savegame();
+            }
         });
         loadGame = new JButton("Load");
-        loadGame.addActionListener(new ActionListener(){
+        loadGame.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 try {
                     gameController.loadGame(gameController.getCurrentPlayer().getUsername());
                 } catch (NoSaveGameFound noSaveGameFound) {
@@ -98,18 +101,29 @@ public class ButtonHolder {
         });
 
         getHint = new JButton("Hint");
-        getHint.addActionListener(new ActionListener(){
+        getHint.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 gameController.getHint();
             }
         });
+
+        //Clicking the "show solution" button reveals the solution to the current cryptogram in play
+        showSolution = new JButton("Show Solution");
+        showSolution.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameController.showSolution();
+            }
+        });
+
 
         holder.add(newGame);
         holder.add(reset);
         holder.add(saveGame);
         holder.add(loadGame);
         holder.add(getHint);
+        holder.add(showSolution);
 
     }
 
@@ -117,7 +131,8 @@ public class ButtonHolder {
      * Here we create the player username display,
      * which is interactive, so the user can click on it and can check their
      * statistics.
-     * @param name      the players username
+     *
+     * @param name the players username
      */
     private void initPlayerStatistics(String name) {
         nameHolder = new JPanel(new FlowLayout(FlowLayout.CENTER));
