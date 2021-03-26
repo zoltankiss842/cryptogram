@@ -81,7 +81,7 @@ public class Players {
                     throw new MissingStatsInFile("Stats are missing in file!");
                 }
                 hash.put(name,stats);
-                System.out.println("name test: "+name+"\n"+stats);
+                //System.out.println("name test: "+name+"\n"+stats);
             }
         }catch(FileNotFoundException e){
             System.out.println("Something went wrong while reading player stats, no: "+playersFile+" file");
