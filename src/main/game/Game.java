@@ -1147,7 +1147,9 @@ public class Game {
 
 
     /* shows letter or number frequencies of the solution */
-    // TODO: What are the meaning of values?
+    // first value: letter from solution
+    // second value: number of occurrences of letters in solution sentence
+    // third value: percentage of occurrences of letters for all letters in the solution sentence
     public String viewFrequencies() {
         Cryptogram c = playerGameMapping.get(currentPlayer);
 
