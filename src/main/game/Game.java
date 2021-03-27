@@ -1056,11 +1056,11 @@ public class Game {
 
             // generate random hint
             Object[] keys = inputFromUserLetter.keySet().toArray();
-            Object hint = keys[new Random().nextInt(keys.length)];
+            Object hint;
 
             for (Map.Entry<Character, Character> entry : cryptoMapping.entrySet()) {
                 {
-
+                    hint = keys[new Random().nextInt(keys.length)];
                     // shows if the value mapped to hint is null or wrongly mapped
                     if ((inputFromUserLetter.get(hint) == null) || !(letterMap.get(hint).equals(inputFromUserLetter.get(hint)))) {
 
@@ -1107,9 +1107,11 @@ public class Game {
 
             // generate random hint
             Object[] userInputsForNum = inputFromUserNumber.keySet().toArray();
-            Object numHint = userInputsForNum[new Random().nextInt(userInputsForNum.length)];
+            Object numHint;
 
             for (Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()) {
+
+                numHint = userInputsForNum[new Random().nextInt(userInputsForNum.length)];
 
                 if (inputFromUserNumber.get(numHint) == null || !(numberMap.get(numHint).equals(inputFromUserNumber.get(numHint)))) {
 
