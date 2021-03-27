@@ -1,6 +1,8 @@
 import main.players.Player;
 import main.view.NewPlayerFrame;
 
+import java.io.IOException;
+
 /**
  * Starting point for our program. The View model will be instantiated
  * from here.
@@ -13,7 +15,11 @@ public class Driver {
 
     public static void main(String[] args){
 
-        NewPlayerFrame frame = new NewPlayerFrame();
+        try {
+            NewPlayerFrame frame = new NewPlayerFrame();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

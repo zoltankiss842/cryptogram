@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.FileNotFoundException;
 
 /**
  * This class is for managing the buttons that the player see
@@ -47,7 +46,8 @@ public class ButtonHolder {
      */
     private void initHolder() {
         holder = new JPanel();
-//        holder.setBorder(new LineBorder(new Color(255,0,0), 5));
+        holder.setBackground(Frame.GUNMETAL);
+
     }
 
     /**
@@ -148,9 +148,18 @@ public class ButtonHolder {
     private void initPlayerStatistics(String name) {
         nameHolder = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
+        nameHolder.setPreferredSize(new Dimension(name.length()*10, 25));
+
+        nameHolder.setBackground(Frame.GUNMETAL);
+
+        nameHolder.setToolTipText("Check your statistics!");
+
         nameHolder.addMouseListener(createMouseListener());
 
         playerName = new JLabel(name);
+        playerName.setForeground(Color.WHITE);
+        playerName.setVerticalAlignment(JLabel.CENTER);
+        playerName.setHorizontalAlignment(JLabel.CENTER);
 
         nameHolder.add(playerName);
 
@@ -178,20 +187,61 @@ public class ButtonHolder {
             @Override
             public void mouseEntered(MouseEvent e) {
                 playerName.getRootPane().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                nameHolder.setToolTipText("Check your statistics!");
+                nameHolder.setBackground(Frame.QUEENBLUE);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 playerName.getRootPane().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                nameHolder.setBorder(null);
+                nameHolder.setBackground(Frame.GUNMETAL);
             }
         };
 
         return mouseListener;
     }
 
+    public void enableSolutionButton(){
+        showSolution.setEnabled(true);
+    }
+
+    public void disableSolutionButton(){
+        showSolution.setEnabled(false);
+    }
+
+    public void enableHintButton(){
+        getHint.setEnabled(true);
+    }
+
+    public void disableHintButton(){
+        getHint.setEnabled(false);
+    }
+
+    public void enableSaveGameButton(){
+        saveGame.setEnabled(true);
+    }
+
+    public void disableSaveGameButton(){
+        saveGame.setEnabled(false);
+    }
+
+    public void enableLoadGameButton(){
+        loadGame.setEnabled(true);
+    }
+
+    public void disableLoadGameButton(){
+        loadGame.setEnabled(false);
+    }
+
+    public void enableResetButton(){
+        reset.setEnabled(true);
+    }
+
+    public void disableResetButton(){
+        reset.setEnabled(false);
+    }
+
     public JPanel getHolder() {
         return holder;
     }
+
 }

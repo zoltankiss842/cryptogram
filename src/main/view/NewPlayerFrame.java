@@ -2,10 +2,14 @@ package main.view;
 
 import main.game.Game;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * This is the first UI component that is shown to
@@ -23,33 +27,38 @@ public class NewPlayerFrame {
 
     private Game newGame;
 
-    public NewPlayerFrame() {
+    public NewPlayerFrame() throws IOException {
         initFrame();
         initComponents();
 
         playerFrame.pack();
+        playerFrame.setLocationRelativeTo(null);
         playerFrame.setVisible(true);
     }
 
-    private void initFrame() {
+    private void initFrame() throws IOException {
         playerFrame = new JFrame("New Player");
+        playerFrame.setIconImage(ImageIO.read(new File("resources/assets/add-group.png")));
         playerFrame.setPreferredSize(new Dimension(500,100));
         playerFrame.setMinimumSize(new Dimension(500,100));
         playerFrame.setLayout(new BorderLayout());
         playerFrame.setResizable(false);
         playerFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        playerFrame.setLocationRelativeTo(null);
     }
 
     private void initComponents() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel panel = new JPanel();
+
+        panel.setBorder(new EmptyBorder(15,1,1,1));
 
         prompt = new JLabel("Please enter your name: ");
+        prompt.setVerticalAlignment(JLabel.CENTER);
 
         playerName = new JTextField();
         playerName.setPreferredSize(new Dimension(100,20));
 
         play = new JButton("Play");
+        play.setVerticalAlignment(JButton.CENTER);
 
         // Here we check if the entered name is empty, if not we show the game frame
         play.addActionListener(new ActionListener() {
@@ -59,6 +68,9 @@ public class NewPlayerFrame {
 
                 if(name.isEmpty() || name.isBlank() || name == null){
                     JOptionPane.showMessageDialog(playerFrame, "Name cannot be empty", "Name error", JOptionPane.ERROR_MESSAGE);
+                }
+                else if(name.length() > 30){
+                    JOptionPane.showMessageDialog(playerFrame, "Name too long", "Name error", JOptionPane.ERROR_MESSAGE);
                 }
                 else{
                     playerFrame.setVisible(false);
@@ -75,6 +87,7 @@ public class NewPlayerFrame {
         });
 
         exit = new JButton("Exit");
+        exit.setVerticalAlignment(JButton.CENTER);
 
         exit.addActionListener(new ActionListener() {
             @Override

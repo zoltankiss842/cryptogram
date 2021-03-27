@@ -46,11 +46,12 @@ public class LetterInput {
     private void initLetterInput() {
         this.letterInput = new JPanel();
         letterInput.setLayout(new BoxLayout(letterInput, BoxLayout.Y_AXIS));
-        //letterInput.setBorder(new LineBorder(new Color(0,0,0),1));
+        letterInput.setBackground(Frame.QUEENBLUE);
     }
 
     public void initEncryptedLetter(String letter) {
         this.encryptedLetter = new JLabel(letter);
+        encryptedLetter.setForeground(Color.WHITE);
         originalLetter = letter;
         encryptedLetter.setAlignmentX(Component.CENTER_ALIGNMENT);
     }

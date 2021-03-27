@@ -4,6 +4,7 @@ package main.view;
 import main.game.Game;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 
 public class MenuBarHolder {
@@ -35,24 +36,23 @@ public class MenuBarHolder {
 
         menuBar.add(this.scoreboard = new JMenu("Scoreboard"));
         scoreboard.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
                 gameController.showstats();
             }
+
         });
 
         menuBar.add(this.commonFrequencies = new JMenu("Common frequencies"));
         commonFrequencies.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-
+            public void mousePressed(java.awt.event.MouseEvent evt) {
                 gameController.showFrequencies();
-                System.out.println("you got to this line");
             }
         });
 
 
         menuBar.add(this.exit = new JMenu("Exit"));
         exit.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
                 gameController.savegame();
                 jExitClicked(evt);
             }

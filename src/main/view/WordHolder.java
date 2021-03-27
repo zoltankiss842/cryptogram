@@ -1,7 +1,6 @@
 package main.view;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -9,6 +8,7 @@ import java.util.ArrayList;
  * This class represents a list of words.
  */
 public class WordHolder {
+
 
     private ArrayList<Word> words;
     private JPanel holder;
@@ -28,14 +28,15 @@ public class WordHolder {
 
     private void initHolder() {
         this.holder = new JPanel();
-//        holder.setBorder(new LineBorder(new Color(0,255,0), 5));
         holder.setLayout(new WrapLayout());
+        holder.setBackground(Frame.QUEENBLUE);
     }
 
     private void initScrollPane() {
         this.holderScrollPane = new JScrollPane(holder);
         holderScrollPane.setHorizontalScrollBar(null);
         holderScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        holderScrollPane.setBackground(Frame.QUEENBLUE);
     }
 
     /**
@@ -97,6 +98,7 @@ public class WordHolder {
         holder.setLayout(new BorderLayout());
 
         JLabel defaultMessage = new JLabel("Start a new game or load an existing one to play!");
+        defaultMessage.setForeground(Color.WHITE);
         defaultMessage.setHorizontalAlignment(JLabel.CENTER);
         defaultMessage.setVerticalAlignment(JLabel.CENTER);
 

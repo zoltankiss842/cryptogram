@@ -2,49 +2,149 @@ package main.view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class FrequenciesPanel {
-    private JPanel holder;
-    private JLabel frequencies;
+
+    private final String LETTERTOOLTIP = "Letter: Non-encrypted letter used in current game";
+    private final String QUANTITYTOOLTIP = "Quantity: Number of letters in current game";
+    private final String RATIOTOOLTIP = "Ratio: Ratio of usage of the letter in current game";
+
+    private JScrollPane holder;
+    private JPanel frequenciesHolder;
 
     public FrequenciesPanel(String letterFrequencies) {
-        initHolder();
         initFrequencies(letterFrequencies);
+        initHolder(frequenciesHolder);
     }
 
-    private void initHolder() {
-        holder = new JPanel();
-        holder.setLayout(new WrapLayout());
+    private void initHolder(JPanel frequenciesHolder) {
+        holder = new JScrollPane(frequenciesHolder);
+        holder.setPreferredSize(new Dimension(150, Frame.FRAME_HEIGHT));
+        holder.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        holder.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        holder.getVerticalScrollBar().setUnitIncrement(16);
     }
 
     private void initFrequencies(String letterFrequencies) {
+        if(letterFrequencies.length() <= 0){
+            return;
+        }
         String[] tokenised = letterFrequencies.split(",");
+        int rows = tokenised.length+1;
+
+        frequenciesHolder = new JPanel();
+        frequenciesHolder.setLayout(new GridLayout(rows, 1));
+        frequenciesHolder.setBackground(Frame.GUNMETAL);
+
+        JPanel temp = new JPanel();
+        temp.setBackground(Frame.GUNMETAL);
+
+        JPanel letterHolder = new JPanel();
+        letterHolder.setToolTipText(LETTERTOOLTIP);
+        letterHolder.setBackground(Frame.GUNMETAL);
+        JLabel letter = new JLabel("L");
+        letter.setForeground(Color.WHITE);
+        letterHolder.add(letter);
+
+        JPanel quantityHolder = new JPanel();
+        quantityHolder.setBackground(Frame.GUNMETAL);
+        quantityHolder.setToolTipText(QUANTITYTOOLTIP);
+        JLabel quantity = new JLabel("QTY");
+        quantity.setForeground(Color.WHITE);
+        quantityHolder.add(quantity);
+
+        JPanel ratioHolder = new JPanel();
+        ratioHolder.setBackground(Frame.GUNMETAL);
+        ratioHolder.setToolTipText(RATIOTOOLTIP);
+        JLabel ratio = new JLabel("R");
+        ratio.setForeground(Color.WHITE);
+        ratioHolder.add(ratio);
+
+        temp.add(letterHolder);
+        temp.add(quantityHolder);
+        temp.add(ratioHolder);
+
+        frequenciesHolder.add(temp);
+
 
         for(String string : tokenised){
-            JPanel tempPanel = new JPanel();
-            JLabel tempLabel = new JLabel(string);
+            String[] secTokenise = string.split(" ");
 
-            tempPanel.add(tempLabel);
+            JPanel borderHolder = new JPanel();
+            borderHolder.setBackground(Frame.GUNMETAL);
 
-            holder.add(tempPanel);
-        }
+            JPanel letterPanel = new JPanel();
+            letterPanel.setBackground(Frame.GUNMETAL);
+            JLabel letterLabel = new JLabel(secTokenise[0]);
+            letterLabel.setHorizontalAlignment(JLabel.CENTER);
+            letterLabel.setForeground(Color.WHITE);
+            letterPanel.add(letterLabel);
 
-        if(tokenised.length < 11){
-            holder.setPreferredSize(new Dimension(Frame.FRAME_WIDTH, 30));
-        }
-        else if(tokenised.length >= 11 && tokenised.length < 21){
-            holder.setPreferredSize(new Dimension(Frame.FRAME_WIDTH, 60));
-        }
-        else if(tokenised.length >= 21 && tokenised.length < 31){
-            holder.setPreferredSize(new Dimension(Frame.FRAME_WIDTH, 120));
-        }
-        else{
-            holder.setPreferredSize(new Dimension(Frame.FRAME_WIDTH, 150));
+            JPanel quantityPanel = new JPanel();
+            quantityPanel.setBackground(Frame.GUNMETAL);
+            JLabel quantityLabel = new JLabel(secTokenise[1]);
+            quantityLabel.setHorizontalAlignment(JLabel.CENTER);
+            quantityLabel.setForeground(Color.WHITE);
+            quantityPanel.add(quantityLabel);
+
+            JPanel ratioPanel = new JPanel();
+            ratioPanel.setBackground(Frame.GUNMETAL);
+            JLabel ratioLabel = new JLabel(secTokenise[2]);
+            ratioLabel.setHorizontalAlignment(JLabel.CENTER);
+            ratioLabel.setForeground(Color.WHITE);
+            ratioPanel.add(ratioLabel);
+
+            borderHolder.addMouseListener(createMouseListener(borderHolder, letterPanel, quantityPanel, ratioPanel));
+
+            borderHolder.add(letterPanel);
+            borderHolder.add(quantityPanel);
+            borderHolder.add(ratioPanel);
+
+            frequenciesHolder.add(borderHolder);
         }
 
     }
 
-    public JPanel getHolder() {
+    private MouseListener createMouseListener(JPanel holder, JPanel letter, JPanel quantity, JPanel ratio) {
+        MouseListener listener = new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                holder.setBackground(Frame.QUEENBLUE);
+                letter.setBackground(Frame.QUEENBLUE);
+                quantity.setBackground(Frame.QUEENBLUE);
+                ratio.setBackground(Frame.QUEENBLUE);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                holder.setBackground(null);
+                letter.setBackground(null);
+                quantity.setBackground(null);
+                ratio.setBackground(null);
+            }
+        };
+
+        return listener;
+    }
+
+    public JScrollPane getHolder() {
         return holder;
     }
 }

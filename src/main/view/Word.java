@@ -2,7 +2,6 @@ package main.view;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -27,7 +26,7 @@ public class Word {
         word = new JPanel();
         word.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         word.setBorder(new EmptyBorder(10,10,10,10));
-        //word.setBorder(new LineBorder(new Color(0,128,0), 1));
+        word.setBackground(Frame.QUEENBLUE);
     }
 
     private void createLetters(String word) {
@@ -36,8 +35,6 @@ public class Word {
         for(char c : word.toCharArray()){
             if (c!='!') {
                 builder.append(c);
-                //LetterInput newLetter = new LetterInput(String.valueOf(c), this);
-                //letters.add(newLetter);
             }
             if(c=='!')
             {

@@ -1,8 +1,11 @@
 package main.view;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,17 +20,28 @@ public class Top10Panel {
         initPanel();
         initLabels(sortnamesbyscore(playerstats),playerstats);
 
-        centerFrame();
         frame.pack();
         frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
     }
 
     private void initFrame(){
-        frame = new JFrame("Top 10 Scores");
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gs = ge.getScreenDevices();
+
+        frame = new JFrame(gs[0].getDefaultConfiguration());
+
+        frame.setTitle("Top 10 Scores");
         frame.setPreferredSize(new Dimension(500,500));
         frame.setResizable(false);
         frame.requestFocus();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        try {
+            frame.setIconImage(ImageIO.read(new File("resources/assets/score.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initPanel(){
@@ -52,9 +66,31 @@ public class Top10Panel {
         stats.setBorder(new EmptyBorder(10,10,10,10));
 
         for(int i=0;i<10&&i<top10players.size();i++){
-            JLabel name = new JLabel(i+1+". "+top10players.get(i));
 
-            stats.add(name);
+            JPanel temp = new JPanel();
+
+            if(i == 0){
+                JLabel first = new JLabel();
+                first.setIcon(new ImageIcon("resources/assets/first.png"));
+                temp.add(first);
+            }
+
+            if(i == 1){
+                JLabel first = new JLabel();
+                first.setIcon(new ImageIcon("resources/assets/second.png"));
+                temp.add(first);
+            }
+
+            if(i == 2){
+                JLabel first = new JLabel();
+                first.setIcon(new ImageIcon("resources/assets/third.png"));
+                temp.add(first);
+            }
+
+            JLabel name = new JLabel(i+1+". "+top10players.get(i));
+            temp.add(name);
+
+            stats.add(temp);
         }
 
         statholder.add(stats);
