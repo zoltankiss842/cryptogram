@@ -39,7 +39,7 @@ public class Top10Panel {
 
     private void initLabels(ArrayList<String> top10players, HashMap<String,String> playerstats){
         JPanel statholder = new JPanel();
-        statholder.setLayout(new GridLayout(11,2));
+        statholder.setLayout(new GridLayout(11,0));
 
         JLabel title = new JLabel("Scores from people that have successfully completed cyptograms");
         statholder.add(title);
@@ -64,28 +64,30 @@ public class Top10Panel {
         for(Map.Entry<String,String>entry:playerstats.entrySet()){
             String stats = entry.getValue();
             String[] tokenstats = stats.split(" ");
-            top10players.add(entry.getKey()+" "+tokenstats[5]);
+            if(Integer.valueOf(tokenstats[5])>0) {
+                top10players.add(entry.getKey() + " " + tokenstats[5]);
+            }
         }
         top10players = sort(top10players);
         return top10players;
     }
 
     private ArrayList<String> sort(ArrayList<String> players){
-        System.out.println("\nStarting loop");
+        //System.out.println("\nStarting loop");
         for(int k=0;k<players.size();k++){
-            System.out.println(k+" "+players.get(k));
+            //System.out.println(k+" "+players.get(k));
         }
         for(int i=1;i<players.size();i++){
             String key = players.get(i);
 
             String[] toks = key.split(" ");
             int intkey = Integer.valueOf(toks[1]);
-            System.out.println(Integer.valueOf(toks[1]));
+            //System.out.println(Integer.valueOf(toks[1]));
 
             int j = i-1;
             toks = players.get(j).split(" ");
             int arrayitem = Integer.valueOf(toks[1]);
-            System.out.println(Integer.valueOf(toks[1]));
+            //System.out.println(Integer.valueOf(toks[1]));
             while(j>=0 && intkey > arrayitem){
                 players.set(j+1,players.get(j));
                 j--;
@@ -96,9 +98,9 @@ public class Top10Panel {
             }
         players.set(j+1,key);
             for(int k=0;k<players.size();k++){
-                System.out.println(players.get(k));
+                //System.out.println(players.get(k));
             }
-            System.out.println();
+            //System.out.println();
         }
         return players;
     }
