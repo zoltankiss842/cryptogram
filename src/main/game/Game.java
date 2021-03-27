@@ -102,6 +102,11 @@ public class Game {
         this(new Player(userName), new ArrayList<>(), true);
         playGame();
     }
+    public void showFrequencies()
+    {
+        CommonFreqPanel common=new CommonFreqPanel();
+
+    }
 
     /**
      * This constructor is mainly used for unit tests, it creates better accessibility.
