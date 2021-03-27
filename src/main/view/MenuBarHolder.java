@@ -39,15 +39,15 @@ public class MenuBarHolder {
         });
 
         menuBar.add(this.commonFrequencies = new JMenu("Common frequencies"));
-        exit.addMouseListener(new java.awt.event.MouseAdapter() {
+        commonFrequencies.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
 
-
+                System.out.println("here we go again");
             }
         });
 
 
-        menuBar.add(this.exit = new JMenu("Playn't"));
+        menuBar.add(this.exit = new JMenu("Exit"));
         exit.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 gameController.savegame();

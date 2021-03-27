@@ -817,7 +817,7 @@ public class Game {
      * @throws NoSentencesToGenerateFrom    there were no text files
      */
     public boolean loadSentences() throws NoSentencesToGenerateFrom {
-        File f = new File("thebeemoviescript.txt");
+        File f = new File("phrases.txt");
         Scanner mys = null;
         try{
             mys = new Scanner(f);
