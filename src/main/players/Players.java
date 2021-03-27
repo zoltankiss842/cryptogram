@@ -90,6 +90,18 @@ public class Players {
         }catch(MissingStatsInFile e){
             System.out.println("Missing stats in file");
         }
+
+
+        hash = new HashMap<>();
+
+        for (Player player :
+                allPlayers) {
+            if (player.getNumCryptogramsCompleted()>0)
+            {
+                hash.put(player.getUsername(),String.valueOf(player.getNumCryptogramsCompleted()));
+            }
+
+        }
         return hash;
     }
 
