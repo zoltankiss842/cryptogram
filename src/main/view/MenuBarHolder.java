@@ -24,6 +24,8 @@ public class MenuBarHolder {
         initHolder();
     }
 
+
+
     private void initHolder() {
         holder = new JPanel();
     }
@@ -42,7 +44,8 @@ public class MenuBarHolder {
         commonFrequencies.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
 
-                System.out.println("here we go again");
+                gameController.showFrequencies();
+                System.out.println("you got to this line");
             }
         });
 
