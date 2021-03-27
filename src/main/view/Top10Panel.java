@@ -57,13 +57,6 @@ public class Top10Panel {
             stats.add(name);
         }
 
-        for(int i=0; i<10 && i<top10players.size();i++){
-            JLabel name = new JLabel(top10players.get(i));
-            JLabel stat = new JLabel(playerstats.get(top10players.get(i)));
-            statholder.add(name);
-            statholder.add(stat);
-
-        }
         statholder.add(stats);
 
         panel.add(statholder,BorderLayout.CENTER);
