@@ -40,11 +40,8 @@ public class Top10Panel {
     private void initLabels(ArrayList<String> top10players, HashMap<String,String> playerstats){
         JPanel statholder = new JPanel();
 
-<<<<<<< HEAD
         JPanel titleHolder = new JPanel();
-=======
 
->>>>>>> 0c3a00079e20bc892fe2ffd7712d0e284bb774e9
         JLabel title = new JLabel("Scores from people that have successfully completed cyptograms");
         titleHolder.add(title);
         statholder.add(titleHolder);
@@ -54,19 +51,18 @@ public class Top10Panel {
         stats.setLayout(new GridLayout(11,0,5,5));
         stats.setBorder(new EmptyBorder(10,10,10,10));
 
-<<<<<<< HEAD
         for(int i=0;i<10&&i<top10players.size();i++){
             JLabel name = new JLabel(i+1+". "+top10players.get(i));
 
             stats.add(name);
+        }
 
-=======
         for(int i=0; i<10 && i<top10players.size();i++){
             JLabel name = new JLabel(top10players.get(i));
             JLabel stat = new JLabel(playerstats.get(top10players.get(i)));
             statholder.add(name);
             statholder.add(stat);
->>>>>>> 0c3a00079e20bc892fe2ffd7712d0e284bb774e9
+
         }
         statholder.add(stats);
 
