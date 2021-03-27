@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 public class MenuBarHolder {
     private JMenu scoreboard;
     private JMenu exit;
+    private JMenu commonFrequencies;
     private Game gameController;  // This creates a aggregation between MenuBarHolder and Game
     private JFrame gameFrame;
 
@@ -37,13 +38,23 @@ public class MenuBarHolder {
             }
         });
 
-        menuBar.add(this.exit = new JMenu("Exit"));
+        menuBar.add(this.commonFrequencies = new JMenu("Common frequencies"));
+        exit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+
+
+            }
+        });
+
+
+        menuBar.add(this.exit = new JMenu("Playn't"));
         exit.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 gameController.savegame();
                 jExitClicked(evt);
             }
         });
+
 
         gameFrame.setJMenuBar(menuBar);
 
