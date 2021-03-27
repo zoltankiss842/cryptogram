@@ -119,7 +119,12 @@ public class ButtonHolder {
         showSolution.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gameController.showSolution();
+                try {
+                    gameController.showSolution();
+
+                } catch (NoSuchGameType noSuchGameType) {
+                    noSuchGameType.printStackTrace();
+                }
             }
         });
 

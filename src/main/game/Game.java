@@ -1258,15 +1258,59 @@ public class Game {
         this.sentences = sentences;
     }
 
-    public String showSolution() {
+    public String showSolution() throws NoSuchGameType {
         if (gameGui != null) {
             if (currentPlayer != null) {
+                fillOutEmptyMappings();
                 lockFields();
                 ShowSolutionPane pane = new ShowSolutionPane(playerGameMapping.get(currentPlayer).getSolution(), gameGui.getFrame());
             }
         }
 
         return playerGameMapping.get(currentPlayer).getSolution();
+    }
+
+    private void fillOutEmptyMappings() throws NoSuchGameType {
+        Cryptogram c = playerGameMapping.get(currentPlayer);
+
+        if(c instanceof LetterCryptogram){
+            HashMap<Character, Character> alphabet = ((LetterCryptogram) c).getLetterCryptogramAlphabet();
+
+            Character[] inputMappingKeySet = inputFromUserLetter.keySet().toArray(new Character[0]);
+
+            for(Character character : inputMappingKeySet){
+                inputFromUserLetter.put(character, alphabet.get(character));
+            }
+
+            if(gameGui != null){
+                for(Character character : inputMappingKeySet){
+                    for(Word word : gameGui.getWordHolder().getWords()){
+                        word.updateLetterLabel(String.valueOf(character), String.valueOf(inputFromUserLetter.get(character)));
+                    }
+                }
+            }
+
+        }
+        else if(c instanceof NumberCryptogram){
+            HashMap<Integer, Character> alphabet = ((NumberCryptogram) c).getNumberCryptogramAlphabet();
+
+            Integer[] inputMappingKeySet = inputFromUserNumber.keySet().toArray(new Integer[0]);
+
+            for(Integer integer : inputMappingKeySet){
+                inputFromUserNumber.put(integer, alphabet.get(integer));
+            }
+
+            if(gameGui != null){
+                for(Integer integer : inputMappingKeySet){
+                    for(Word word : gameGui.getWordHolder().getWords()){
+                        word.updateLetterLabel(String.valueOf(integer), String.valueOf(inputFromUserLetter.get(integer)));
+                    }
+                }
+            }
+        }
+        else {
+            throw new NoSuchGameType("No such game type for filling in maps!");
+        }
     }
 
     public void showstats(){
