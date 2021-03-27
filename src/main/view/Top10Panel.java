@@ -41,10 +41,11 @@ public class Top10Panel {
         JPanel statholder = new JPanel();
         statholder.setLayout(new GridLayout(11,0));
 
+
         JLabel title = new JLabel("Scores from people that have successfully completed cyptograms");
         statholder.add(title);
 
-        for(int i=0;i<10&&i<top10players.size();i++){
+        for(int i=0; i<10 && i<top10players.size();i++){
             JLabel name = new JLabel(top10players.get(i));
             JLabel stat = new JLabel(playerstats.get(top10players.get(i)));
             statholder.add(name);

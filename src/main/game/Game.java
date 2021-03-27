@@ -172,6 +172,10 @@ public class Game {
         return finished;
     }
 
+    public Frame getGameGui() {
+        return gameGui;
+    }
+
     /**
      * This method right now only returns the parameter, however
      * this should search a load the players from the text file.
@@ -313,12 +317,14 @@ public class Game {
 
                 // if we are showing the GUI we show a gui prompt
                 if(gameGui != null){
+
                     OverWriteOptionPane pane = showOverWriteOptionPane(plainLetterAtCryptoChar, newChar);
 
                     if(pane.getResult()){
 
                         // check if plain letter is already used somewhere
                         checkIfPlainAlreadyInUse(cryptoChar, newChar);
+
 
                         overwrite = true;   // this is needed in the View classes, this indicates if it can be overwritten
 

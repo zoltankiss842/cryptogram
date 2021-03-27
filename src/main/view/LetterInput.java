@@ -133,6 +133,7 @@ public class LetterInput {
         Runnable modify = new Runnable() {
             @Override
             public void run() {
+                previousUserInput = newLetter;
                 userGuess.setText(newLetter);
                 userGuess.setValue(newLetter);
                 userGuess.revalidate();
@@ -218,8 +219,23 @@ public class LetterInput {
                     }
                     else{
                         try {
-                            game.undoLetter(originalLetter);
-                            word.updateLetterLabel(originalLetter, null);
+                            if(previousUserInput != null && !previousUserInput.isEmpty() && !previousUserInput.isBlank()){
+                                DeleteCharacterOptionPane pane = new DeleteCharacterOptionPane(game.getGameGui().getFrame());
+                                if(pane.getResult()){
+                                    game.undoLetter(originalLetter);
+                                    word.updateLetterLabel(originalLetter, null);
+                                    previousUserInput = text;
+                                }
+                                else{
+                                    userGuess.setValue(previousUserInput);
+                                    userGuess.setText(previousUserInput);
+                                }
+                            }
+                            else{
+                                game.undoLetter(originalLetter);
+                                word.updateLetterLabel(originalLetter, null);
+                                previousUserInput = text;
+                            }
                         } catch (Exception exception) {
                             System.err.println(exception.getMessage());
                         }
