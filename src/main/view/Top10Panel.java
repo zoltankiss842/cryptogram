@@ -68,9 +68,9 @@ public class Top10Panel {
         ArrayList<String> top10players = new ArrayList<>();
         for(Map.Entry<String,String>entry:playerstats.entrySet()){
             String stats = entry.getValue();
-            String[] tokenstats = stats.split(" ");
-            if(Integer.valueOf(tokenstats[5])>0) {
-                top10players.add(entry.getKey() + " " + tokenstats[5]);
+
+            if(Integer.valueOf(entry.getValue())>0) {
+                top10players.add(entry.getKey() + " " + entry.getValue());
             }
         }
         top10players = sort(top10players);
