@@ -1258,13 +1258,15 @@ public class Game {
         this.sentences = sentences;
     }
 
-    public void showSolution() {
+    public String showSolution() {
         if (gameGui != null) {
             if (currentPlayer != null) {
                 lockFields();
                 ShowSolutionPane pane = new ShowSolutionPane(playerGameMapping.get(currentPlayer).getSolution(), gameGui.getFrame());
             }
         }
+
+        return playerGameMapping.get(currentPlayer).getSolution();
     }
 
     public void showstats(){
