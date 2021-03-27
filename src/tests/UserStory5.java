@@ -28,6 +28,7 @@ public class UserStory5 {
         sentences = new ArrayList<>();
         sentences.add(SOLUTION);
     }
+
     @Test
     public void testLoadexists() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed {
 
@@ -50,13 +51,8 @@ public class UserStory5 {
         File players = new File("players.txt");
         players.delete();
 
-
-
-
-
-
-
     }
+
     @Test(expected = NoSaveGameFound.class)
     public void testNotLoadExists() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed {
         InputStream sysInBackup = System.in; // backup System.in to restore it later

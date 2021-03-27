@@ -250,6 +250,10 @@ public class Game {
 
             if (gameGui != null) {
                 gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
+                gameGui.getButtonHolder().enableHintButton();
+                gameGui.getButtonHolder().enableSaveGameButton();
+                gameGui.getButtonHolder().enableSolutionButton();
+                gameGui.getButtonHolder().enableResetButton();
             }
         }
         catch (NoSentencesToGenerateFrom e) {
@@ -261,6 +265,10 @@ public class Game {
         catch(NoGameBeingPlayed e){
             if (gameGui != null) {
                 if(gameGui.getWordHolder() == null){
+                    gameGui.getButtonHolder().disableHintButton();
+                    gameGui.getButtonHolder().disableSaveGameButton();
+                    gameGui.getButtonHolder().disableSolutionButton();
+                    gameGui.getButtonHolder().disableResetButton();
                     gameGui.displayEmptyScreen();
                 }
             }
@@ -394,6 +402,7 @@ public class Game {
                 // If we are showing a GUI, we lock/disable the input fields (also greying them out)
                 if (gameGui != null) {
                     lockFields();
+
                 }
 
                 // Did the user correctly filled out the fields?
@@ -410,8 +419,14 @@ public class Game {
         playerGameMapping.put(currentPlayer, null);
         inputFromUserNumber = null;
         inputFromUserLetter = null;
-    }
 
+        if(gameGui != null){
+            gameGui.getButtonHolder().disableSaveGameButton();
+            gameGui.getButtonHolder().disableHintButton();
+            gameGui.getButtonHolder().disableSolutionButton();
+            gameGui.getButtonHolder().disableResetButton();
+        }
+    }
 
     public boolean showGameCompletion(boolean success) {
         if (success) {
@@ -425,7 +440,9 @@ public class Game {
         if (gameGui != null) {
             GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
             return true;
-        }return false;
+        }
+
+        return false;
     }
 
     private void updatePhrase(char cryptoChar, char newChar, Cryptogram cryptogram) {
@@ -730,9 +747,11 @@ public class Game {
                             }
 
                         }
+
                     }
 
                     mys.close();
+
                     return true;
                 }
                 else if(type.equals(NumberCryptogram.TYPE)){
@@ -770,25 +789,27 @@ public class Game {
 
                     System.out.println("File reading was successful");
 
-                    gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
+                    if(gameGui != null){
+                        gameGui.displayNewGame(playerGameMapping.get(currentPlayer));
 
-                    for(int i = 0; i < tokenisedInputMapping.length; ++i){
-                        String oneMapping = tokenisedInputMapping[i];
-                        String[] tempToken = oneMapping.split(" ");
-                        Integer key = Integer.parseInt(tempToken[0]);
-                        Character value = tempToken[1].charAt(0);
+                        for(int i = 0; i < tokenisedInputMapping.length; ++i){
+                            String oneMapping = tokenisedInputMapping[i];
+                            String[] tempToken = oneMapping.split(" ");
+                            Integer key = Integer.parseInt(tempToken[0]);
+                            Character value = tempToken[1].charAt(0);
 
-                        if(value == '#'){
-                            for(Word word : gameGui.getWordHolder().getWords()){
-                                word.updateLetterLabel(String.valueOf(key), null);
+                            if(value == '#'){
+                                for(Word word : gameGui.getWordHolder().getWords()){
+                                    word.updateLetterLabel(String.valueOf(key), null);
+                                }
                             }
-                        }
-                        else{
-                            for(Word word : gameGui.getWordHolder().getWords()){
-                                word.updateLetterLabel(String.valueOf(key), String.valueOf(value));
+                            else{
+                                for(Word word : gameGui.getWordHolder().getWords()){
+                                    word.updateLetterLabel(String.valueOf(key), String.valueOf(value));
+                                }
                             }
-                        }
 
+                        }
                     }
 
                     mys.close();
@@ -805,12 +826,21 @@ public class Game {
             return false;
 
         } catch (FileNotFoundException e) {
+            if(gameGui != null){
+                JOptionPane.showMessageDialog(gameGui.getFrame(), "No save game found for player: " + userName, "Loading error", JOptionPane.ERROR_MESSAGE);
+            }
             throw new NoSaveGameFound("No save game found for player: " + userName);
         }
         catch (InvalidPlayerCreation e){
+            if(gameGui != null){
+                JOptionPane.showMessageDialog(gameGui.getFrame(), "Player save file corrupted or modified!", "Loading error", JOptionPane.ERROR_MESSAGE);
+            }
             throw new InvalidPlayerCreation("Player save file corrupted or modified!");
         }
         catch (InvalidGameCreation e){
+            if(gameGui != null){
+                JOptionPane.showMessageDialog(gameGui.getFrame(), "Game save file corrupted or modified!", "Loading error", JOptionPane.ERROR_MESSAGE);
+            }
             throw new InvalidGameCreation("Game save file corrupted or modified!");
         }
 
@@ -1102,6 +1132,8 @@ public class Game {
                 }
 
                 showGameCompletion(success);
+
+                resetGameDetails();
             }
         }
 
@@ -1143,9 +1175,7 @@ public class Game {
 
             // see if crypto is done, if so, we show completion message
             if (isEverythingMappedNumber()) {
-                if (gameGui != null) {
-                    lockFields();
-                }
+
                 boolean success = checkAnswer();
                 System.out.println("Cryptogram completed, no more hints to give");
 
@@ -1154,6 +1184,8 @@ public class Game {
                 }
 
                 showGameCompletion(success);
+
+                resetGameDetails();
             }
         }
     }
@@ -1259,15 +1291,21 @@ public class Game {
     }
 
     public String showSolution() throws NoSuchGameType {
+
+        fillOutEmptyMappings();
+
         if (gameGui != null) {
             if (currentPlayer != null) {
-                fillOutEmptyMappings();
                 lockFields();
                 ShowSolutionPane pane = new ShowSolutionPane(playerGameMapping.get(currentPlayer).getSolution(), gameGui.getFrame());
             }
         }
 
-        return playerGameMapping.get(currentPlayer).getSolution();
+
+        String solution = playerGameMapping.get(currentPlayer).getSolution();
+        resetGameDetails();
+
+        return solution;
     }
 
     private void fillOutEmptyMappings() throws NoSuchGameType {
@@ -1303,7 +1341,7 @@ public class Game {
             if(gameGui != null){
                 for(Integer integer : inputMappingKeySet){
                     for(Word word : gameGui.getWordHolder().getWords()){
-                        word.updateLetterLabel(String.valueOf(integer), String.valueOf(inputFromUserLetter.get(integer)));
+                        word.updateLetterLabel(String.valueOf(integer), String.valueOf(inputFromUserNumber.get(integer)));
                     }
                 }
             }
