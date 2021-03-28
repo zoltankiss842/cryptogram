@@ -9,12 +9,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class UserStory13 {
 
@@ -28,8 +28,14 @@ public class UserStory13 {
     private List<String> scoreboardTop10;
     private Game game;
 
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
+
     @Before
     public void setUp() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
+
+        System.setOut(new PrintStream(outContent));
+
         player = new Player(PLAYER_NAME);
         sentences = new ArrayList<>();
         scoreboardTop10 = new ArrayList<>();
@@ -54,7 +60,7 @@ public class UserStory13 {
         Assert.assertTrue(player.getNumCryptogramsPlayed() == 0);
 
         LetterCryptogram letter = new LetterCryptogram(SOLUTION);
-        Assert.assertEquals(letter.getSolution(),SOLUTION.toLowerCase());
+        assertEquals(letter.getSolution(),SOLUTION.toLowerCase());
         player.incrementCryptogramsSuccessfullyCompleted();
         player.incrementCryptogramsPlayed();
         Assert.assertTrue(player.getNumCryptogramsSuccessfullyCompleted() == 1);
@@ -77,7 +83,7 @@ public class UserStory13 {
 
         Assert.assertFalse(scoreboardTop10.isEmpty());
 
-        Assert.assertEquals("test 2", scoreboardTop10.get(0));
+        assertEquals("test 2", scoreboardTop10.get(0));
     }
 
     /* Scenario: no player stats have been stored
@@ -102,12 +108,32 @@ public class UserStory13 {
         Assert.assertTrue(scoreboardTop10.isEmpty());
     }
 
+    @Test
+    public void top10corrupt() throws MissingNameInFile, MissingStatsInFile{
+        try{
+            File oldfile = new File("players.txt");
+            oldfile.delete();
+            File file = new File("players.txt");
+            FileWriter write = new FileWriter(file);
+            write.write("testname\n");
+            write.write("missing stats here\n");
+            write.close();
+
+            game = new Game(player, sentences, false);
+            //game.showstats();
+        }catch(IOException | NoSuchGameType | NoSentencesToGenerateFrom | InvalidPlayerCreation | NoSaveGameFound | InvalidGameCreation e){
+
+        }
+        assertEquals("Failed file creation for players.txtError while loading players and stats\r\nFailed file creation for players.txtError while loading players and stats\r\n", outContent.toString());
+    }
+
+
     @After
     public void tearDown(){
-
         File players = new File("players.txt");
-        Assert.assertTrue(players.delete());
+        //Assert.assertTrue(players.delete());
 
+        System.setOut(originalOut);
     }
 }
 
