@@ -96,8 +96,37 @@ public class UserStory14 {
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
-        game = new Game(player, sentences,false);
         game.playGame();
+
+        HashMap<Character, Character> inputMapping = new HashMap<>(game.getInputFromUserLetter());
+
+        ArrayList<Character> valueArray = new ArrayList<>();
+
+        for(Map.Entry<Character, Character> entry : inputMapping.entrySet()){
+           inputMapping.put(entry.getKey(),'A');
+        }
+        System.out.println(inputMapping);
+        for(Map.Entry<Character, Character> entry : inputMapping.entrySet()){
+            inputMapping.put(entry.getKey(),null);
+            break;
+        }
+        System.out.println(inputMapping);
+        game.setInputFromUserLetter(inputMapping);
+
+        game.getHint();
+
+
+        int good=0;
+        for(Map.Entry<Character, Character> entry : game.getInputFromUserLetter().entrySet()){
+            if (game.getPlayerGameMapping().get(player).getCryptogramAlphabet().get(entry.getKey()).equals(game.getInputFromUserLetter().get(entry.getKey())))
+            {
+                good++;
+            }
+        }
+
+        Assert.assertTrue(good>0);
+
+
 
 
     }

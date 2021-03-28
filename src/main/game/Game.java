@@ -145,6 +145,14 @@ public class Game {
         return playerGameMapping;
     }
 
+    public void setInputFromUserLetter(HashMap<Character, Character> inputFromUserLetter) {
+        this.inputFromUserLetter = inputFromUserLetter;
+    }
+
+    public void setInputFromUserNumber(HashMap<Integer, Character> inputFromUserNumber) {
+        this.inputFromUserNumber = inputFromUserNumber;
+    }
+
     public HashMap<Character, Character> getInputFromUserLetter() {
         return inputFromUserLetter;
     }
