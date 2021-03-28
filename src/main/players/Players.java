@@ -163,6 +163,8 @@ public class Players {
             mys.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e){
+            System.out.println("Error while loading players and stats");
         }
     }
 }

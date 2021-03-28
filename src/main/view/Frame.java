@@ -27,15 +27,14 @@ public class Frame {
     private FrequenciesPanel frequenciesPanel;
     private WordHolder wordHolder;
     private ButtonHolder buttonHolder;
-    private MenuBarHolder menuHolder;
-    private Game gameController;
+    private final Game gameController;
 
     public Frame(String name, Game gameController){
         this.gameController = gameController;
 
         initFrame(name);
 
-        menuHolder = new MenuBarHolder(gameController, frame);
+        MenuBarHolder menuHolder = new MenuBarHolder(gameController, frame);
         frame.add(menuHolder.getHolder());
 
         frame.setVisible(false);

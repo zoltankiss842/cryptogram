@@ -15,10 +15,10 @@ public class Top10Panel {
     private JFrame frame;
     private JPanel panel;
 
-    public Top10Panel(HashMap<String,String> playerstats){
+    public Top10Panel(HashMap<String,String> playerStats){
         initFrame();
         initPanel();
-        initLabels(sortnamesbyscore(playerstats),playerstats);
+        initLabels(sortNamesByScore(playerStats));
 
         frame.pack();
         frame.setVisible(true);
@@ -51,17 +51,17 @@ public class Top10Panel {
         frame.add(panel);
     }
 
-    private void initLabels(ArrayList<String> top10players, HashMap<String,String> playerstats){
-        JPanel statholder = new JPanel();
+    private void initLabels(ArrayList<String> top10players){
+        JPanel statHolder = new JPanel();
 
         JPanel titleHolder = new JPanel();
 
-        JLabel title = new JLabel("Scores from people that have successfully completed cyptograms");
+        JLabel title = new JLabel("Scores from people that have successfully completed cryptograms");
         titleHolder.add(title);
-        statholder.add(titleHolder);
+        statHolder.add(titleHolder);
 
         JPanel stats = new JPanel();
-        statholder.setBorder(new EmptyBorder(10,10,10,10));
+        statHolder.setBorder(new EmptyBorder(10,10,10,10));
         stats.setLayout(new GridLayout(11,0,5,5));
         stats.setBorder(new EmptyBorder(10,10,10,10));
 
@@ -93,62 +93,52 @@ public class Top10Panel {
             stats.add(temp);
         }
 
-        statholder.add(stats);
+        statHolder.add(stats);
 
-        panel.add(statholder,BorderLayout.CENTER);
+        panel.add(statHolder,BorderLayout.CENTER);
     }
 
-    private void centerFrame(){
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation(dim.width/2-frame.getSize().width/2,dim.height/2-frame.getSize().height/2);
-    }
-
-    private ArrayList<String> sortnamesbyscore(HashMap<String,String> playerstats){
+    private ArrayList<String> sortNamesByScore(HashMap<String,String> playerStats){
         ArrayList<String> top10players = new ArrayList<>();
-        for(Map.Entry<String,String>entry:playerstats.entrySet()){
-            String stats = entry.getValue();
+        for(Map.Entry<String,String>entry: playerStats.entrySet()){
 
-            if(Integer.valueOf(entry.getValue())>0) {
+            if(Integer.parseInt(entry.getValue())>0) {
                 top10players.add(entry.getKey() + " " + entry.getValue());
             }
         }
         if(top10players.isEmpty()) {
             System.out.println("No player scores to show");
         }
-        top10players = sort(top10players);
+
+        sort(top10players);
+
         return top10players;
     }
 
-    private ArrayList<String> sort(ArrayList<String> players){
-        //System.out.println("\nStarting loop");
-        for(int k=0;k<players.size();k++){
-            //System.out.println(k+" "+players.get(k));
-        }
+    private void sort(ArrayList<String> players){
+
         for(int i=1;i<players.size();i++){
             String key = players.get(i);
 
-            String[] toks = key.split(" ");
-            int intkey = Integer.valueOf(toks[1]);
-            //System.out.println(Integer.valueOf(toks[1]));
+            String[] tokens = key.split(" ");
+            int intKey = Integer.parseInt(tokens[1]);
 
             int j = i-1;
-            toks = players.get(j).split(" ");
-            int arrayitem = Integer.valueOf(toks[1]);
-            //System.out.println(Integer.valueOf(toks[1]));
-            while(j>=0 && intkey > arrayitem){
+            tokens = players.get(j).split(" ");
+            int arrayItems = Integer.parseInt(tokens[1]);
+
+            while(j>=0 && intKey > arrayItems){
                 players.set(j+1,players.get(j));
                 j--;
                 if(j>=0) {
-                    toks = players.get(j).split(" ");
-                    arrayitem = Integer.valueOf(toks[1]);
+                    tokens = players.get(j).split(" ");
+                    arrayItems = Integer.parseInt(tokens[1]);
                 }
             }
-        players.set(j+1,key);
-            for(int k=0;k<players.size();k++){
-                //System.out.println(players.get(k));
-            }
-            //System.out.println();
+
+            players.set(j+1,key);
+
         }
-        return players;
+
     }
 }

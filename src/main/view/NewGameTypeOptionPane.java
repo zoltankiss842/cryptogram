@@ -7,21 +7,20 @@ import javax.swing.*;
 
 public class NewGameTypeOptionPane implements OptionPane {
 
-    private final String TITLE = "What type of game?";
-    private final String MESSAGE = "What type of game would you like to play?";
     private final String[] OPTIONS = {"Letter", "Number", "Cancel"};
-    private final int OPTION_TYPE = JOptionPane.YES_NO_CANCEL_OPTION;
-    private final int MESSAGE_TYPE = JOptionPane.PLAIN_MESSAGE;
 
     private int result = -1;
-    private JOptionPane pane;
 
     public NewGameTypeOptionPane(JFrame frame) {
         initPane(frame);
     }
 
     private void initPane(JFrame frame) {
-        result = JOptionPane.showOptionDialog( frame, MESSAGE, TITLE, OPTION_TYPE ,MESSAGE_TYPE, null, OPTIONS, null);
+        String TITLE = "What type of game?";
+        String MESSAGE = "What type of game would you like to play?";
+        int OPTION_TYPE = JOptionPane.YES_NO_CANCEL_OPTION;
+        int MESSAGE_TYPE = JOptionPane.PLAIN_MESSAGE;
+        result = JOptionPane.showOptionDialog( frame, MESSAGE, TITLE, OPTION_TYPE, MESSAGE_TYPE, null, OPTIONS, null);
 
     }
 

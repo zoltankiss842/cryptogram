@@ -19,13 +19,8 @@ import java.io.IOException;
 public class NewPlayerFrame {
 
     private JFrame playerFrame;
-    private JLabel prompt;
     private JTextField playerName;
     private String name;
-    private JButton play;
-    private JButton exit;
-
-    private Game newGame;
 
     public NewPlayerFrame() throws IOException {
         initFrame();
@@ -51,50 +46,42 @@ public class NewPlayerFrame {
 
         panel.setBorder(new EmptyBorder(15,1,1,1));
 
-        prompt = new JLabel("Please enter your name: ");
+        JLabel prompt = new JLabel("Please enter your name: ");
         prompt.setVerticalAlignment(JLabel.CENTER);
 
         playerName = new JTextField();
         playerName.setPreferredSize(new Dimension(100,20));
 
-        play = new JButton("Play");
+        JButton play = new JButton("Play");
         play.setVerticalAlignment(JButton.CENTER);
 
         // Here we check if the entered name is empty, if not we show the game frame
-        play.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                name = playerName.getText();
+        play.addActionListener(e -> {
+            name = playerName.getText();
 
-                if(name.isEmpty() || name.isBlank() || name == null){
-                    JOptionPane.showMessageDialog(playerFrame, "Name cannot be empty", "Name error", JOptionPane.ERROR_MESSAGE);
-                }
-                else if(name.length() > 30){
-                    JOptionPane.showMessageDialog(playerFrame, "Name too long", "Name error", JOptionPane.ERROR_MESSAGE);
-                }
-                else{
-                    playerFrame.setVisible(false);
-
-                    try {
-                        initNewGame(name);
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                    }
-                }
-
-
+            if(name.isEmpty() || name.isBlank() || name == null){
+                JOptionPane.showMessageDialog(playerFrame, "Name cannot be empty", "Name error", JOptionPane.ERROR_MESSAGE);
             }
+            else if(name.length() > 30){
+                JOptionPane.showMessageDialog(playerFrame, "Name too long", "Name error", JOptionPane.ERROR_MESSAGE);
+            }
+            else{
+                playerFrame.setVisible(false);
+
+                try {
+                    initNewGame(name);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+
         });
 
-        exit = new JButton("Exit");
+        JButton exit = new JButton("Exit");
         exit.setVerticalAlignment(JButton.CENTER);
 
-        exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
+        exit.addActionListener(e -> System.exit(0));
 
         panel.add(prompt);
         panel.add(playerName);
@@ -105,7 +92,7 @@ public class NewPlayerFrame {
     }
 
     private void initNewGame(String name) throws Exception {
-        newGame = new Game(name);
+        new Game(name);
     }
 
 }
