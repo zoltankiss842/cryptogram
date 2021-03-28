@@ -1010,7 +1010,7 @@ public class Game {
     /**
      * Randomly chooses a sentence from the read in sentences ArrayList
      * @param rnd       random object
-     * @return          sentences that was randomly choosed
+     * @return          sentences that was randomly chosen
      * @throws NoSentencesToGenerateFrom
      */
     private String initNewSentence(Random rnd) throws NoSentencesToGenerateFrom {
@@ -1209,14 +1209,12 @@ public class Game {
 
             // See if crypto is done, if so, we show completion message
             if (isEverythingMappedLetter()) {
-                boolean success = checkAnswer();
                 System.out.println("Cryptogram completed, no more hints to give");
 
                 if (gameGui != null) {
                     lockFields();
                 }
 
-                showGameCompletion(success);
 
                 resetGameDetails();
             }
@@ -1263,15 +1261,11 @@ public class Game {
 
             // See if crypto is done, if so, we show completion message
             if (isEverythingMappedNumber()) {
-
-                boolean success = checkAnswer();
                 System.out.println("Cryptogram completed, no more hints to give");
 
                 if (gameGui != null) {
                     lockFields();
                 }
-
-                showGameCompletion(success);
 
                 resetGameDetails();
             }
@@ -1283,7 +1277,7 @@ public class Game {
      * First value: letter from solution
      * Second value: number of occurrences of letters in solution sentence
      * Third value: percentage of occurrences of letters for all letters in the solution sentence
-     * @return  generated frequenices in a string format
+     * @return  generated frequencies in a string format
      */
     public String viewFrequencies() {
         Cryptogram c = playerGameMapping.get(currentPlayer);
