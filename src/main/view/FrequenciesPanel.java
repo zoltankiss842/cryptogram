@@ -7,10 +7,6 @@ import java.awt.event.MouseListener;
 
 public class FrequenciesPanel {
 
-    private final String LETTERTOOLTIP = "Letter: Non-encrypted letter used in current game";
-    private final String QUANTITYTOOLTIP = "Quantity: Number of letters in current game";
-    private final String RATIOTOOLTIP = "Ratio: Ratio of usage of the letter in current game";
-
     private JScrollPane holder;
     private JPanel frequenciesHolder;
 
@@ -42,6 +38,7 @@ public class FrequenciesPanel {
         temp.setBackground(Frame.GUNMETAL);
 
         JPanel letterHolder = new JPanel();
+        String LETTERTOOLTIP = "Letter: Non-encrypted letter used in current game";
         letterHolder.setToolTipText(LETTERTOOLTIP);
         letterHolder.setBackground(Frame.GUNMETAL);
         JLabel letter = new JLabel("L");
@@ -50,6 +47,7 @@ public class FrequenciesPanel {
 
         JPanel quantityHolder = new JPanel();
         quantityHolder.setBackground(Frame.GUNMETAL);
+        String QUANTITYTOOLTIP = "Quantity: Number of letters in current game";
         quantityHolder.setToolTipText(QUANTITYTOOLTIP);
         JLabel quantity = new JLabel("QTY");
         quantity.setForeground(Color.WHITE);
@@ -57,6 +55,7 @@ public class FrequenciesPanel {
 
         JPanel ratioHolder = new JPanel();
         ratioHolder.setBackground(Frame.GUNMETAL);
+        String RATIOTOOLTIP = "Ratio: Ratio of usage of the letter in current game";
         ratioHolder.setToolTipText(RATIOTOOLTIP);
         JLabel ratio = new JLabel("R");
         ratio.setForeground(Color.WHITE);
@@ -108,7 +107,8 @@ public class FrequenciesPanel {
     }
 
     private MouseListener createMouseListener(JPanel holder, JPanel letter, JPanel quantity, JPanel ratio) {
-        MouseListener listener = new MouseListener() {
+
+        return new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
 
@@ -140,8 +140,6 @@ public class FrequenciesPanel {
                 ratio.setBackground(null);
             }
         };
-
-        return listener;
     }
 
     public JScrollPane getHolder() {

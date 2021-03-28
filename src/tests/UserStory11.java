@@ -88,7 +88,6 @@ public class UserStory11 {
         - When the guess is incorrect
         - Then the number of guesses is increased by one
      */
-
     @Test
     public void incorrectGuessMade() throws Exception {
         InputStream sysInBackup = System.in; // backup System.in to restore it later
