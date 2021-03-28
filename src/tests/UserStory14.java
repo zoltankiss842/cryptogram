@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class UserStory14 {
 
@@ -31,8 +32,6 @@ public class UserStory14 {
         sentences.add(SOLUTION);
 
         game = new Game(player, sentences, false);
-
-
     }
 
     /* Scenario
@@ -40,15 +39,48 @@ public class UserStory14 {
         - When a player asks for a hint
         - Then the letter for which the corresponding cryptogram value which has not been mapped is added to the mapping and displayed to the user
     */
-
     @Test
     public void hintsForNullValues() throws Exception {
         game = new Game(player, sentences, false);
 
         Assert.assertEquals(0, player.getNumCryptogramsPlayed());
 
-        new LetterCryptogram(SOLUTION);
+        ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
+        System.setIn(in);
 
+        game.playGame();
+
+        HashMap<Character, Character> inputMapping = game.getInputFromUserLetter();
+
+        ArrayList<Character> valueArray = new ArrayList<>();
+
+        for(Map.Entry<Character, Character> entry : inputMapping.entrySet()){
+            valueArray.add(entry.getValue());
+        }
+
+        int beforeHintNullValues = 0;
+        for(Character c : valueArray){
+            if(c == null){
+                beforeHintNullValues++;
+            }
+        }
+
+        game.getHint();
+
+        valueArray = new ArrayList<>();
+
+        for(Map.Entry<Character, Character> entry : inputMapping.entrySet()){
+            valueArray.add(entry.getValue());
+        }
+
+        int afterHintNullValues = 0;
+        for(Character c : valueArray){
+            if(c == null){
+                afterHintNullValues++;
+            }
+        }
+
+        Assert.assertTrue(beforeHintNullValues > afterHintNullValues);
 
 
     }
@@ -58,7 +90,6 @@ public class UserStory14 {
         - When the hint identifies a letter which the user has already used
         - Then the player mapping is removed and the correct mapping is entered and a message displayed to the player
      */
-
     @Test
     public void hintsForWrongMapping() throws Exception {
         // backup System.in to restore it later
@@ -67,21 +98,14 @@ public class UserStory14 {
 
         game = new Game(player, sentences,false);
         game.playGame();
-        Cryptogram c=game.getPlayerGameMapping().get(game.getCurrentPlayer());
-        HashMap userInputMapping= new HashMap<>(game.getInputFromUserLetter());
-
-
-
 
 
     }
 
     @After
     public void tearDown(){
-
         File players = new File("players.txt");
-       players.delete();
-
+        players.delete();
     }
 }
 
