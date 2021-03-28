@@ -139,7 +139,16 @@ public class Players {
             mys = new Scanner(playersFile);
             while (mys.hasNextLine()) {
                 String username = mys.nextLine();
+                if (username.isBlank()) {
+                    return;
+
+                }
+
                 String[] tokens = mys.nextLine().split(" ");
+                if (tokens.length!=6) {
+                    return;
+
+                }
                 Player p = new Player(username);
 
                 p.setAccuracy(Double.parseDouble(tokens[0]));
