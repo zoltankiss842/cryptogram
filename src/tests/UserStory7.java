@@ -1,31 +1,26 @@
 package tests;
 
-import main.cryptogram.Cryptogram;
 import main.cryptogram.LetterCryptogram;
 import main.exceptions.*;
 import main.game.Game;
 import main.players.Player;
-import main.view.CommonFreqPanel;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class UserStory7 {
 
-    private final String PLAYER_NAME = "test";
     private final String SOLUTION = "This is a test sentence that needs to be solved";
 
     private Player player;
     private ArrayList<String> sentences;
-    private Game game;
 
     @Before
     public void setUp(){
+        String PLAYER_NAME = "test";
         player = new Player(PLAYER_NAME);
         sentences = new ArrayList<>();
         sentences.add(SOLUTION);
@@ -37,10 +32,10 @@ public class UserStory7 {
         - Then the proportion of letter frequencies in the cryptogram is shown as well as the common proportions of letter frequencies in the English language
         */
     @Test
-    public void frequenciesTest() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, FileNotFoundException, NoGameBeingPlayed {
-        game = new Game(player, sentences, false);
+    public void frequenciesTest() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed {
+        Game game = new Game(player, sentences, false);
 
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 

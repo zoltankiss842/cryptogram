@@ -1,4 +1,4 @@
-import main.players.Player;
+
 import main.view.NewPlayerFrame;
 
 import java.io.IOException;

@@ -11,26 +11,22 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 
 public class UserStory11 {
 
-    private final String PLAYER_NAME = "test";
-    private final String SOLUTION = "This is a test sentence that needs to be solved";
-    private final String SOLUTION2 = "This is another test sentence that needs to be solved";
-
     private Player player;
-    private ArrayList<String> sentences;
     private Game game;
 
     @Before
     public void setUp() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
+        String PLAYER_NAME = "test";
         player = new Player(PLAYER_NAME);
-        sentences = new ArrayList<>();
+        ArrayList<String> sentences = new ArrayList<>();
+        String SOLUTION = "This is a test sentence that needs to be solved";
         sentences.add(SOLUTION);
+        String SOLUTION2 = "This is another test sentence that needs to be solved";
         sentences.add(SOLUTION2);
 
         game = new Game(player, sentences, false);
@@ -44,7 +40,7 @@ public class UserStory11 {
      */
     @Test
     public void correctGuessMade() throws Exception {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
         game.playGame();
@@ -59,20 +55,15 @@ public class UserStory11 {
             }
         }
 
-        ArrayList<Character> list = new ArrayList<>();
+        ArrayList<Character> list = new ArrayList<>(set);
 
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Character) iterator.next());
-        }
-
-        Assert.assertTrue(player.getTotalCorrectGuesses() == 0);
-        Assert.assertTrue(player.getTotalGuesses() == 0);
+        Assert.assertEquals(0, player.getTotalCorrectGuesses());
+        Assert.assertEquals(0, player.getTotalGuesses());
 
         game.enterLetter(String.valueOf(list.get(0)), String.valueOf(list.get(0)));
         if(String.valueOf(list.get(0)).equals(String.valueOf(list.get(0)))) {
-            Assert.assertTrue(player.getTotalCorrectGuesses() == 0);
-            Assert.assertTrue(player.getTotalGuesses() == 1);
+            Assert.assertEquals(0, player.getTotalCorrectGuesses());
+            Assert.assertEquals(1, player.getTotalGuesses());
         }
 
         File test=new File("test.txt");
@@ -91,7 +82,7 @@ public class UserStory11 {
 
     @Test
     public void incorrectGuessMade() throws Exception {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
         game.playGame();
@@ -106,20 +97,15 @@ public class UserStory11 {
             }
         }
 
-        ArrayList<Character> list = new ArrayList<>();
+        ArrayList<Character> list = new ArrayList<>(set);
 
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Character) iterator.next());
-        }
-
-        Assert.assertTrue(player.getTotalCorrectGuesses() == 0);
-        Assert.assertTrue(player.getTotalGuesses() == 0);
+        Assert.assertEquals(0, player.getTotalCorrectGuesses());
+        Assert.assertEquals(0, player.getTotalGuesses());
 
         game.enterLetter(String.valueOf(list.get(0)), String.valueOf(list.get(0)));
         if(!(String.valueOf(list.get(0)).equals(String.valueOf(list.get(0))))) {
-            Assert.assertTrue(player.getTotalCorrectGuesses() == 0);
-            Assert.assertTrue(player.getTotalGuesses() == 1);
+            Assert.assertEquals(0, player.getTotalCorrectGuesses());
+            Assert.assertEquals(1, player.getTotalGuesses());
         }
 
         File test=new File("test.txt");

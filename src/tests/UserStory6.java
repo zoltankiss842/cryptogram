@@ -1,8 +1,6 @@
 package tests;
 
-import main.cryptogram.Cryptogram;
 import main.cryptogram.LetterCryptogram;
-import main.cryptogram.NumberCryptogram;
 import main.exceptions.*;
 import main.game.Game;
 import main.players.Player;
@@ -13,19 +11,17 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class UserStory6 {
 
     private final String SOLUTION = "This is a test sentence that needs to be solved";
-    private final String PLAYER_NAME = "test";
 
-    private Game game;
     private Player player;
     private ArrayList<String> sentences;
 
     @Before
     public void setUp(){
+        String PLAYER_NAME = "test";
         player = new Player(PLAYER_NAME);
         sentences = new ArrayList<>();
         sentences.add(SOLUTION);
@@ -39,11 +35,11 @@ public class UserStory6 {
 
     @Test
     public void showSolution() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
-        game = new Game(player, sentences,false);
+        Game game = new Game(player, sentences, false);
         game.playGame();
 
         // showSolution() gets the solution from the getSolution() method

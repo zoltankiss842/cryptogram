@@ -1,9 +1,7 @@
 package tests;
 
 import main.cryptogram.LetterCryptogram;
-import main.cryptogram.NumberCryptogram;
 import main.exceptions.*;
-import main.game.Game;
 import main.players.Player;
 import org.junit.After;
 import org.junit.Assert;
@@ -12,27 +10,22 @@ import org.junit.Test;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 
 public class UserStory9 {
 
-    private final String PLAYER_NAME = "test";
     private final String SOLUTION = "This is a test sentence that needs to be solved";
     private final String SOLUTION2 = "This is another test sentence that needs to be solved";
 
     private Player player;
-    private ArrayList<String> sentences;
-    private Game game;
 
     @Before
     public void setUp() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
+        String PLAYER_NAME = "test";
         player = new Player(PLAYER_NAME);
-        sentences = new ArrayList<>();
+        ArrayList<String> sentences = new ArrayList<>();
         sentences.add(SOLUTION);
         sentences.add(SOLUTION2);
 
-        game = new Game(player, sentences, false);
     }
 
     /*
@@ -48,13 +41,13 @@ public class UserStory9 {
         // Checking if the solution is the sentence that was given is the solution to the cryptogram
         Assert.assertEquals(letter.getSolution(),SOLUTION.toLowerCase());
         player.incrementCryptogramsSuccessfullyCompleted();
-        Assert.assertTrue(player.getNumCryptogramsSuccessfullyCompleted() == 1);
+        Assert.assertEquals(1, player.getNumCryptogramsSuccessfullyCompleted());
 
         LetterCryptogram letter2 =new LetterCryptogram(SOLUTION2);
         // Checking if the solution is the sentence that was given is the solution to the cryptogram
         Assert.assertEquals(letter2.getSolution(),SOLUTION2.toLowerCase());
         player.incrementCryptogramsSuccessfullyCompleted();
-        Assert.assertTrue(player.getNumCryptogramsSuccessfullyCompleted() == 2);
+        Assert.assertEquals(2, player.getNumCryptogramsSuccessfullyCompleted());
 
 
         File test=new File("test.txt");
@@ -75,8 +68,8 @@ public class UserStory9 {
 
         LetterCryptogram letter = new LetterCryptogram(SOLUTION);
         // Checking if the solution is incorrect
-        Assert.assertTrue(letter.getSolution() != SOLUTION2.toLowerCase());
-        Assert.assertTrue(player.getNumCryptogramsSuccessfullyCompleted() == 0);
+        Assert.assertNotSame(letter.getSolution(), SOLUTION2.toLowerCase());
+        Assert.assertEquals(0, player.getNumCryptogramsSuccessfullyCompleted());
 
         File test=new File("test.txt");
         test.delete();

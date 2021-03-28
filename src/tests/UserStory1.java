@@ -1,6 +1,5 @@
 package tests;
 
-import main.cryptogram.Cryptogram;
 import main.cryptogram.LetterCryptogram;
 import main.cryptogram.NumberCryptogram;
 import main.game.Game;
@@ -13,15 +12,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-
 /* As a player I want to be able to generate a cryptogram so I can play it */
 public class UserStory1 {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private final String PLAYERNAME = "test";
     private final String SOLUTION = "This is a test sentence that needs to be solved";
 
     private Player player;
@@ -30,6 +26,7 @@ public class UserStory1 {
 
     @Before
     public void setUp(){
+        String PLAYERNAME = "test";
         player = new Player(PLAYERNAME);
         sentences = new ArrayList<>();
         sentences.add(SOLUTION);
@@ -42,7 +39,7 @@ public class UserStory1 {
         - Then cryptogram based on a phrase where each plain letter from the phrase is mapped to a single cryptogram letter value
      */
     @Test
-    public void letterCryptoTest() throws Exception {
+    public void letterCryptoTest() {
         LetterCryptogram letter =new LetterCryptogram(SOLUTION);
         // Checking if the solution is the sentence that was given is the solution to the cryptogram
         Assert.assertEquals(letter.getSolution(),SOLUTION.toLowerCase());
