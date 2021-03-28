@@ -73,7 +73,7 @@ public class UserStory14 {
     public void tearDown(){
 
         File players = new File("players.txt");
-        Assert.assertTrue(players.delete());
+       players.delete();
 
     }
 }
