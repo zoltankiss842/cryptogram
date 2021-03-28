@@ -44,11 +44,16 @@ public class Top10Panel {
         JLabel title = new JLabel("Scores from people that have successfully completed cyptograms");
         statholder.add(title);
 
-        for(int i=0;i<10&&i<top10players.size();i++){
-            JLabel name = new JLabel(top10players.get(i));
-            JLabel stat = new JLabel(playerstats.get(top10players.get(i)));
-            statholder.add(name);
-            statholder.add(stat);
+        if(!top10players.isEmpty()) {
+            for (int i = 0; i < 10 && i < top10players.size(); i++) {
+                JLabel name = new JLabel(top10players.get(i));
+                JLabel stat = new JLabel(playerstats.get(top10players.get(i)));
+                statholder.add(name);
+                statholder.add(stat);
+            }
+        }else{
+            JLabel message = new JLabel("There are no players that have successfully completed a cryptogram. :c");
+            statholder.add(message);
         }
 
         panel.add(statholder,BorderLayout.CENTER);
