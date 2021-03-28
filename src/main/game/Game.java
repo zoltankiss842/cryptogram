@@ -12,7 +12,6 @@ import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import static java.lang.Math.round;
 
@@ -1297,6 +1296,7 @@ public class Game {
         if (gameGui != null) {
             if (currentPlayer != null) {
                 lockFields();
+
                 ShowSolutionPane pane = new ShowSolutionPane(playerGameMapping.get(currentPlayer).getSolution(), gameGui.getFrame());
             }
         }
