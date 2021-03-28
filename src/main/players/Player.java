@@ -1,7 +1,10 @@
 package main.players;
 
+/**
+ * This class represents a player entity.
+ */
 public class Player {
-    private String username;
+    private final String username;
     private double accuracy;
     private int totalGuesses;
     private int totalCorrectGuesses;
@@ -23,36 +26,12 @@ public class Player {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public double getAccuracy() {
         return accuracy;
     }
 
     public void setAccuracy(double accuracy) {
         this.accuracy = accuracy;
-    }
-
-    public void incrementTotalGuesses() {
-        totalGuesses++;
-        updateAccuracy();
-    }
-
-    public void incrementTotalCorrectGuesses() {
-        totalCorrectGuesses++;
-        updateAccuracy();
-    }
-
-    public void incrementCryptogramsSuccessfullyCompleted() { cryptogramsSuccessfullyCompleted++; }
-
-    public void incrementCryptogramsCompleted() {
-        cryptogramsCompleted++;
-    }
-
-    public void incrementCryptogramsPlayed() {
-        cryptogramsPlayed++;
     }
 
     public int getNumCryptogramsSuccessfullyCompleted() {
@@ -87,13 +66,32 @@ public class Player {
         this.totalCorrectGuesses = totalCorrectGuesses;
     }
 
-
     public int getTotalGuesses() {
         return totalGuesses;
     }
 
     public int getTotalCorrectGuesses() {
         return totalCorrectGuesses;
+    }
+
+    public void incrementTotalGuesses() {
+        totalGuesses++;
+        updateAccuracy();
+    }
+
+    public void incrementTotalCorrectGuesses() {
+        totalCorrectGuesses++;
+        updateAccuracy();
+    }
+
+    public void incrementCryptogramsSuccessfullyCompleted() { cryptogramsSuccessfullyCompleted++; }
+
+    public void incrementCryptogramsCompleted() {
+        cryptogramsCompleted++;
+    }
+
+    public void incrementCryptogramsPlayed() {
+        cryptogramsPlayed++;
     }
 
     private void updateAccuracy(){

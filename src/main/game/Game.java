@@ -101,11 +101,6 @@ public class Game {
         this(new Player(userName), new ArrayList<>(), true);
         playGame();
     }
-    public void showFrequencies()
-    {
-        CommonFreqPanel common=new CommonFreqPanel();
-
-    }
 
     /**
      * This constructor is mainly used for unit tests, it creates better accessibility.
@@ -117,33 +112,31 @@ public class Game {
      */
     public Game(Player p, ArrayList<String> sentences, boolean createGui) throws NoSuchGameType, NoSentencesToGenerateFrom, InvalidPlayerCreation, NoSaveGameFound, InvalidGameCreation {
         if(createGui) gameGui = new Frame(p.getUsername(), this);
+
         this.sentences = sentences;
+        this.allPlayers = new Players();
+        this.playerGameMapping = new HashMap<>();
 
-
-        allPlayers = new Players();
-        playerGameMapping = new HashMap<>();
         allPlayers.loadStats();
+
         try {
+            // Try load player
             currentPlayer = loadPlayer(p);
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
+            // Player was not found or loading error happened
             e.printStackTrace();
-            currentPlayer=p;
+            currentPlayer = p;
         }
 
-        if(!allPlayers.findPlayer(currentPlayer))
-        {
+        if(!allPlayers.findPlayer(currentPlayer)) {
             allPlayers.add(currentPlayer);
         }
-        else
-        {
-            currentPlayer=allPlayers.replacePlayer(currentPlayer.getUsername());
+        else {
+            currentPlayer = allPlayers.replacePlayer(currentPlayer.getUsername());
         }
 
         loadSentences();
-
-
     }
 
     // Basic getters/setters
@@ -180,14 +173,20 @@ public class Game {
         return gameGui;
     }
 
+    public ArrayList<String> getSentences() {
+        return sentences;
+    }
+
+    public void setSentences(ArrayList<String> sentences) {
+        this.sentences = sentences;
+    }
+
     /**
-     * This method right now only returns the parameter, however
-     * this should search a load the players from the text file.
-     * As soon as we agree on a text file formatting, it can be done.
+     * This method loads the player's statistics if the player exists in the players.txt
+     * and then loads the game for that player if exists any saved game. Otherwise, it just returns the player
      *
-     * For now this is a:
-     * @param p     player with parameters
-     * @return      found player
+     * @param p     new temporary player
+     * @return      found player or the temporary player
      */
     public Player loadPlayer(Player p) throws InvalidPlayerCreation, NoSaveGameFound, InvalidGameCreation {
         if(allPlayers.findPlayer(p)){
@@ -256,6 +255,15 @@ public class Game {
             }
         }
         catch (NoSentencesToGenerateFrom e) {
+            if (gameGui != null) {
+                if(gameGui.getWordHolder() == null){
+                    gameGui.getButtonHolder().disableHintButton();
+                    gameGui.getButtonHolder().disableSaveGameButton();
+                    gameGui.getButtonHolder().disableSolutionButton();
+                    gameGui.getButtonHolder().disableResetButton();
+                    gameGui.displayEmptyScreen();
+                }
+            }
             throw new NoSentencesToGenerateFrom("There are no sentences to choose from!");
         }
         catch(NoSuchGameType e){
@@ -275,7 +283,6 @@ public class Game {
         }
 
     }
-
 
     /**
      * This method manages user input. Steps for this method:
@@ -336,7 +343,6 @@ public class Game {
 
                         // check if plain letter is already used somewhere
                         checkIfPlainAlreadyInUse(cryptoChar, newChar);
-
 
                         overwrite = true;   // this is needed in the View classes, this indicates if it can be overwritten
 
@@ -413,6 +419,12 @@ public class Game {
         }
     }
 
+    /**
+     * This method resets the game main attributes:
+     * - inputMappings
+     * - Current cryptogame for player
+     * - If GUI, then disables buttons as well
+     */
     private void resetGameDetails() {
         // We reset the mappings
         playerGameMapping.put(currentPlayer, null);
@@ -427,23 +439,32 @@ public class Game {
         }
     }
 
-    public boolean showGameCompletion(boolean success) {
+    /**
+     * This method increments and displays the correct message according to the game ending.
+     * @param success   if the game was compelet successfully
+     */
+    public void showGameCompletion(boolean success) {
         if (success) {
             currentPlayer.incrementCryptogramsCompleted();
             currentPlayer.incrementCryptogramsSuccessfullyCompleted();
 
-        } else {
+        }
+        else {
             currentPlayer.incrementCryptogramsCompleted();
         }
 
         if (gameGui != null) {
             GameCompletedMessagePane complete = new GameCompletedMessagePane(gameGui.getFrame(), success);
-            return true;
         }
 
-        return false;
     }
 
+    /**
+     * This method updates phrase for a cryptogram
+     * @param cryptoChar    key
+     * @param newChar       new value at that key
+     * @param cryptogram    cryptogram that is currently played
+     */
     private void updatePhrase(char cryptoChar, char newChar, Cryptogram cryptogram) {
         String phrase = cryptogram.getPhrase();
         phrase = phrase.replace(cryptoChar, newChar);
@@ -454,14 +475,26 @@ public class Game {
         currentPlayer.incrementTotalCorrectGuesses();
     }
 
+    /**
+     * If GUI exists, this will be a prompt message, that ask the user
+     * if they want to overwrite there existing mapping from that place.
+     * @param plainLetterAtCryptoChar   currently used letter at that input
+     * @param newChar                   new letter to be put in
+     * @return                          option pane
+     */
     private OverWriteOptionPane showOverWriteOptionPane(Character plainLetterAtCryptoChar, char newChar) {
         return new OverWriteOptionPane(gameGui.getFrame(),
                 String.valueOf(plainLetterAtCryptoChar.charValue()),
                 String.valueOf(newChar));
     }
 
-
-
+    /**
+     * This method checks if the new letter the user inputted in, is already used somewhere else.
+     * Used for LetterCryptogram
+     * @param cryptoChar                   key
+     * @param newChar                      new letter thich user inputed
+     * @throws PlainLetterAlreadyInUse     letter is already used somewhere
+     */
     private void checkIfPlainAlreadyInUse(char cryptoChar, char newChar) throws PlainLetterAlreadyInUse {
         for (Map.Entry<Character, Character> entry : inputFromUserLetter.entrySet()) {
             if (entry.getValue() != null && entry.getValue().equals(newChar) && entry.getKey() != cryptoChar) {
@@ -470,6 +503,13 @@ public class Game {
         }
     }
 
+    /**
+     * This method checks if the new letter the user inputted in, is already used somewhere else.
+     * Used for NumberCryptogram
+     * @param cryptoChar                   key
+     * @param newChar                      new letter thich user inputed
+     * @throws PlainLetterAlreadyInUse     letter is already used somewhere
+     */
     private void checkIfPlainAlreadyInUse(int cryptoChar, char newChar) throws PlainLetterAlreadyInUse {
         for (Map.Entry<Integer, Character> entry : inputFromUserNumber.entrySet()) {
             if (entry.getValue() != null && entry.getValue().equals(newChar) && entry.getKey() != cryptoChar) {
@@ -573,30 +613,40 @@ public class Game {
      * @param letter                key from mapping
      * @throws NoSuchPlainLetter    if no such key exists
      */
-    public void undoLetter(String letter) throws NoSuchCryptogramLetter {
+    public void undoLetter(String letter) throws NoSuchCryptogramLetter, NoSuchGameType {
         Cryptogram c = playerGameMapping.get(currentPlayer);
 
-        checkLetter(letter);
+        checkLetterIfEmptyOrBlank(letter);
 
         // This has the same methods as the NumberCryptogram
         if(c instanceof LetterCryptogram){
-
             undoLetterCryptoLetter(letter);
-
         }
         else if(c instanceof NumberCryptogram){
-
             undoNumberCryptoLetter(letter);
+        }
+        else{
+            throw new NoSuchGameType("Cannot undo letter for this gametype!");
         }
     }
 
-    public boolean checkLetter(String letter) {
-        if(letter.isEmpty() || letter.isBlank() || letter.equals(" ")){
+    /**
+     * Checks if a string empty or blank
+     * @param letter    string to be checked
+     * @return          true if it is blank or empty
+     */
+    public boolean checkLetterIfEmptyOrBlank(String toCheck) {
+        if(toCheck.isEmpty() || toCheck.isBlank() || toCheck.equals(" ")){
             return true; // letter is indeed empty so we return true
         }
         return false;
     }
 
+    /**
+     * Removes/deletes a mapping.
+     * @param letter        letter to be removed
+     * @throws NoSuchCryptogramLetter
+     */
     public void undoLetterCryptoLetter(String letter) throws NoSuchCryptogramLetter {
         char key = letter.charAt(0);                         // we convert the string into a char
 
@@ -616,15 +666,22 @@ public class Game {
         }
     }
 
+    /**
+     * @see Game#undoLetterCryptoLetter(String)
+     * @param letter        letter to be removed
+     * @throws NoSuchCryptogramLetter
+     */
     public void undoNumberCryptoLetter(String letter) throws NoSuchCryptogramLetter {
         boolean found = false;
         int key = -1;
+
         try{
             key = Integer.parseInt(letter);
         }
         catch (NumberFormatException e){
             e.printStackTrace();
         }
+
         if(inputFromUserNumber.containsKey(key)){
             Character before = inputFromUserNumber.get(key);
 
@@ -642,9 +699,8 @@ public class Game {
 
     /**
      * This method will load a saved cryptogame
-     * For now we need to agree on a text format, so this is a
-     * @param userName
-     * @return
+     * @param userName      players username
+     * @return              outcome of loading
      */
     public boolean loadGame(String userName) throws NoSaveGameFound, InvalidPlayerCreation, InvalidGameCreation {
         Scanner mys;
@@ -721,7 +777,7 @@ public class Game {
                     }
 
                     Cryptogram c = new LetterCryptogram(solution, alphabetMap);
-                    currentPlayer=allPlayers.replacePlayer(userName);
+                    currentPlayer = allPlayers.replacePlayer(userName);
                     playerGameMapping.put(currentPlayer, c);
                     inputFromUserLetter = inputMap;
 
@@ -782,7 +838,7 @@ public class Game {
                     }
 
                     Cryptogram c = new NumberCryptogram(solution, alphabetMap);
-                    currentPlayer=allPlayers.replacePlayer(userName);
+                    currentPlayer = allPlayers.replacePlayer(userName);
                     playerGameMapping.put(currentPlayer, c);
                     inputFromUserNumber = inputMap;
 
@@ -851,7 +907,7 @@ public class Game {
      * @throws NoSentencesToGenerateFrom    there were no text files
      */
     public boolean loadSentences() throws NoSentencesToGenerateFrom {
-        File f = new File("phrases.txt");
+        File f = new File("sentences.txt");
         Scanner mys = null;
         try{
             mys = new Scanner(f);
@@ -866,16 +922,17 @@ public class Game {
 
             mys.close();
         }catch(FileNotFoundException e){
+
             if(mys != null){
                 mys.close();
             }
+
             e.printStackTrace();
             return false;
         }
 
         return true;
     }
-
 
     /**
      * This method will check if the answer is correct.
@@ -942,6 +999,12 @@ public class Game {
         initNewInputMap(cryptogram);
     }
 
+    /**
+     * Randomly chooses a sentence from the read in sentences ArrayList
+     * @param rnd       random object
+     * @return          sentences that was randomly choosed
+     * @throws NoSentencesToGenerateFrom
+     */
     private String initNewSentence(Random rnd) throws NoSentencesToGenerateFrom {
         String solution;
         if(sentences.size()>0){
@@ -953,7 +1016,13 @@ public class Game {
         return solution;
     }
 
-
+    /**
+     * Initializes a new cryptogram with solution
+     * @param type          type of cryptogram to be generated
+     * @param solution      solution of the cryptogram
+     * @return              newly created cryptogram
+     * @throws NoSuchGameType
+     */
     private Cryptogram initNewCryptogram(String type, String solution) throws NoSuchGameType {
         Cryptogram cryptogram;
         if(type.equals(LetterCryptogram.TYPE)){
@@ -968,7 +1037,12 @@ public class Game {
         return cryptogram;
     }
 
-
+    /**
+     * Initialises a mapping for the current type of cryptogram.
+     * @see Game#inputFromUserLetter
+     * @see Game#inputFromUserNumber
+     * @param cryptogram        cryptogram which is currently played
+     */
     private void initNewInputMap(Cryptogram cryptogram) {
         if(cryptogram instanceof LetterCryptogram){
             inputFromUserLetter = new HashMap<>();
@@ -1033,7 +1107,6 @@ public class Game {
         return true;
     }
 
-
     private boolean isLetterUsedLetter(char letter){
         return inputFromUserLetter.containsKey(letter);
     }
@@ -1079,49 +1152,52 @@ public class Game {
         }
     }
 
-
-    /*shows hint when number or letter has no mapping or the mapping is wrong*/
+    /**
+     * This method assigns a correct key-value pair to the mapping,
+     * when number or letter has no mapping or the mapping is wrong.
+     */
     public void getHint() {
 
         Cryptogram c = playerGameMapping.get(currentPlayer);
 
-        // hint for letter crypto
+        // Hint method for letter crypto
         if (c instanceof LetterCryptogram) {
             HashMap<Character, Character> letterMap = new HashMap<>();
 
+            // Copying inputMapping to local variable
             HashMap<Character, Character> cryptoMapping = ((LetterCryptogram) c).getLetterCryptogramAlphabet();
             for (Map.Entry<Character, Character> entry : cryptoMapping.entrySet()) {
                 letterMap.put(entry.getKey(), entry.getValue());
             }
 
-            // generate random hint
+            // Generate random hint
             Object[] keys = inputFromUserLetter.keySet().toArray();
             Object hint;
 
             for (Map.Entry<Character, Character> entry : cryptoMapping.entrySet()) {
                 {
                     hint = keys[new Random().nextInt(keys.length)];
-                    // shows if the value mapped to hint is null or wrongly mapped
+                    // Shows if the value mapped to hint is null or wrongly mapped
                     if ((inputFromUserLetter.get(hint) == null) || !(letterMap.get(hint).equals(inputFromUserLetter.get(hint)))) {
 
-                        // output in the terminal
+                        // Output in the terminal
                         System.out.println("Your hint: " + hint + "->" + letterMap.get(hint));
                         overwrite = true;
                         inputFromUserLetter.put((Character) hint, letterMap.get(hint));
                         updatePhrase((Character) hint, letterMap.get(hint), playerGameMapping.get(currentPlayer));
 
-                        // update it in the GUI
+                        // Update it in the GUI
                         for (Word word : gameGui.getWordHolder().getWords()) {
                             word.updateLetterLabel(String.valueOf(hint), letterMap.get(hint).toString());
                         }
 
-                        // we don't want to give more than one hint at a time so we just stop
+                        // We don't want to give more than one hint at a time so we just stop
                         break;
                     }
                 }
             }
 
-            // see if crypto is done, if so, we show completion message
+            // See if crypto is done, if so, we show completion message
             if (isEverythingMappedLetter()) {
                 boolean success = checkAnswer();
                 System.out.println("Cryptogram completed, no more hints to give");
@@ -1137,17 +1213,18 @@ public class Game {
         }
 
 
-        // hint for number crypto
+        // Hint for number crypto
         if (c instanceof NumberCryptogram) {
 
             HashMap<Integer, Character> numberMap = new HashMap<>();
 
+            // Copying inputMapping to local variable
             HashMap<Integer, Character> numCryptoMapping = ((NumberCryptogram) c).getNumberCryptogramAlphabet();
             for (Map.Entry<Integer, Character> entry : numCryptoMapping.entrySet()) {
                 numberMap.put(entry.getKey(), entry.getValue());
             }
 
-            // generate random hint
+            // Generate random hint
             Object[] userInputsForNum = inputFromUserNumber.keySet().toArray();
             Object numHint;
 
@@ -1157,22 +1234,22 @@ public class Game {
 
                 if (inputFromUserNumber.get(numHint) == null || !(numberMap.get(numHint).equals(inputFromUserNumber.get(numHint)))) {
 
-                    // output in the terminal
+                    // Output in the terminal
                     System.out.println("Your hint: " + numHint + "->" + numberMap.get(numHint));
                     overwrite = true;
                     inputFromUserNumber.put((Integer) numHint, numberMap.get(numHint));
 
-                    // update it in the GUI
+                    // Update it in the GUI
                     for (Word word : gameGui.getWordHolder().getWords()) {
                         word.updateLetterLabel(String.valueOf(numHint), numberMap.get(numHint).toString());
                     }
 
-                    // we don't want to give more than one hint at a time so we just stop
+                    // We don't want to give more than one hint at a time so we just stop
                     break;
                 }
             }
 
-            // see if crypto is done, if so, we show completion message
+            // See if crypto is done, if so, we show completion message
             if (isEverythingMappedNumber()) {
 
                 boolean success = checkAnswer();
@@ -1189,37 +1266,39 @@ public class Game {
         }
     }
 
-
-    /* shows letter or number frequencies of the solution */
-    // first value: letter from solution
-    // second value: number of occurrences of letters in solution sentence
-    // third value: percentage of occurrences of letters for all letters in the solution sentence
+    /**
+     * Shows letter or number frequencies of the solution.
+     * First value: letter from solution
+     * Second value: number of occurrences of letters in solution sentence
+     * Third value: percentage of occurrences of letters for all letters in the solution sentence
+     * @return  generated frequenices in a string format
+     */
     public String viewFrequencies() {
         Cryptogram c = playerGameMapping.get(currentPlayer);
 
-        HashMap<Character, Integer> letterFrequencyMap = new HashMap<>(); // frequency map for the keys and their frequencies
+        HashMap<Character, Integer> letterFrequencyMap = new HashMap<>(); // Frequency map for the keys and their frequencies
 
         try{
 
             char[] values = c.getSolution().toCharArray();
             ArrayList<Character> tokenised = new ArrayList<>(26);
 
-            // here we see frequencies for letter crypto
+            // Here we see frequencies for letter crypto
             if(c instanceof LetterCryptogram) {
             for(int i = 0; i < values.length; i++){
-                if( !(values[i] == ('!') || values[i] == (' '))) { // counts !'s and spaces so we take them out
+                if( !(values[i] == ('!') || values[i] == (' '))) { // Counts !'s and spaces so we take them out
                     tokenised.add(values[i]);
 
                     if(!letterFrequencyMap.containsKey(values[i])){
-                        letterFrequencyMap.put(values[i],1); // if map does not contain the key we put that in with frequency 1
+                        letterFrequencyMap.put(values[i],1); // If map does not contain the key we put that in with frequency 1
                     }
                     else {
-                    letterFrequencyMap.put(values[i], letterFrequencyMap.get(values[i])+1); // otherwise we add plus one to the frequency
+                    letterFrequencyMap.put(values[i], letterFrequencyMap.get(values[i])+1); // Otherwise we add plus one to the frequency
                     }
                 }
             }
 
-            // here we format it to string to look nicer
+            // Here we format it to string to look nicer
             StringBuilder sb = new StringBuilder();
             Iterator<Map.Entry<Character, Integer>> iter = letterFrequencyMap.entrySet().iterator();
             while (iter.hasNext()) {
@@ -1238,57 +1317,56 @@ public class Game {
             return sb.toString();
         }
 
-        // here we see frequencies for number crypto
+        // Here we see frequencies for number crypto
             HashMap<Character, Integer> numFrequencyMap = new HashMap<>();
             char [] numValues = c.getSolution().toCharArray();
             ArrayList<Character> tokenised2 = new ArrayList<>(26);
 
             if(c instanceof NumberCryptogram) {
-           for(int i = 0; i < numValues.length; i++){
-               if(!(numValues[i]==('!') || numValues[i]==(' '))) { // counts !'s and spaces so we take them out
-                   tokenised2.add(values[i]);
-                   if(!numFrequencyMap.containsKey(numValues[i])){
-                       numFrequencyMap.put(numValues[i],1); // if map does not contain the key we put that in with frequency 1
-                   }else{
-                       numFrequencyMap.put(numValues[i], numFrequencyMap.get(numValues[i])+1); // otherwise we add plus one to the frequency
-                   }}}
-
-           // here we format it to string to look nicer
-           StringBuilder sb2 = new StringBuilder();
-           Iterator<Map.Entry<Character, Integer>> iter2 = numFrequencyMap.entrySet().iterator();
-           while (iter2.hasNext()) {
-               Map.Entry<Character, Integer> entry = iter2.next();
-               int percentage = (int)round((double)entry.getValue() /(double)tokenised2.size()*100);
-               sb2.append('\n');
-               sb2.append(entry.getKey());
-               sb2.append(" ");
-               sb2.append(entry.getValue());
-               sb2.append(" ");
-               sb2.append(percentage + "%");
-               if (iter2.hasNext()) {
-                   sb2.append(',');
+               for(int i = 0; i < numValues.length; i++){
+                   if(!(numValues[i]==('!') || numValues[i]==(' '))) { // Counts !'s and spaces so we take them out
+                       tokenised2.add(values[i]);
+                       if(!numFrequencyMap.containsKey(numValues[i])){
+                           numFrequencyMap.put(numValues[i],1); // If map does not contain the key we put that in with frequency 1
+                       }
+                       else{
+                           numFrequencyMap.put(numValues[i], numFrequencyMap.get(numValues[i])+1); // Otherwise we add plus one to the frequency
+                       }
+                   }
                }
-           }
-           return sb2.toString();
 
-           }}
-      catch(Exception E)
-      {
+               // Here we format it to string to look nicer
+               StringBuilder sb2 = new StringBuilder();
+               Iterator<Map.Entry<Character, Integer>> iter2 = numFrequencyMap.entrySet().iterator();
+               while (iter2.hasNext()) {
+                   Map.Entry<Character, Integer> entry = iter2.next();
+                   int percentage = (int)round((double)entry.getValue() /(double)tokenised2.size()*100);
+                   sb2.append('\n');
+                   sb2.append(entry.getKey());
+                   sb2.append(" ");
+                   sb2.append(entry.getValue());
+                   sb2.append(" ");
+                   sb2.append(percentage + "%");
+                   if (iter2.hasNext()) {
+                       sb2.append(',');
+                   }
+               }
+               return sb2.toString();
+
+           }
+        }
+      catch(Exception E) {
           System.out.println("No frequencies to show");
       }
+
       return "";
     }
 
-
-
-    public ArrayList<String> getSentences() {
-        return sentences;
-    }
-
-    public void setSentences(ArrayList<String> sentences) {
-        this.sentences = sentences;
-    }
-
+    /**
+     * Returns the solution string of a cryptogram, and completes the mapping
+     * @return solution for cryptogram
+     * @throws NoSuchGameType
+     */
     public String showSolution() throws NoSuchGameType {
 
         fillOutEmptyMappings();
@@ -1308,6 +1386,10 @@ public class Game {
         return solution;
     }
 
+    /**
+     * Fills out and completes a cryptogram
+     * @throws NoSuchGameType
+     */
     private void fillOutEmptyMappings() throws NoSuchGameType {
         Cryptogram c = playerGameMapping.get(currentPlayer);
 
@@ -1347,14 +1429,22 @@ public class Game {
             }
         }
         else {
-            throw new NoSuchGameType("No such game type for filling in maps!");
+            throw new NoSuchGameType("No such game type to fill in maps!");
         }
     }
 
+    /**
+     * If GUI exists, a scoreboard will be displayed
+     */
     public void showstats(){
-        Top10Panel top10 = new Top10Panel(allPlayers.readStats());
+        if(gameGui != null){
+            Top10Panel top10 = new Top10Panel(allPlayers.readStats());
+        }
     }
 
+    /**
+     * This method saves a game into a text file
+     */
     public void savegame() {
         allPlayers.saveStats();
         Cryptogram c=playerGameMapping.get(currentPlayer);
@@ -1462,4 +1552,12 @@ public class Game {
         }
     }
 
+    /**
+     * If GUI exists, it displays the common frequencies
+     */
+    public void showFrequencies() {
+        if(gameGui != null){
+            CommonFreqPanel common = new CommonFreqPanel();
+        }
+    }
 }
