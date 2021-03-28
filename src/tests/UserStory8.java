@@ -14,19 +14,17 @@ import java.util.Scanner;
 
 public class UserStory8 {
 
-    private final String PLAYER_NAME = "test";
-    private final String SOLUTION = "This is a test sentence that needs to be solved";
-    private final String SOLUTION2 = "This is another test sentence that needs to be solved";
-
     private Player player;
     private ArrayList<String> sentences;
-    private Game game;
 
     @Before
     public void setUp(){
+        String PLAYER_NAME = "test";
         player = new Player(PLAYER_NAME);
         sentences = new ArrayList<>();
+        String SOLUTION = "This is a test sentence that needs to be solved";
         sentences.add(SOLUTION);
+        String SOLUTION2 = "This is another test sentence that needs to be solved";
         sentences.add(SOLUTION2);
     }
 
@@ -37,10 +35,10 @@ public class UserStory8 {
         - Then their details are saved to a file
      */
     @Test
-    public void storeDetails() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, FileNotFoundException {
-        game = new Game(player, sentences, false);
+    public void storeDetails() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, FileNotFoundException, NoGameBeingPlayed {
+        Game game = new Game(player, sentences, false);
 
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
@@ -57,7 +55,7 @@ public class UserStory8 {
         FileReader reader = new FileReader(file);
         Scanner sc = new Scanner(reader);
 
-        Assert.assertTrue(!sc.nextLine().isEmpty());
+        Assert.assertFalse(sc.nextLine().isEmpty());
         sc.close();
 
 

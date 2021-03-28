@@ -28,7 +28,7 @@ public class LetterCryptogram extends Cryptogram {
         super.setSolution(solution);
         // Here we upcasting the alphabet, as Object is every classes parent.
         // However, this means we need to downcast, when we get the alphabet.
-        super.setCryptogramAlphabet(new HashMap<Object, Object>(letterCryptogramAlphabet));
+        super.setCryptogramAlphabet(new HashMap<>(letterCryptogramAlphabet));
     }
 
     public LetterCryptogram(String solution, HashMap<Character, Character> letterCryptogramAlphabet) {
@@ -38,7 +38,7 @@ public class LetterCryptogram extends Cryptogram {
         super.setSolution(solution);
         // Here we upcasting the alphabet, as Object is every classes parent.
         // However, this means we need to downcast, when we get the alphabet.
-        super.setCryptogramAlphabet(new HashMap<Object, Object>(letterCryptogramAlphabet));
+        super.setCryptogramAlphabet(new HashMap<>(letterCryptogramAlphabet));
     }
 
     //Basic getters
@@ -57,8 +57,7 @@ public class LetterCryptogram extends Cryptogram {
      * @return                   value for the encrypted letter
      */
     public char getPlainLetter(char cryptoLetter){
-        Character plain = letterCryptogramAlphabet.get(cryptoLetter);
-        return plain;
+        return letterCryptogramAlphabet.get(cryptoLetter);
     }
 
     /**
@@ -73,7 +72,7 @@ public class LetterCryptogram extends Cryptogram {
     private void createAlphabet(){
         letterCryptogramAlphabet = new HashMap<>();     // Initialize
 
-        Character temp[] = new Character[26];           // Temp char array
+        Character[] temp = new Character[26];           // Temp char array
         int flag = 0;
         for(int i = 'a'; i <= 'z'; ++i){
             temp[flag++] = (char) i;
@@ -82,8 +81,8 @@ public class LetterCryptogram extends Cryptogram {
         shuffle(temp);                                  // Shuffle
 
         int originalLetter = 'a';                       // Create alphabet
-        for(int i = 0; i < temp.length; ++i){
-            letterCryptogramAlphabet.put(temp[i], (char) originalLetter);
+        for (Character character : temp) {
+            letterCryptogramAlphabet.put(character, (char) originalLetter);
             originalLetter++;
         }
     }
@@ -148,9 +147,5 @@ public class LetterCryptogram extends Cryptogram {
         }
 
         return '#';     // If no such letter exist we return a placeholder char
-    }
-
-    public void setLetterCryptogramAlphabet(HashMap<Character, Character> letterCryptogramAlphabet) {
-        this.letterCryptogramAlphabet = letterCryptogramAlphabet;
     }
 }

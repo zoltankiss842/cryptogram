@@ -18,8 +18,6 @@ public class UserStory4 {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private final String PLAYERNAME = "test";
-
 
     private Player player;
     private ArrayList<String> sentences;
@@ -27,13 +25,14 @@ public class UserStory4 {
 
     @Before
     public void setUp(){
+        String PLAYERNAME = "test";
         player = new Player(PLAYERNAME);
         sentences = new ArrayList<>();
 
     }
     @Test
-    public void testSaveLetter() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+    public void testSaveLetter() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed {
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("N".getBytes());
         System.setIn(in);
 
@@ -53,8 +52,8 @@ public class UserStory4 {
 
 
     @Test
-    public void testSaveNumber() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+    public void testSaveNumber() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed {
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 

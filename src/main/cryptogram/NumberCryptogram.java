@@ -23,7 +23,7 @@ public class NumberCryptogram extends Cryptogram{
 
     /**
      * This is a simple arraylist of integers. This is a other way for 
-     * representing the encryptin and is used for easy conversion to a UI object. 
+     * representing the encrypting and is used for easy conversion to a UI object.
      * Every number is between 0 - 26.
      *      - 0 means a space
      *      - 1 - 26 means a letter.
@@ -42,7 +42,7 @@ public class NumberCryptogram extends Cryptogram{
         super.setSolution(solution);
         // Here we upcasting the alphabet, as Object is every classes parent.
         // However, this means we need to downcast, when we get the alphabet.
-        super.setCryptogramAlphabet(new HashMap<Object, Object>(numberCryptogramAlphabet));
+        super.setCryptogramAlphabet(new HashMap<>(numberCryptogramAlphabet));
     }
 
     public NumberCryptogram(String solution, HashMap<Integer, Character> numberCryptogramAlphabet) {
@@ -52,7 +52,7 @@ public class NumberCryptogram extends Cryptogram{
         super.setSolution(solution);
         // Here we upcasting the alphabet, as Object is every classes parent.
         // However, this means we need to downcast, when we get the alphabet.
-        super.setCryptogramAlphabet(new HashMap<Object, Object>(numberCryptogramAlphabet));
+        super.setCryptogramAlphabet(new HashMap<>(numberCryptogramAlphabet));
     }
 
     // Basic getters
@@ -64,8 +64,7 @@ public class NumberCryptogram extends Cryptogram{
      * @return                   value for the number
      */
     public char getPlainLetter(int cryptoValue){
-        Character plain = numberCryptogramAlphabet.get(cryptoValue);
-        return plain;
+        return numberCryptogramAlphabet.get(cryptoValue);
     }
 
     public ArrayList<Integer> getSolutionInIntegerFormat() {
@@ -84,22 +83,21 @@ public class NumberCryptogram extends Cryptogram{
      * 4. From number 1 to 26, assigns the random number, to the original letter, thus creating the alphabet
      *
      * (Character and char are interchangeable to a certain level)
-     * @return
      */
     public void createAlphabet(){
         numberCryptogramAlphabet = new HashMap<>();     // Initialize
 
-        Integer temp[] = new Integer[26];               // Temp char array
+        Integer[] temp = new Integer[26];               // Temp char array
         int flag = 0;
         for(int i = 1; i <= 26; ++i){
             temp[flag++] = i;
         }
 
-        temp = shuffle(temp);                           // Shuffle
+        shuffle(temp); // Shuffle
 
         int originalLetter = 'a';                       // Create alphabet
-        for(int i = 0; i < temp.length; ++i){
-            numberCryptogramAlphabet.put(temp[i], (char) originalLetter);
+        for (Integer integer : temp) {
+            numberCryptogramAlphabet.put(integer, (char) originalLetter);
             originalLetter++;
         }
 
@@ -110,12 +108,11 @@ public class NumberCryptogram extends Cryptogram{
      * This function shuffles a Integer array.
      * @param array    array to be shuffled
      */
-    private Integer[] shuffle(Integer[] array){
+    private void shuffle(Integer[] array){
         List<Integer> temp = Arrays.asList(array);
         Collections.shuffle(temp);
         temp.toArray(array);
 
-        return array;
     }
 
     /**

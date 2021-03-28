@@ -10,16 +10,10 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class UserStory12 {
-
-    private final String PLAYER_NAME = "test";
-    private final String SOLUTION = "This is a test sentence that needs to be solved";
-    private final String SOLUTION2 = "This is another test sentence that needs to be solved";
 
     private Player player;
     private ArrayList<String> sentences;
@@ -27,14 +21,17 @@ public class UserStory12 {
 
     @Before
     public void setUp(){
+        String PLAYER_NAME = "test";
         player = new Player(PLAYER_NAME);
 
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
         sentences = new ArrayList<>();
+        String SOLUTION = "This is a test sentence that needs to be solved";
         sentences.add(SOLUTION);
+        String SOLUTION2 = "This is another test sentence that needs to be solved";
         sentences.add(SOLUTION2);
     }
 
@@ -48,7 +45,7 @@ public class UserStory12 {
     public void playerDetailsLoaded() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed, PlainLetterAlreadyInUse, NoSuchCryptogramLetter {
         game = new Game(player, sentences, false);
 
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes()); // LetterCrypto
         System.setIn(in);
 
@@ -62,7 +59,6 @@ public class UserStory12 {
 
         Character value = (Character) game.getPlayerGameMapping().get(game.getCurrentPlayer()).getCryptogramAlphabet().get(key);
 
-        sysInBackup = System.in; // backup System.in to restore it later
         in = new ByteArrayInputStream("Y".getBytes()); // LetterCrypto
         System.setIn(in);
         game.enterLetter(String.valueOf(key), String.valueOf(value));
@@ -92,18 +88,18 @@ public class UserStory12 {
         {
             FileWriter playersWrite = new FileWriter("players.txt");
             playersWrite.write("test\n");
-            playersWrite.write("very coprrupt file\n");
-            playersWrite.write("very coprrupt file\n");
-            playersWrite.write("very coprrupt file\n");
-            playersWrite.write("very coprrupt file\n");
+            playersWrite.write("very corrupt file\n");
+            playersWrite.write("very corrupt file\n");
+            playersWrite.write("very corrupt file\n");
+            playersWrite.write("very corrupt file\n");
             playersWrite.close();
         }
-        catch(Exception e)
+        catch(Exception ignored)
         {
 
         }
 
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes()); // LetterCrypto
         System.setIn(in);
 
@@ -117,7 +113,6 @@ public class UserStory12 {
 
         Character value = (Character) game.getPlayerGameMapping().get(game.getCurrentPlayer()).getCryptogramAlphabet().get(key);
 
-        sysInBackup = System.in; // backup System.in to restore it later
         in = new ByteArrayInputStream("Y".getBytes()); // LetterCrypto
         System.setIn(in);
         game.enterLetter(String.valueOf(key), String.valueOf(value));
@@ -141,7 +136,7 @@ public class UserStory12 {
     public void notExistingPlayerDetails() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed, PlainLetterAlreadyInUse, NoSuchCryptogramLetter {
         game = new Game(player, sentences, false);
 
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes()); // LetterCrypto
         System.setIn(in);
 
@@ -155,7 +150,6 @@ public class UserStory12 {
 
         Character value = (Character) game.getPlayerGameMapping().get(game.getCurrentPlayer()).getCryptogramAlphabet().get(key);
 
-        sysInBackup = System.in; // backup System.in to restore it later
         in = new ByteArrayInputStream("Y".getBytes()); // LetterCrypto
         System.setIn(in);
         game.enterLetter(String.valueOf(key), String.valueOf(value));

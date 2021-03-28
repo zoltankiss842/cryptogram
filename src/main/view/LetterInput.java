@@ -20,14 +20,11 @@ import java.text.ParseException;
  */
 public class LetterInput {
 
-    private final int WIDTH = 30;
-    private final int HEIGHT = 30;
-
     private JFormattedTextField userGuess;  // Input for the user
     private JLabel encryptedLetter;         // Label for the encrypted letter
     private JPanel letterInput;             // Holds the text field and the label together
 
-    private Word word;                      // Makes an aggregation between LetterInput and Word
+    private final Word word;                      // Makes an aggregation between LetterInput and Word
 
     private String originalLetter;          // This stores the original letter, in case the user resets, it can use
                                             // this field to access the old letter.
@@ -46,11 +43,12 @@ public class LetterInput {
     private void initLetterInput() {
         this.letterInput = new JPanel();
         letterInput.setLayout(new BoxLayout(letterInput, BoxLayout.Y_AXIS));
-        //letterInput.setBorder(new LineBorder(new Color(0,0,0),1));
+        letterInput.setBackground(Frame.QUEENBLUE);
     }
 
     public void initEncryptedLetter(String letter) {
         this.encryptedLetter = new JLabel(letter);
+        encryptedLetter.setForeground(Color.WHITE);
         originalLetter = letter;
         encryptedLetter.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
@@ -68,7 +66,7 @@ public class LetterInput {
      * We align center and set the focus and change behaviors here.
      */
     private void initUserGuess() {
-        this.userGuess = new JFormattedTextField(createUserInputFormatter("?"));
+        this.userGuess = new JFormattedTextField(createUserInputFormatter());
 
         userGuess.setColumns(3);
 
@@ -77,6 +75,8 @@ public class LetterInput {
 
         userGuess.setFocusLostBehavior(JFormattedTextField.COMMIT);
 
+        int WIDTH = 30;
+        int HEIGHT = 30;
         userGuess.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         userGuess.setMinimumSize(new Dimension(WIDTH, HEIGHT));
         userGuess.setMaximumSize(new Dimension(WIDTH, HEIGHT));
@@ -90,36 +90,17 @@ public class LetterInput {
 
     /**
      * Formatter for the user input fields
-     * @param s         type of format
      * @return          formatter for user input
      */
-    private MaskFormatter createUserInputFormatter(String s) {
+    private MaskFormatter createUserInputFormatter() {
         MaskFormatter formatter = null;
         try{
-            formatter = new MaskFormatter(s);
+            formatter = new MaskFormatter("?");
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         return formatter;
-    }
-
-    /**
-     * This method updates the label that is under the text field.
-     * If the parameter is null, it sets back to the original letter, that it was
-     * @param newLetter      new letter to be set to
-     */
-    public void updateLetterLabel(String newLetter){
-
-        if(newLetter != null && !newLetter.isBlank() && !newLetter.isEmpty()){
-            encryptedLetter.setText(newLetter);
-        }
-        else{
-            encryptedLetter.setText(originalLetter);
-        }
-
-        encryptedLetter.revalidate();
-        letterInput.revalidate();
     }
 
     /**
@@ -130,14 +111,12 @@ public class LetterInput {
     public void updateInputFieldValue(String newLetter){
 
         // This runnable is for prevent threading problems
-        Runnable modify = new Runnable() {
-            @Override
-            public void run() {
-                userGuess.setText(newLetter);
-                userGuess.setValue(newLetter);
-                userGuess.revalidate();
-                letterInput.revalidate();
-            }
+        Runnable modify = () -> {
+            previousUserInput = newLetter;
+            userGuess.setText(newLetter);
+            userGuess.setValue(newLetter);
+            userGuess.revalidate();
+            letterInput.revalidate();
         };
 
         SwingUtilities.invokeLater(modify);
@@ -147,13 +126,10 @@ public class LetterInput {
     public void disableField(){
 
         // This runnable is for prevent threading problems
-        Runnable modify = new Runnable() {
-            @Override
-            public void run() {
-                userGuess.setEnabled(false);
-                userGuess.revalidate();
-                letterInput.revalidate();
-            }
+        Runnable modify = () -> {
+            userGuess.setEnabled(false);
+            userGuess.revalidate();
+            letterInput.revalidate();
         };
 
         SwingUtilities.invokeLater(modify);
@@ -161,7 +137,8 @@ public class LetterInput {
     }
 
     private DocumentListener createDocumentListener(){
-        DocumentListener dl = new DocumentListener() {
+
+        return new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {}
 
@@ -171,15 +148,13 @@ public class LetterInput {
             @Override
             public void changedUpdate(DocumentEvent e) {}
         };
-
-        return dl;
     }
 
     private FocusListener createNewFocusListener(){
-        FocusListener fl = new FocusListener() {
+
+        return new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                return;
             }
 
             @Override
@@ -187,7 +162,6 @@ public class LetterInput {
                 if(!e.isTemporary()){
                     String text = userGuess.getText();
                     Game game = getGameController();
-                    StringBuilder builder = new StringBuilder();
                     if(!text.isEmpty() && !text.isBlank()){
                         try {
                             game.enterLetter(originalLetter, text);
@@ -207,7 +181,7 @@ public class LetterInput {
                         } catch (Exception exception) {
                             word.updateLetterLabel(originalLetter, previousUserInput);
                             if(exception instanceof PlainLetterAlreadyInUse){
-                                PlainLetterInUseMessagePane pane = new PlainLetterInUseMessagePane(
+                                new PlainLetterInUseMessagePane(
                                         word.getWordHolder().getFrame().getFrame(),
                                         exception.getMessage());
                             }
@@ -218,8 +192,23 @@ public class LetterInput {
                     }
                     else{
                         try {
-                            game.undoLetter(originalLetter);
-                            word.updateLetterLabel(originalLetter, null);
+                            if(previousUserInput != null && !previousUserInput.isEmpty() && !previousUserInput.isBlank()){
+                                DeleteCharacterOptionPane pane = new DeleteCharacterOptionPane(game.getGameGui().getFrame());
+                                if(pane.getResult()){
+                                    game.undoLetter(originalLetter);
+                                    word.updateLetterLabel(originalLetter, null);
+                                    previousUserInput = text;
+                                }
+                                else{
+                                    userGuess.setValue(previousUserInput);
+                                    userGuess.setText(previousUserInput);
+                                }
+                            }
+                            else{
+                                game.undoLetter(originalLetter);
+                                word.updateLetterLabel(originalLetter, null);
+                                previousUserInput = text;
+                            }
                         } catch (Exception exception) {
                             System.err.println(exception.getMessage());
                         }
@@ -239,8 +228,6 @@ public class LetterInput {
                 }
             }
         };
-
-        return fl;
     }
 
     public String getOriginalLetter() {

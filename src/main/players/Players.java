@@ -1,22 +1,31 @@
 package main.players;
 
-import main.exceptions.InvalidGameCreation;
-import main.exceptions.InvalidPlayerCreation;
 import main.exceptions.MissingNameInFile;
 import main.exceptions.MissingStatsInFile;
 
 import java.io.*;
 import java.util.*;
 
+/**
+ * This class represents the players that have saved statistics in this
+ * program.
+ */
 public class Players {
-    private  ArrayList<Player> allPlayers ;
+
+    private final ArrayList<Player> allPlayers ;
+
     File playersFile = new File("players.txt");
 
     public Players() {
         allPlayers=new ArrayList<>();
 
         try {
-            playersFile.createNewFile();
+            if(playersFile.createNewFile()){
+                System.out.print("Successful file creation for players.txt");
+            }
+            else{
+                System.out.print("Failed file creation for players.txt");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -26,44 +35,33 @@ public class Players {
         allPlayers.add(p);
     }
 
-    public void savePlayer() {
-
-    }
-
     public  boolean findPlayer(Player p) {
-        for (int i = 0; i < allPlayers.size(); i++) {
-            if (p.getUsername().equals(allPlayers.get(i).getUsername())) {
+        for (Player allPlayer : allPlayers) {
+            if (p.getUsername().equals(allPlayer.getUsername())) {
                 return true;
             }
         }
         return false;
     }
+
+    /**
+     * Returns actual player from the username
+     * @param username  username
+     * @return      found player or null
+     */
     public Player replacePlayer(String username) {
-        for (int i = 0; i < allPlayers.size(); i++) {
-            if (username.equals(allPlayers.get(i).getUsername())) {
-                return allPlayers.get(i) ;
+        for (Player allPlayer : allPlayers) {
+            if (username.equals(allPlayer.getUsername())) {
+                return allPlayer;
             }
         }
         return null;
     }
 
-    public void getAllPlayersAccuracies() {
-    }
-
-    public void getAllPlayersCryptogramsPlayed() {
-
-    }
-
-    public void getAllPlayersCompletedCryptos() {
-
-    }
-
-    public void printallnames(){ //test methods to see all the names
-        for(int i=0;i<allPlayers.size();i++){
-            System.out.println(allPlayers.get(i).getUsername());
-        }
-    }
-
+    /**
+     * This method reads in the players and their stats from players.txt
+     * @return      map containing the statistics
+     */
     public HashMap<String,String> readStats(){
         HashMap<String,String> hash = new HashMap<>();
         try{
@@ -71,7 +69,7 @@ public class Players {
             Scanner scan = new Scanner(f);
             while(scan.hasNext()){
                 String name = scan.nextLine();
-                if(name.isBlank() || name.isEmpty() || replacePlayer(name)==null){ //was going to write a method to check if a certain name is in the list of players but this has the same effect
+                if(name.isBlank() || name.isEmpty() || replacePlayer(name)==null){ // Was going to write a method to check if a certain name is in the list of players but this has the same effect
                     scan.close();
                     throw new MissingNameInFile("Name is missing in file!");
                 }
@@ -81,7 +79,6 @@ public class Players {
                     throw new MissingStatsInFile("Stats are missing in file!");
                 }
                 hash.put(name,stats);
-                //System.out.println("name test: "+name+"\n"+stats);
             }
         }catch(FileNotFoundException e){
             System.out.println("Something went wrong while reading player stats, no: "+playersFile+" file");
@@ -90,19 +87,38 @@ public class Players {
         }catch(MissingStatsInFile e){
             System.out.println("Missing stats in file");
         }
+
+
+        hash = new HashMap<>();
+
+        for (Player player : allPlayers) {
+            if (player.getNumCryptogramsCompleted()>0) {
+                hash.put(player.getUsername(),String.valueOf(player.getNumCryptogramsCompleted()));
+            }
+
+        }
         return hash;
     }
 
+    /**
+     * Saving stats for players in players.txt
+     */
     public void saveStats() {
         try {
-            Player p=null;
+            Player p;
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < allPlayers.size(); i++) {
-                 p=allPlayers.get(i);
+                p = allPlayers.get(i);
 
-                String dummy=p.getUsername() + "\n" + p.getAccuracy() + " " + p.getTotalGuesses() + " " +
-                        p.getTotalCorrectGuesses() + " " + p.getNumCryptogramsPlayed() + " " + p.getNumCryptogramsCompleted()
-                        + " " + p.getNumCryptogramsSuccessfullyCompleted()+"\n";
+                String dummy
+                        = p.getUsername() + "\n"
+                        + p.getAccuracy() + " "
+                        + p.getTotalGuesses() + " "
+                        + p.getTotalCorrectGuesses() + " "
+                        + p.getNumCryptogramsPlayed() + " "
+                        + p.getNumCryptogramsCompleted() + " "
+                        + p.getNumCryptogramsSuccessfullyCompleted() + "\n";
+
                sb.append(dummy);
             }
             FileWriter playersWrite = new FileWriter(playersFile);
@@ -114,31 +130,43 @@ public class Players {
         }
     }
 
+    /**
+     * This method loads the stats in the allPlayers arraylist, from players.txt
+     */
     public void loadStats() {
-        Scanner mys = null;
+        Scanner mys;
         try {
             mys = new Scanner(playersFile);
-            while(mys.hasNextLine()){
+            while (mys.hasNextLine()) {
                 String username = mys.nextLine();
+                if (username.isBlank()) {
+                    return;
+
+                }
+
                 String[] tokens = mys.nextLine().split(" ");
+                if (tokens.length!=6) {
+                    return;
+
+                }
                 Player p = new Player(username);
 
-                    p.setAccuracy(Double.parseDouble(tokens[0]));
-                    p.setTotalGuesses(Integer.parseInt(tokens[1]));
-                    p.setTotalCorrectGuesses(Integer.parseInt(tokens[2]));
-                    p.setCryptogramsPlayed(Integer.parseInt(tokens[3]));
-                    p.setCryptogramsCompleted(Integer.parseInt(tokens[4]));
-                    p.setCryptogramsSuccessfullyCompleted(Integer.parseInt(tokens[5]));
-                    add(p);
+                p.setAccuracy(Double.parseDouble(tokens[0]));
+                p.setTotalGuesses(Integer.parseInt(tokens[1]));
+                p.setTotalCorrectGuesses(Integer.parseInt(tokens[2]));
+                p.setCryptogramsPlayed(Integer.parseInt(tokens[3]));
+                p.setCryptogramsCompleted(Integer.parseInt(tokens[4]));
+                p.setCryptogramsSuccessfullyCompleted(Integer.parseInt(tokens[5]));
+                add(p);
 
             }
             mys.close();
         } catch (FileNotFoundException e) {
-            if(mys != null){
-                mys.close();
-            }
             e.printStackTrace();
-        }}
+        } catch (Exception e){
+            System.out.println("Error while loading players and stats");
+        }
+    }
 }
 
 

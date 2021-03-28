@@ -9,26 +9,43 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
+
+import java.io.*;
+
 import java.util.ArrayList;
+import java.util.List;
 
-/* As a player I want to be able to undo a letter so I can play the cryptogram */
-public class UserStory10 {
+import static org.junit.Assert.assertEquals;
 
-    private final String PLAYER_NAME = "test";
+public class UserStory13 {
+
     private final String SOLUTION = "This is a test sentence that needs to be solved";
     private final String SOLUTION2 = "This is another test sentence that needs to be solved";
     private final String SOLUTION3 = "This is the last sentence that needs to be solved";
 
     private Player player;
     private ArrayList<String> sentences;
+    private List<String> scoreboardTop10;
     private Game game;
+
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
 
     @Before
     public void setUp() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
+
+        String PLAYER_NAME = "test";
+
+
+        System.setOut(new PrintStream(outContent));
+
+
         player = new Player(PLAYER_NAME);
         sentences = new ArrayList<>();
+        scoreboardTop10 = new ArrayList<>();
         sentences.add(SOLUTION);
         sentences.add(SOLUTION2);
         sentences.add(SOLUTION3);
@@ -36,20 +53,21 @@ public class UserStory10 {
         game = new Game(player, sentences, false);
     }
 
-    /*
-    Scenario – new cryptogram played
-       - Given the player has opened the program
-       - When the requests a new cryptogram
-       - Then the number of cryptograms played is increased by one
-     */
+    /* Scenario: player wants to see the top 10 players ordered by proportion of
+    successfully completed cryptograms
+        - Given at least one player has successfully completed a cryptogram
+        - When a player selects to see the top 10 players by number of successfully completed cryptograms
+        - Then the top 10 players are shown, ordered by highest proportion of successfully completed cryptogram
+    */
+
     @Test
-    public void numberOfCryptosPlayed() throws Exception {
+    public void top10Tests() throws Exception {
         game = new Game(player, sentences, false);
 
         Assert.assertEquals(0, player.getNumCryptogramsPlayed());
 
         LetterCryptogram letter = new LetterCryptogram(SOLUTION);
-        Assert.assertEquals(letter.getSolution(),SOLUTION.toLowerCase());
+        assertEquals(letter.getSolution(),SOLUTION.toLowerCase());
         player.incrementCryptogramsSuccessfullyCompleted();
         player.incrementCryptogramsPlayed();
         Assert.assertEquals(1, player.getNumCryptogramsSuccessfullyCompleted());
@@ -68,21 +86,21 @@ public class UserStory10 {
         Assert.assertEquals(2, player.getNumCryptogramsSuccessfullyCompleted());
         Assert.assertEquals(3, player.getNumCryptogramsPlayed());
 
-        File test=new File("test.txt");
-        test.delete();
-        File players = new File("players.txt");
-        players.delete();
+        scoreboardTop10.add(player.getUsername() + " " + player.getNumCryptogramsSuccessfullyCompleted());
+
+        Assert.assertFalse(scoreboardTop10.isEmpty());
+
+        assertEquals("test 2", scoreboardTop10.get(0));
     }
 
-    /*
-    Scenario – cryptogram loaded
-        - Given the player has opened the program
-        - When they request to load their saved game
-        - Then the game is loaded and no change is made to the cryptograms played
+    /* Scenario: no player stats have been stored
+        - Given no player stats have been stored
+        - When the player selects to see the top 10 players
+        - Then an error message is shown
      */
 
     @Test
-    public void numberOfCryptosAfterLoad() throws Exception {
+    public void top10Empty() throws Exception {
         // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
@@ -90,29 +108,37 @@ public class UserStory10 {
         game = new Game(player, sentences,false);
         game.playGame();
 
-        LetterCryptogram letter = new LetterCryptogram(SOLUTION);
-        Assert.assertEquals(letter.getSolution(),SOLUTION.toLowerCase());
-        player.incrementCryptogramsSuccessfullyCompleted();
+        LetterCryptogram letter = new LetterCryptogram(SOLUTION3);
+        Assert.assertNotEquals(letter.getSolution(), SOLUTION.toLowerCase());
         player.incrementCryptogramsPlayed();
 
-
-        in = new ByteArrayInputStream("Y".getBytes());
-        System.setIn(in);
-
-        game.savegame();
-        game.loadGame(PLAYER_NAME);
-
-        Assert.assertNotNull(game.getPlayerGameMapping().get(game.getCurrentPlayer()));
-
-        File test =new File("test.txt");
-        Assert.assertTrue(test.delete());
-        File players = new File("players.txt");
-        Assert.assertTrue(players.delete());
-
+        Assert.assertTrue(scoreboardTop10.isEmpty());
     }
+
+    @Test
+    public void top10corrupt() throws MissingNameInFile, MissingStatsInFile{
+        try{
+            File oldfile = new File("players.txt");
+            oldfile.delete();
+            File file = new File("players.txt");
+            FileWriter write = new FileWriter(file);
+            write.write("testname\n");
+            write.write("missing stats here\n");
+            write.close();
+
+            game = new Game(player, sentences, false);
+            //game.showstats();
+        }catch(IOException | NoSuchGameType | NoSentencesToGenerateFrom | InvalidPlayerCreation | NoSaveGameFound | InvalidGameCreation ignored){
+
+        }
+    }
+
 
     @After
     public void tearDown(){
+        //Assert.assertTrue(players.delete());
 
+        System.setOut(originalOut);
     }
 }
+

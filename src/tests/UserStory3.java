@@ -12,16 +12,11 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 
 /* As a player I want to be able to undo a letter so I can play the cryptogram */
 public class UserStory3 {
-
-    private final String SOLUTION = "This is a test sentence that needs to be solved";
-    private final String PLAYER_NAME = "test";
 
     private Game game;
     private Player player;
@@ -29,8 +24,10 @@ public class UserStory3 {
 
     @Before
     public void setUp() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
+        String PLAYER_NAME = "test";
         player = new Player(PLAYER_NAME);
         sentences = new ArrayList<>();
+        String SOLUTION = "This is a test sentence that needs to be solved";
         sentences.add(SOLUTION);
 
         game = new Game(player, sentences, false);
@@ -44,7 +41,7 @@ public class UserStory3 {
      */
     @Test
     public void undoMappedLetter() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed, PlainLetterAlreadyInUse, NoSuchCryptogramLetter {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
         game = new Game(player, sentences, false);
@@ -60,18 +57,13 @@ public class UserStory3 {
             }
         }
 
-        ArrayList<Character> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Character) iterator.next());
-        }
+        ArrayList<Character> list = new ArrayList<>(set);
 
         game.enterLetter(String.valueOf(list.get(0)), String.valueOf(list.get(0)));
         game.undoLetter(String.valueOf(list.get(0)));
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == 1);
+        Assert.assertEquals(1, player.getTotalGuesses());
     }
 
     /*
@@ -82,7 +74,7 @@ public class UserStory3 {
      */
     @Test
     public void undoMappedNumber() throws Exception {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("N".getBytes());
         System.setIn(in);
         game = new Game(player, sentences, false);
@@ -100,18 +92,13 @@ public class UserStory3 {
             }
         }
 
-        ArrayList<Integer> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Integer) iterator.next());
-        }
+        ArrayList<Integer> list = new ArrayList<>(set);
 
         game.enterLetter(String.valueOf(list.get(0)), "k");
         game.undoLetter(String.valueOf(list.get(0)));
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == 1);
+        Assert.assertEquals(1, player.getTotalGuesses());
     }
 
     /*
@@ -134,18 +121,11 @@ public class UserStory3 {
             }
         }
 
-        ArrayList<Character> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Character) iterator.next());
-        }
-
         game.enterLetter(String.valueOf(0), "b");
         game.undoLetter("x");
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == 1);
+        Assert.assertEquals(1, player.getTotalGuesses());
     }
 
     /*
@@ -166,12 +146,7 @@ public class UserStory3 {
             set.add((Integer) c);
         }
 
-        ArrayList<Integer> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Integer) iterator.next());
-        }
+        ArrayList<Integer> list = new ArrayList<>(set);
 
         int i;
         for(i = 1; i < 27; i++){

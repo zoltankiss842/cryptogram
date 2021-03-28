@@ -11,15 +11,11 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.*;
-
-import static org.junit.Assert.fail;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /* As a player I want to be able to enter a letter so I can solve the cryptogram */
 public class UserStory2 {
-
-    private final String SOLUTION = "This is a test sentence that needs to be solved";
-    private final String PLAYER_NAME = "test";
 
     private Game game;
     private Player player;
@@ -27,8 +23,10 @@ public class UserStory2 {
 
     @Before
     public void setUp(){
+        String PLAYER_NAME = "test";
         player = new Player(PLAYER_NAME);
         sentences = new ArrayList<>();
+        String SOLUTION = "This is a test sentence that needs to be solved";
         sentences.add(SOLUTION);
     }
 
@@ -42,7 +40,7 @@ public class UserStory2 {
      */
     @Test
     public void enterLetterLetterCryptogram() throws Exception{
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
@@ -59,12 +57,7 @@ public class UserStory2 {
             }
         }
 
-        ArrayList<Character> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Character) iterator.next());
-        }
+        ArrayList<Character> list = new ArrayList<>(set);
 
         String originalPhrase = letter.getPhrase();
 
@@ -75,7 +68,7 @@ public class UserStory2 {
         Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), list.get(0)));
         originalPhrase = letter.getPhrase();
 
-        Assert.assertTrue(player.getTotalGuesses() == 1);
+        Assert.assertEquals(1, player.getTotalGuesses());
 
         // One valid entry by user
         char validEntry = letter.getPlainLetter(list.get(2));
@@ -85,7 +78,7 @@ public class UserStory2 {
         Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(1)), validEntry));
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == 2);
+        Assert.assertEquals(2, player.getTotalGuesses());
 
     }
 
@@ -98,7 +91,7 @@ Scenario: player enters a letter
  */
     @Test
     public void enterLetterNumberCryptogram() throws Exception{
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("N".getBytes());
         System.setIn(in);
 
@@ -115,14 +108,9 @@ Scenario: player enters a letter
             }
         }
 
-        ArrayList<Integer> list = new ArrayList<>();
+        ArrayList<Integer> list = new ArrayList<>(set);
 
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Integer) iterator.next());
-        }
-
-        Integer[] originalPhrase = number.getSolutionInIntegerFormat().toArray(new Integer[0]);
+        number.getSolutionInIntegerFormat().toArray(new Integer[0]);
 
         // One random letter entry by user
         game.enterLetter(String.valueOf(list.get(0)), String.valueOf(list.get(0)));
@@ -132,8 +120,8 @@ Scenario: player enters a letter
         game.enterLetter(String.valueOf(list.get(1)), String.valueOf(validEntry));
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == 2);
-        Assert.assertTrue(player.getTotalCorrectGuesses() == 1);
+        Assert.assertEquals(2, player.getTotalGuesses());
+        Assert.assertEquals(1, player.getTotalCorrectGuesses());
 
     }
 
@@ -146,7 +134,7 @@ Scenario: player enters a letter
     */
     @Test
     public void cryptoAlreadyMappedLetterYesAnswer() throws Exception {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        InputStream sysInBackup; // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
@@ -164,12 +152,7 @@ Scenario: player enters a letter
             }
         }
 
-        ArrayList<Character> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Character) iterator.next());
-        }
+        ArrayList<Character> list = new ArrayList<>(set);
 
         String originalPhrase = letter.getPhrase();
 
@@ -180,7 +163,7 @@ Scenario: player enters a letter
         Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), list.get(0)));
         originalPhrase = letter.getPhrase();
 
-        Assert.assertTrue(player.getTotalGuesses() == 1);
+        Assert.assertEquals(1, player.getTotalGuesses());
 
         // One valid entry by user
         char validEntry = letter.getPlainLetter(list.get(0));
@@ -194,7 +177,7 @@ Scenario: player enters a letter
         Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), validEntry));
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == 2);
+        Assert.assertEquals(2, player.getTotalGuesses());
 
         System.setIn(sysInBackup);
     }
@@ -208,7 +191,7 @@ Scenario: player enters a letter
     */
     @Test
     public void cryptoAlreadyMappedLetterNoAnswer() throws Exception {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        InputStream sysInBackup; // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
@@ -225,12 +208,7 @@ Scenario: player enters a letter
             }
         }
 
-        ArrayList<Character> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Character) iterator.next());
-        }
+        ArrayList<Character> list = new ArrayList<>(set);
 
         String originalPhrase = letter.getPhrase();
 
@@ -241,7 +219,7 @@ Scenario: player enters a letter
         Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), list.get(0)));
         char originalInput = list.get(0);
 
-        Assert.assertTrue(player.getTotalGuesses() == 1);
+        Assert.assertEquals(1, player.getTotalGuesses());
 
         // One valid entry by user
         char validEntry = letter.getPlainLetter(list.get(1));
@@ -279,12 +257,7 @@ Scenario: player enters a letter
             }
         }
 
-        ArrayList<Character> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Character) iterator.next());
-        }
+        ArrayList<Character> list = new ArrayList<>(set);
 
         String originalPhrase = letter.getPhrase();
 
@@ -293,15 +266,14 @@ Scenario: player enters a letter
 
         // Checking if all instances has been replaced
         Assert.assertEquals(letter.getPhrase(), originalPhrase.replace((list.get(0)), list.get(0)));
-        originalPhrase = letter.getPhrase();
 
-        Assert.assertTrue(player.getTotalGuesses() == 1);
+        Assert.assertEquals(1, player.getTotalGuesses());
 
         game.enterLetter(String.valueOf(list.get(1)), String.valueOf(list.get(0)));
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == 1);
-        Assert.assertTrue(player.getTotalCorrectGuesses() == 0);
+        Assert.assertEquals(1, player.getTotalGuesses());
+        Assert.assertEquals(0, player.getTotalCorrectGuesses());
 
     }
 
@@ -325,14 +297,7 @@ Scenario: player selects a plain letter which they have already mapped
             }
         }
 
-        ArrayList<Integer> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Integer) iterator.next());
-        }
-
-        Integer[] originalPhrase = number.getSolutionInIntegerFormat().toArray(new Integer[0]);
+        ArrayList<Integer> list = new ArrayList<>(set);
 
         // One random letter entry by user
         game.enterLetter(String.valueOf(list.get(0)), String.valueOf(list.get(0)));
@@ -340,8 +305,8 @@ Scenario: player selects a plain letter which they have already mapped
         game.enterLetter(String.valueOf(list.get(1)), String.valueOf(list.get(0)));
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == 1);
-        Assert.assertTrue(player.getTotalCorrectGuesses() == 0);
+        Assert.assertEquals(1, player.getTotalGuesses());
+        Assert.assertEquals(0, player.getTotalCorrectGuesses());
 
     }
 
@@ -353,7 +318,7 @@ Scenario: player selects a plain letter which they have already mapped
     */
     @Test
     public void enterLastValueCorrectLetter() throws Exception {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
@@ -370,12 +335,7 @@ Scenario: player selects a plain letter which they have already mapped
             }
         }
 
-        ArrayList<Character> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Character) iterator.next());
-        }
+        ArrayList<Character> list = new ArrayList<>(set);
 
         // One valid entry by user
 
@@ -390,9 +350,9 @@ Scenario: player selects a plain letter which they have already mapped
         game.enterLetter(String.valueOf(list.get(i)), String.valueOf(validEntry));
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == i+1);
-        Assert.assertTrue(player.getTotalCorrectGuesses() == i+1);
-        Assert.assertTrue(game.getPlayerGameMapping().get(player) == null);
+        Assert.assertEquals(player.getTotalGuesses(), i + 1);
+        Assert.assertEquals(player.getTotalCorrectGuesses(), i + 1);
+        Assert.assertNull(game.getPlayerGameMapping().get(player));
 
     }
 
@@ -404,7 +364,7 @@ Scenario: player enters the last value to be mapped and successfully completes t
 */
     @Test
     public void enterLastValueCorrectNumber() throws Exception {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("N".getBytes());
         System.setIn(in);
 
@@ -421,12 +381,7 @@ Scenario: player enters the last value to be mapped and successfully completes t
             }
         }
 
-        ArrayList<Integer> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Integer) iterator.next());
-        }
+        ArrayList<Integer> list = new ArrayList<>(set);
 
         int i;
         for(i = 0; i < list.size()-1; ++i){
@@ -439,8 +394,8 @@ Scenario: player enters the last value to be mapped and successfully completes t
         game.enterLetter(String.valueOf(list.get(i)), String.valueOf(validEntry));
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == i+1);
-        Assert.assertTrue(player.getTotalCorrectGuesses() == i+1);
+        Assert.assertEquals(player.getTotalGuesses(), i + 1);
+        Assert.assertEquals(player.getTotalCorrectGuesses(), i + 1);
     }
 
     /*
@@ -451,7 +406,7 @@ Scenario: player enters the last value to be mapped and successfully completes t
     */
     @Test
     public void enterLastValueInCorrectLetter() throws Exception {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
@@ -468,12 +423,7 @@ Scenario: player enters the last value to be mapped and successfully completes t
             }
         }
 
-        ArrayList<Character> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Character) iterator.next());
-        }
+        ArrayList<Character> list = new ArrayList<>(set);
 
         int i;
         for(i = 0; i < list.size()-1; ++i){
@@ -482,13 +432,12 @@ Scenario: player enters the last value to be mapped and successfully completes t
         }
 
         // The last entry which is incorrect
-        char validEntry = letter.getPlainLetter(list.get(i));
         game.enterLetter(String.valueOf(list.get(i)), "#");
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == i+1);
-        Assert.assertTrue(player.getTotalCorrectGuesses() == i);
-        Assert.assertTrue(game.getPlayerGameMapping().get(player) == null);
+        Assert.assertEquals(player.getTotalGuesses(), i + 1);
+        Assert.assertEquals(player.getTotalCorrectGuesses(), i);
+        Assert.assertNull(game.getPlayerGameMapping().get(player));
     }
 
     /*
@@ -499,7 +448,7 @@ Scenario: player enters the last value to be mapped and unsuccessfully completes
 */
     @Test
     public void enterLastValueInCorrectNumber() throws Exception {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("N".getBytes());
         System.setIn(in);
         game = new Game(player, sentences, false);
@@ -515,12 +464,7 @@ Scenario: player enters the last value to be mapped and unsuccessfully completes
             }
         }
 
-        ArrayList<Integer> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Integer) iterator.next());
-        }
+        ArrayList<Integer> list = new ArrayList<>(set);
 
         int i;
         for(i = 0; i < list.size()-1; ++i){
@@ -529,12 +473,11 @@ Scenario: player enters the last value to be mapped and unsuccessfully completes
         }
 
         // The last entry which is correct
-        char validEntry = number.getPlainLetter(list.get(i));
         game.enterLetter(String.valueOf(list.get(i)), "0");
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == i+1);
-        Assert.assertTrue(player.getTotalCorrectGuesses() == i);
+        Assert.assertEquals(player.getTotalGuesses(), i + 1);
+        Assert.assertEquals(player.getTotalCorrectGuesses(), i);
     }
 
     /*
@@ -557,19 +500,12 @@ Scenario: player enters the last value to be mapped and unsuccessfully completes
             }
         }
 
-        ArrayList<Character> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Character) iterator.next());
-        }
+        ArrayList<Character> list = new ArrayList<>(set);
 
         // Need to find a number that is not in use
         char i;
-        boolean found = false;
-        for(i = 'a'; !found && i <= 'z'; i++){
+        for(i = 'a'; i <= 'z'; i++){
             if(!list.contains(i)){
-                found = true;
                 break;
             }
         }
@@ -577,8 +513,8 @@ Scenario: player enters the last value to be mapped and unsuccessfully completes
         game.enterLetter(String.valueOf(i), "b");
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == 1);
-        Assert.assertTrue(player.getTotalCorrectGuesses() == 0);
+        Assert.assertEquals(1, player.getTotalGuesses());
+        Assert.assertEquals(0, player.getTotalCorrectGuesses());
     }
 
     /*
@@ -601,19 +537,12 @@ Scenario: player enters a cryptogram value which is not used in the cryptogram
             }
         }
 
-        ArrayList<Integer> list = new ArrayList<>();
-
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()){
-            list.add((Integer) iterator.next());
-        }
+        ArrayList<Integer> list = new ArrayList<>(set);
 
         // Need to find a number that is not in use
         int i;
-        boolean found = false;
-        for(i = 1; !found && i < 27; i++){
+        for(i = 1; i < 27; i++){
             if(!list.contains(i)){
-                found = true;
                 break;
             }
         }
@@ -622,8 +551,8 @@ Scenario: player enters a cryptogram value which is not used in the cryptogram
         game.enterLetter(String.valueOf(i), "h");
 
         // Checking if the total guesses updated
-        Assert.assertTrue(player.getTotalGuesses() == 1);
-        Assert.assertTrue(player.getTotalCorrectGuesses() == 0);
+        Assert.assertEquals(1, player.getTotalGuesses());
+        Assert.assertEquals(0, player.getTotalCorrectGuesses());
     }
 
     @After

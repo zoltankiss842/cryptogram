@@ -3,8 +3,11 @@ package main.view;
 import main.cryptogram.Cryptogram;
 import main.game.Game;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * This class if the main frame for the game itself
@@ -15,30 +18,27 @@ public class Frame {
 
     public static final int FRAME_WIDTH = 852;
     public static final int FRAME_HEIGHT = 480;
+    public static final Color QUEENBLUE = new Color(69,95,126);
+    public static final Color GUNMETAL = new Color(38,52,69);
 
     public final String FRAME_TITLE = "Cryptogrammer";
 
     private JFrame frame;
-    private SolutionPanel solutionPanel;
     private FrequenciesPanel frequenciesPanel;
     private WordHolder wordHolder;
     private ButtonHolder buttonHolder;
-    private MenuBarHolder menuHolder;
-    private Game gameController;
+    private final Game gameController;
 
     public Frame(String name, Game gameController){
         this.gameController = gameController;
 
         initFrame(name);
 
-        centerFrame();
-
-        menuHolder = new MenuBarHolder(gameController, frame);
+        MenuBarHolder menuHolder = new MenuBarHolder(gameController, frame);
         frame.add(menuHolder.getHolder());
 
-        frame.revalidate();
-        frame.setVisible(true);
-
+        frame.setVisible(false);
+        frame.setLocationRelativeTo(null);
     }
 
     /**
@@ -46,18 +46,26 @@ public class Frame {
      * @param name      username
      */
     private void initFrame(String name) {
-        frame = new JFrame(FRAME_TITLE);
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gs = ge.getScreenDevices();
+
+        frame = new JFrame(gs[0].getDefaultConfiguration());
+
+        frame.setTitle(FRAME_TITLE);
+        try {
+            frame.setIconImage(ImageIO.read(new File("resources/assets/joystick.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
         frame.setResizable(false);
-        centerFrame();
 
         // Here we add the buttons on the bottom of the frame
         buttonHolder = new ButtonHolder(name, gameController);
         frame.add(buttonHolder.getHolder(), BorderLayout.PAGE_END);
-
     }
 
 
@@ -71,41 +79,81 @@ public class Frame {
 
         // Resetting the components to display new sentences
         try{
-            frame.remove(solutionPanel.getHolder());
             frame.remove(frequenciesPanel.getHolder());
             frame.remove(wordHolder.getHolder());
-            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-            frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
         }
         catch (NullPointerException e){
             System.err.println("Components were already null, cannot remove them from Frame.");
         }
 
         wordHolder = null;
-        solutionPanel = null;
         frequenciesPanel = null;
 
         // Adding new encrypted sentence to the frame
         wordHolder = new WordHolder(frame, this);
         wordHolder.displayNewSentence(cryptogram.getPhrase());
 
-        // Adding the solution sentence to the frame
-        solutionPanel = new SolutionPanel(cryptogram.getSolution());
+        if(!gameController.viewFrequencies().isEmpty()){
+            frequenciesPanel = new FrequenciesPanel(gameController.viewFrequencies());
+            frame.add(frequenciesPanel.getHolder(), BorderLayout.LINE_START);
+        }
 
-        frequenciesPanel = new FrequenciesPanel(gameController.viewFrequencies());
-
-
-        frame.add(solutionPanel.getHolder(), BorderLayout.PAGE_START);
-        frame.add(frequenciesPanel.getHolder(), BorderLayout.PAGE_START); // comment out to see cryptoLetter frequencies
         frame.add(wordHolder.getHolder(), BorderLayout.CENTER);
 
-        centerFrame();
+        buttonHolder.enableHintButton();
+        buttonHolder.enableSaveGameButton();
+        buttonHolder.enableSolutionButton();
+        buttonHolder.enableResetButton();
+
+        if(!frame.isVisible()){
+            frame.setVisible(true);
+        }
+
+        frame.setBackground(QUEENBLUE);
+
+        frame.requestFocus();
+        frame.toFront();
         frame.pack();
+        frame.revalidate();
+
+        frame.setLocationRelativeTo(null);
+
     }
 
-    private void centerFrame(){
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
+    public void displayEmptyScreen(){
+        // Resetting the components to display new sentences
+        try{
+            frame.remove(frequenciesPanel.getHolder());
+            frame.remove(wordHolder.getHolder());
+        }
+        catch (NullPointerException e){
+            System.err.println("Components were already null, cannot remove them from Frame.");
+        }
+
+        wordHolder = null;
+        frequenciesPanel = null;
+
+        // Adding new encrypted sentence to the frame
+        wordHolder = new WordHolder(frame, this);
+        wordHolder.displayEmptyPanel();
+
+        frequenciesPanel = new FrequenciesPanel("");
+
+        frame.add(wordHolder.getHolder(), BorderLayout.CENTER);
+
+        if(!frame.isVisible()){
+            frame.setVisible(true);
+        }
+
+        frame.requestFocus();
+        frame.toFront();
+        frame.pack();
+        frame.revalidate();
+
+        frame.setLocationRelativeTo(null);
+
+        frame.requestFocus();
+        frame.toFront();
     }
 
     public WordHolder getWordHolder() {
@@ -120,5 +168,7 @@ public class Frame {
         return frame;
     }
 
-
+    public ButtonHolder getButtonHolder() {
+        return buttonHolder;
+    }
 }
