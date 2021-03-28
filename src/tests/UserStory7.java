@@ -66,6 +66,4 @@ public class UserStory7 {
 
     // here we compare the viewFrequencies method and the calculated frequency
 
-
-
 }
