@@ -22,7 +22,7 @@ public class Top10Panel {
         frame.setVisible(true);
     }
 
-    private void initFrame(){
+    private void initFrame(){//creates the frame for the top10 panel
         frame = new JFrame("Top 10 Scores");
         frame.setPreferredSize(new Dimension(500,500));
         frame.setResizable(false);
@@ -30,7 +30,7 @@ public class Top10Panel {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
-    private void initPanel(){
+    private void initPanel(){ //sets layout and border of panel and adds to frame
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setBorder(new EmptyBorder(10,10,10,10));
@@ -77,7 +77,7 @@ public class Top10Panel {
         return top10players;
     }
 
-    private ArrayList<String> sort(ArrayList<String> players){
+    private ArrayList<String> sort(ArrayList<String> players){ //sorts players into descending order
         //System.out.println("\nStarting loop");
         for(int k=0;k<players.size();k++){
             //System.out.println(k+" "+players.get(k));
