@@ -18,13 +18,6 @@ public class CurrentPlayerStatistics {
 
     private JFrame frame;
     private JPanel statsHolder;
-    private JLabel playerName;
-    private JLabel playerAccuracy;
-    private JLabel playerTotalGuesses;
-    private JLabel playerTotalCorrectGuesses;
-    private JLabel playerGamePlayed;
-    private JLabel playerGameCompleted;
-    private JLabel playerGameSuccessfullyCompleted;
 
     public CurrentPlayerStatistics(Player player) {
         initFrame();
@@ -65,37 +58,37 @@ public class CurrentPlayerStatistics {
 
         JLabel playerNameLabel = new JLabel("<html>Username:</html>");
         playerNameLabel.setHorizontalAlignment(JLabel.LEFT);
-        playerName = new JLabel(player.getUsername());
+        JLabel playerName = new JLabel(player.getUsername());
         playerName.setHorizontalAlignment(JLabel.RIGHT);
 
         JLabel playerAccuracyLabel = new JLabel("<html>Accuracy:</html>");
         playerAccuracyLabel.setHorizontalAlignment(JLabel.LEFT);
-        playerAccuracy = new JLabel(String.format("%.2f", player.getAccuracy()));
+        JLabel playerAccuracy = new JLabel(String.format("%.2f", player.getAccuracy()));
         playerAccuracy.setHorizontalAlignment(JLabel.RIGHT);
 
         JLabel playerTotalGuessesLabel = new JLabel("<html>Total guesses:</html>");
         playerTotalGuessesLabel.setHorizontalAlignment(JLabel.LEFT);
-        playerTotalGuesses = new JLabel(String.valueOf(player.getTotalGuesses()));
+        JLabel playerTotalGuesses = new JLabel(String.valueOf(player.getTotalGuesses()));
         playerTotalGuesses.setHorizontalAlignment(JLabel.RIGHT);
 
         JLabel playerTotalCorrectGuessesLabel = new JLabel("<html>Total correct guesses:</html>");
         playerTotalCorrectGuessesLabel.setHorizontalAlignment(JLabel.LEFT);
-        playerTotalCorrectGuesses = new JLabel(String.valueOf(player.getTotalCorrectGuesses()));
+        JLabel playerTotalCorrectGuesses = new JLabel(String.valueOf(player.getTotalCorrectGuesses()));
         playerTotalCorrectGuesses.setHorizontalAlignment(JLabel.RIGHT);
 
         JLabel playerGamePlayedLabel = new JLabel("<html>Games played:</html>");
         playerGamePlayedLabel.setHorizontalAlignment(JLabel.LEFT);
-        playerGamePlayed = new JLabel(String.valueOf(player.getNumCryptogramsPlayed()));
+        JLabel playerGamePlayed = new JLabel(String.valueOf(player.getNumCryptogramsPlayed()));
         playerGamePlayed.setHorizontalAlignment(JLabel.RIGHT);
 
         JLabel playerGameCompletedLabel = new JLabel("<html>Games completed:</html>");
         playerGameCompletedLabel.setHorizontalAlignment(JLabel.LEFT);
-        playerGameCompleted = new JLabel(String.valueOf(player.getNumCryptogramsCompleted()));
+        JLabel playerGameCompleted = new JLabel(String.valueOf(player.getNumCryptogramsCompleted()));
         playerGameCompleted.setHorizontalAlignment(JLabel.RIGHT);
 
         JLabel playerGameSuccessfullyCompletedLabel = new JLabel("<html>Games correctly completed:</html>");
         playerGameSuccessfullyCompletedLabel.setHorizontalAlignment(JLabel.LEFT);
-        playerGameSuccessfullyCompleted = new JLabel(String.valueOf(player.getNumCryptogramsSuccessfullyCompleted()));
+        JLabel playerGameSuccessfullyCompleted = new JLabel(String.valueOf(player.getNumCryptogramsSuccessfullyCompleted()));
         playerGameSuccessfullyCompleted.setHorizontalAlignment(JLabel.RIGHT);
 
         dataHolder.add(playerNameLabel);
