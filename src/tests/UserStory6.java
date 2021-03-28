@@ -31,6 +31,12 @@ public class UserStory6 {
         sentences.add(SOLUTION);
     }
 
+    /* Scenario: player shows the solution
+        - Given a cryptogram is being played and hasn’t been completed by the player
+        - When the player selects to show the solution
+        - Then the correct mapping is applied and the solution displayed to the player
+     */
+
     @Test
     public void showSolution() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed {
         InputStream sysInBackup = System.in; // backup System.in to restore it later
@@ -40,10 +46,14 @@ public class UserStory6 {
         game = new Game(player, sentences,false);
         game.playGame();
 
+        // showSolution() gets the solution from the getSolution() method
+        // so we first check is the solution is empty
         LetterCryptogram letter = new LetterCryptogram(SOLUTION);
         String solution = letter.getSolution();
         Assert.assertFalse(solution.isEmpty());
 
+        // if solution from getSolution() is not empty
+        // then the showSolution() should not be empty either
         String showSol = game.showSolution();
         Assert.assertNotNull(showSol);
 
