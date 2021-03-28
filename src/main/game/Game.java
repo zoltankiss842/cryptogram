@@ -611,7 +611,7 @@ public class Game {
     /**
      * This method deletes/resets a letter at a mapping.
      * @param letter                key from mapping
-     * @throws NoSuchPlainLetter    if no such key exists
+     * @throws NoSuchCryptogramLetter    if no such key exists
      */
     public void undoLetter(String letter) throws NoSuchCryptogramLetter, NoSuchGameType {
         Cryptogram c = playerGameMapping.get(currentPlayer);
@@ -632,7 +632,7 @@ public class Game {
 
     /**
      * Checks if a string empty or blank
-     * @param letter    string to be checked
+     * @param toCheck    string to be checked
      * @return          true if it is blank or empty
      */
     public boolean checkLetterIfEmptyOrBlank(String toCheck) {

@@ -11,11 +11,9 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class UserStory5 {
-    private final String SOLUTION = "This is a test sentence that needs to be solved";
     private final String PLAYER_NAME = "test";
 
     private Game game;
@@ -26,13 +24,14 @@ public class UserStory5 {
     public void setUp(){
         player = new Player(PLAYER_NAME);
         sentences = new ArrayList<>();
+        String SOLUTION = "This is a test sentence that needs to be solved";
         sentences.add(SOLUTION);
     }
 
     @Test
     public void testLoadexists() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed {
 
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
@@ -55,7 +54,7 @@ public class UserStory5 {
 
     @Test(expected = NoSaveGameFound.class)
     public void testNotLoadExists() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
@@ -69,7 +68,7 @@ public class UserStory5 {
     }
     @Test (expected = InvalidGameCreation.class)
     public void testCorrupted() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, NoGameBeingPlayed {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
@@ -91,7 +90,7 @@ public class UserStory5 {
             playersWrite.write("very corrupt file\n");
             playersWrite.close();
         }
-        catch(Exception e)
+        catch(Exception ignored)
         {
 
         }

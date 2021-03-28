@@ -11,14 +11,11 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class UserStory13 {
 
-    private final String PLAYER_NAME = "test";
     private final String SOLUTION = "This is a test sentence that needs to be solved";
     private final String SOLUTION2 = "This is another test sentence that needs to be solved";
     private final String SOLUTION3 = "This is the last sentence that needs to be solved";
@@ -30,6 +27,7 @@ public class UserStory13 {
 
     @Before
     public void setUp() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
+        String PLAYER_NAME = "test";
         player = new Player(PLAYER_NAME);
         sentences = new ArrayList<>();
         scoreboardTop10 = new ArrayList<>();
@@ -51,27 +49,27 @@ public class UserStory13 {
     public void top10Tests() throws Exception {
         game = new Game(player, sentences, false);
 
-        Assert.assertTrue(player.getNumCryptogramsPlayed() == 0);
+        Assert.assertEquals(0, player.getNumCryptogramsPlayed());
 
         LetterCryptogram letter = new LetterCryptogram(SOLUTION);
         Assert.assertEquals(letter.getSolution(),SOLUTION.toLowerCase());
         player.incrementCryptogramsSuccessfullyCompleted();
         player.incrementCryptogramsPlayed();
-        Assert.assertTrue(player.getNumCryptogramsSuccessfullyCompleted() == 1);
-        Assert.assertTrue(player.getNumCryptogramsPlayed() == 1);
+        Assert.assertEquals(1, player.getNumCryptogramsSuccessfullyCompleted());
+        Assert.assertEquals(1, player.getNumCryptogramsPlayed());
 
         LetterCryptogram letter2 =new LetterCryptogram(SOLUTION2);
-        Assert.assertFalse(letter2.getSolution() == SOLUTION3.toLowerCase());
+        Assert.assertNotSame(letter2.getSolution(), SOLUTION3.toLowerCase());
         player.incrementCryptogramsPlayed();
-        Assert.assertTrue(player.getNumCryptogramsSuccessfullyCompleted() == 1);
-        Assert.assertTrue(player.getNumCryptogramsPlayed() == 2);
+        Assert.assertEquals(1, player.getNumCryptogramsSuccessfullyCompleted());
+        Assert.assertEquals(2, player.getNumCryptogramsPlayed());
 
         LetterCryptogram letter3 = new LetterCryptogram(SOLUTION3);
-        Assert.assertFalse(letter3.getSolution() == SOLUTION3.toLowerCase());
+        Assert.assertNotSame(letter3.getSolution(), SOLUTION3.toLowerCase());
         player.incrementCryptogramsSuccessfullyCompleted();
         player.incrementCryptogramsPlayed();
-        Assert.assertTrue(player.getNumCryptogramsSuccessfullyCompleted() == 2);
-        Assert.assertTrue(player.getNumCryptogramsPlayed() == 3);
+        Assert.assertEquals(2, player.getNumCryptogramsSuccessfullyCompleted());
+        Assert.assertEquals(3, player.getNumCryptogramsPlayed());
 
         scoreboardTop10.add(player.getUsername() + " " + player.getNumCryptogramsSuccessfullyCompleted());
 
@@ -88,7 +86,7 @@ public class UserStory13 {
 
     @Test
     public void top10Empty() throws Exception {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
@@ -96,7 +94,7 @@ public class UserStory13 {
         game.playGame();
 
         LetterCryptogram letter = new LetterCryptogram(SOLUTION3);
-        Assert.assertFalse(letter.getSolution().equals(SOLUTION.toLowerCase()));
+        Assert.assertNotEquals(letter.getSolution(), SOLUTION.toLowerCase());
         player.incrementCryptogramsPlayed();
 
         Assert.assertTrue(scoreboardTop10.isEmpty());

@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 /* As a player I want to be able to undo a letter so I can play the cryptogram */
@@ -47,27 +46,27 @@ public class UserStory10 {
     public void numberOfCryptosPlayed() throws Exception {
         game = new Game(player, sentences, false);
 
-        Assert.assertTrue(player.getNumCryptogramsPlayed() == 0);
+        Assert.assertEquals(0, player.getNumCryptogramsPlayed());
 
         LetterCryptogram letter = new LetterCryptogram(SOLUTION);
         Assert.assertEquals(letter.getSolution(),SOLUTION.toLowerCase());
         player.incrementCryptogramsSuccessfullyCompleted();
         player.incrementCryptogramsPlayed();
-        Assert.assertTrue(player.getNumCryptogramsSuccessfullyCompleted() == 1);
-        Assert.assertTrue(player.getNumCryptogramsPlayed() == 1);
+        Assert.assertEquals(1, player.getNumCryptogramsSuccessfullyCompleted());
+        Assert.assertEquals(1, player.getNumCryptogramsPlayed());
 
         LetterCryptogram letter2 =new LetterCryptogram(SOLUTION2);
-        Assert.assertFalse(letter2.getSolution() == SOLUTION3.toLowerCase());
+        Assert.assertNotSame(letter2.getSolution(), SOLUTION3.toLowerCase());
         player.incrementCryptogramsPlayed();
-        Assert.assertTrue(player.getNumCryptogramsSuccessfullyCompleted() == 1);
-        Assert.assertTrue(player.getNumCryptogramsPlayed() == 2);
+        Assert.assertEquals(1, player.getNumCryptogramsSuccessfullyCompleted());
+        Assert.assertEquals(2, player.getNumCryptogramsPlayed());
 
         LetterCryptogram letter3 = new LetterCryptogram(SOLUTION3);
-        Assert.assertFalse(letter3.getSolution() == SOLUTION3.toLowerCase());
+        Assert.assertNotSame(letter3.getSolution(), SOLUTION3.toLowerCase());
         player.incrementCryptogramsSuccessfullyCompleted();
         player.incrementCryptogramsPlayed();
-        Assert.assertTrue(player.getNumCryptogramsSuccessfullyCompleted() == 2);
-        Assert.assertTrue(player.getNumCryptogramsPlayed() == 3);
+        Assert.assertEquals(2, player.getNumCryptogramsSuccessfullyCompleted());
+        Assert.assertEquals(3, player.getNumCryptogramsPlayed());
 
         File test=new File("test.txt");
         test.delete();
@@ -84,7 +83,7 @@ public class UserStory10 {
 
     @Test
     public void numberOfCryptosAfterLoad() throws Exception {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 

@@ -11,12 +11,10 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
 
 public class UserStory14 {
 
-    private final String PLAYER_NAME = "test";
     private final String SOLUTION = "This is a test sentence that needs to be solved";
 
     private Player player;
@@ -25,6 +23,7 @@ public class UserStory14 {
 
     @Before
     public void setUp() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation {
+        String PLAYER_NAME = "test";
         player = new Player(PLAYER_NAME);
         sentences = new ArrayList<>();
         sentences.add(SOLUTION);
@@ -44,9 +43,9 @@ public class UserStory14 {
     public void hintsForNullValues() throws Exception {
         game = new Game(player, sentences, false);
 
-        Assert.assertTrue(player.getNumCryptogramsPlayed() == 0);
+        Assert.assertEquals(0, player.getNumCryptogramsPlayed());
 
-        LetterCryptogram letter = new LetterCryptogram(SOLUTION);
+        new LetterCryptogram(SOLUTION);
 
 
 
@@ -60,7 +59,7 @@ public class UserStory14 {
 
     @Test
     public void hintsForWrongMapping() throws Exception {
-        InputStream sysInBackup = System.in; // backup System.in to restore it later
+        // backup System.in to restore it later
         ByteArrayInputStream in = new ByteArrayInputStream("Y".getBytes());
         System.setIn(in);
 
