@@ -1209,14 +1209,12 @@ public class Game {
 
             // See if crypto is done, if so, we show completion message
             if (isEverythingMappedLetter()) {
-                boolean success = checkAnswer();
                 System.out.println("Cryptogram completed, no more hints to give");
 
                 if (gameGui != null) {
                     lockFields();
                 }
 
-                showGameCompletion(success);
 
                 resetGameDetails();
             }
@@ -1263,15 +1261,11 @@ public class Game {
 
             // See if crypto is done, if so, we show completion message
             if (isEverythingMappedNumber()) {
-
-                boolean success = checkAnswer();
                 System.out.println("Cryptogram completed, no more hints to give");
 
                 if (gameGui != null) {
                     lockFields();
                 }
-
-                showGameCompletion(success);
 
                 resetGameDetails();
             }
