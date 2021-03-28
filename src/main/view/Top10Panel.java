@@ -112,6 +112,9 @@ public class Top10Panel {
                 top10players.add(entry.getKey() + " " + entry.getValue());
             }
         }
+        if(top10players.isEmpty()) {
+            System.out.println("No player scores to show");
+        }
         top10players = sort(top10players);
         return top10players;
     }
