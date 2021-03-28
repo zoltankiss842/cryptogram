@@ -1,5 +1,6 @@
 package tests;
 
+import main.cryptogram.Cryptogram;
 import main.cryptogram.LetterCryptogram;
 import main.exceptions.*;
 import main.game.Game;
@@ -12,6 +13,7 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class UserStory14 {
 
@@ -65,6 +67,11 @@ public class UserStory14 {
 
         game = new Game(player, sentences,false);
         game.playGame();
+        Cryptogram c=game.getPlayerGameMapping().get(game.getCurrentPlayer());
+        HashMap userInputMapping= new HashMap<>(game.getInputFromUserLetter());
+
+
+
 
 
     }
