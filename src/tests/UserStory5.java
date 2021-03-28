@@ -85,10 +85,10 @@ public class UserStory5 {
         {
             FileWriter playersWrite = new FileWriter("test.txt");
             playersWrite.write("test\n");
-            playersWrite.write("very coprrupt file\n");
-            playersWrite.write("very coprrupt file\n");
-            playersWrite.write("very coprrupt file\n");
-            playersWrite.write("very coprrupt file\n");
+            playersWrite.write("very corrupt file\n");
+            playersWrite.write("very corrupt file\n");
+            playersWrite.write("very corrupt file\n");
+            playersWrite.write("very corrupt file\n");
             playersWrite.close();
         }
         catch(Exception e)
