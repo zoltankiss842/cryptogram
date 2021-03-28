@@ -1187,8 +1187,10 @@ public class Game {
                         updatePhrase((Character) hint, letterMap.get(hint), playerGameMapping.get(currentPlayer));
 
                         // Update it in the GUI
-                        for (Word word : gameGui.getWordHolder().getWords()) {
-                            word.updateLetterLabel(String.valueOf(hint), letterMap.get(hint).toString());
+                        if(gameGui != null){
+                            for (Word word : gameGui.getWordHolder().getWords()) {
+                                word.updateLetterLabel(String.valueOf(hint), letterMap.get(hint).toString());
+                            }
                         }
 
                         // We don't want to give more than one hint at a time so we just stop
@@ -1240,8 +1242,10 @@ public class Game {
                     inputFromUserNumber.put((Integer) numHint, numberMap.get(numHint));
 
                     // Update it in the GUI
-                    for (Word word : gameGui.getWordHolder().getWords()) {
-                        word.updateLetterLabel(String.valueOf(numHint), numberMap.get(numHint).toString());
+                    if(gameGui != null){
+                        for (Word word : gameGui.getWordHolder().getWords()) {
+                            word.updateLetterLabel(String.valueOf(numHint), numberMap.get(numHint).toString());
+                        }
                     }
 
                     // We don't want to give more than one hint at a time so we just stop
