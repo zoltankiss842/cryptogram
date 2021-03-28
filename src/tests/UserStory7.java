@@ -36,7 +36,6 @@ public class UserStory7 {
         - When the player asks to view the frequencies
         - Then the proportion of letter frequencies in the cryptogram is shown as well as the common proportions of letter frequencies in the English language
         */
-
     @Test
     public void frequenciesTest() throws NoSentencesToGenerateFrom, InvalidGameCreation, NoSuchGameType, NoSaveGameFound, InvalidPlayerCreation, FileNotFoundException, NoGameBeingPlayed {
         game = new Game(player, sentences, false);
@@ -49,7 +48,7 @@ public class UserStory7 {
         LetterCryptogram letter = new LetterCryptogram(SOLUTION);
 
         // test if common english letter frequencies panel exists
-        Assert.assertTrue(game.showFrequencies());
+        Assert.assertFalse(game.viewFrequencies().isEmpty());
 
         // test if frequencies are calculated for one letter
         String sentence = letter.getSolution();

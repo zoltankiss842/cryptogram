@@ -224,14 +224,6 @@ public class ButtonHolder {
         saveGame.setEnabled(false);
     }
 
-    public void enableLoadGameButton(){
-        loadGame.setEnabled(true);
-    }
-
-    public void disableLoadGameButton(){
-        loadGame.setEnabled(false);
-    }
-
     public void enableResetButton(){
         reset.setEnabled(true);
     }
