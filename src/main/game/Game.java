@@ -1010,7 +1010,7 @@ public class Game {
     /**
      * Randomly chooses a sentence from the read in sentences ArrayList
      * @param rnd       random object
-     * @return          sentences that was randomly choosed
+     * @return          sentences that was randomly chosen
      * @throws NoSentencesToGenerateFrom
      */
     private String initNewSentence(Random rnd) throws NoSentencesToGenerateFrom {
@@ -1277,7 +1277,7 @@ public class Game {
      * First value: letter from solution
      * Second value: number of occurrences of letters in solution sentence
      * Third value: percentage of occurrences of letters for all letters in the solution sentence
-     * @return  generated frequenices in a string format
+     * @return  generated frequencies in a string format
      */
     public String viewFrequencies() {
         Cryptogram c = playerGameMapping.get(currentPlayer);
